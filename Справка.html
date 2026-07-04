@@ -564,6 +564,7 @@
         <a href="#ref-relu">ReLU</a>
         <a href="#ref-replay-buffer">Replay buffer</a>
         <a href="#ref-reference-model">Reference model</a>
+        <a href="#ref-repetition-penalty">Repetition penalty</a>
         <a href="#ref-reparameterization-trick">Reparameterization trick</a>
         <a href="#ref-reranking">Reranking</a>
         <a href="#ref-reverse-diffusion-process">Reverse diffusion process</a>
@@ -941,7 +942,7 @@
           <p><strong>Autoregressive decoding</strong> — генерация последовательности слева направо, где следующий токен зависит от уже сгенерированных:</p>
 
           $$
-          p(y\mid x)=\prod_i p(y_i\mid y_{<i},x).
+          p(y\mid x)=\prod_i p(y_i\mid y_{\lt i},x).
           $$
 
           <p>При inference модель подаёт свои прошлые predictions как вход для следующих шагов.</p>
@@ -1881,9 +1882,9 @@
       <article class="card" id="ref-decoding-strategy">
         <header><h2>Decoding strategy</h2></header>
         <section>
-          <p><strong>Decoding strategy</strong> — правило выбора следующего token из распределения $p_\theta(x_t\mid x_{<t})$ во время autoregressive generation.</p>
+          <p><strong>Decoding strategy</strong> — правило выбора следующего token из распределения $p_\theta(x_t\mid x_{\lt t})$ во время autoregressive generation.</p>
 
-          <p>Примеры: greedy decoding, sampling, top-k, top-p, temperature scaling и beam search. Стратегия меняет стиль, разнообразие, воспроизводимость и риск ошибок без изменения весов модели.</p>
+          <p>Примеры: greedy decoding, sampling, top-k, top-p, temperature scaling, repetition penalty и beam search. Стратегия меняет стиль, разнообразие, воспроизводимость и риск ошибок без изменения весов модели.</p>
         </section>
       </article>
 
@@ -2046,7 +2047,7 @@
           <p>Связь между ними идёт через cross-attention: decoder queries обращаются к keys/values encoder-а. Такая схема удобна для translation, summarization, QA и любых text-to-text задач.</p>
 
           $$
-          p_\theta(y\mid x)=\prod_{t=1}^{T_y}p_\theta(y_t\mid y_{<t},x).
+          p_\theta(y\mid x)=\prod_{t=1}^{T_y}p_\theta(y_t\mid y_{\lt t},x).
           $$
         </section>
       </article>
@@ -2110,13 +2111,49 @@
       <article class="card" id="ref-fourier-transform">
         <header><h2>Fourier transform</h2></header>
         <section>
-          <p><strong>Fourier transform</strong> представляет signal как сумму sinusoids разных frequencies.</p>
+          <p><strong>Fourier transform</strong> представляет signal как сумму sinusoids разных frequencies. Для звука это главный мост от waveform во времени к spectrum: какие частоты присутствуют, с какой силой и с каким phase shift.</p>
 
           $$
           X(f)=\int_{-\infty}^{\infty}x(t)e^{-2\pi i f t}\,dt.
           $$
 
-          <p>В audio это позволяет перейти от waveform over time к spectrum: какие frequencies присутствуют, с какой magnitude и phase.</p>
+          <p>$X(f)$ является complex-valued: $|X(f)|$ показывает magnitude/energy частотной компоненты, а $\arg X(f)$ хранит phase. Magnitude часто достаточно для recognition features, но phase важна для reconstruction и vocoding.</p>
+
+          <h3>Как это применяется в audio</h3>
+          <p>Raw audio — это samples $x[n]$, например 16 000 значений в секунду при sampling rate 16 kHz. Если взять Fourier transform всего файла, получится global spectrum, но потеряется информация о том, когда именно звучала частота. Поэтому в speech/audio почти всегда используют <a href="#ref-stft">STFT</a>: короткое window движется по signal, для каждого frame считается FFT, а результаты складываются в time-frequency matrix.</p>
+
+          $$
+          X(m,k)=\sum_{n=0}^{N-1}x[n+mH]\,w[n]\,e^{-2\pi i kn/N}.
+          $$
+
+          <p>Здесь $m$ — frame index, $k$ — frequency bin, $N$ — window length, $H$ — hop length, $w[n]$ — window function. Magnitude или power STFT образует <a href="#ref-spectrogram">spectrogram</a>:</p>
+
+          $$
+          S(m,k)=|X(m,k)|^2.
+          $$
+
+          <h3>Почему spectrogram похож на картинку</h3>
+          <p>Spectrogram можно читать как изображение: x-axis — time, y-axis — frequency, brightness/color — energy. Поэтому CNN и Transformers могут работать с audio через log-mel spectrogram почти как с image-like representation. Вертикальные полосы часто соответствуют transient/noise events, горизонтальные структуры — тонам и harmonics, а speech formants проявляются как bands энергии.</p>
+
+          <h3>Mel, log и MFCC</h3>
+          <p>После STFT часто применяют mel filterbank, потому что human pitch perception нелинейна: низкие частоты различаются лучше, чем высокие. Затем берут log, чтобы сжать dynamic range:</p>
+
+          $$
+          Z=\log(M|X|^2+\varepsilon),
+          $$
+
+          <p>где $M$ — mel filterbank matrix. <a href="#ref-log-mel-features">Log-mel features</a> стали стандартным входом для ASR/audio classification. <a href="#ref-mfcc">MFCC</a> дополнительно применяют DCT к log-mel energies и оставляют первые coefficients: такой compact representation удобен для классических speech pipelines, но современные deep models часто предпочитают log-mel.</p>
+
+          <h3>Тонкие места для экзамена</h3>
+          <ul>
+            <li><strong>DFT vs FFT:</strong> DFT — преобразование, FFT — быстрый алгоритм вычисления DFT.</li>
+            <li><strong>Window trade-off:</strong> short window даёт лучшую time resolution, long window — лучшую frequency resolution.</li>
+            <li><strong>Nyquist:</strong> при sampling rate $f_s$ максимальная корректно представимая частота равна $f_s/2$.</li>
+            <li><strong>Aliasing:</strong> частоты выше Nyquist превращаются в ложные низкие частоты, поэтому нужен anti-aliasing filter до sampling.</li>
+            <li><strong>Phase:</strong> при построении признаков phase часто отбрасывают, но для восстановления waveform она не исчезает из математики.</li>
+          </ul>
+
+          <p>Полезные русскоязычные опоры: <a href="http://wiki.cs.hse.ru/Глубинное_обучение_для_звука-2021-22">ФКН/HSE: Глубинное обучение для звука</a> и <a href="http://wiki.cs.hse.ru/Прикладные_задачи_анализа_данных/2024">ФКН/HSE: Прикладные задачи анализа данных</a>. Для практики хорошо дополнять их <a href="https://huggingface.co/learn/audio-course/chapter0/introduction">Hugging Face Audio Course</a> и <a href="https://pytorch.org/audio/stable/tutorials.html">torchaudio tutorials</a>.</p>
         </section>
       </article>
 
@@ -2152,7 +2189,13 @@
         <section>
           <p><strong>FlashAttention</strong> — точная реализация attention, которая считает тот же результат, но экономит память и ускоряет работу за счёт блочного вычисления.</p>
 
-          <p>Обычный attention материализует большую матрицу $T\times T$ в памяти. FlashAttention обрабатывает её блоками, держит промежуточные величины в быстрой памяти GPU и не меняет математическую формулу attention.</p>
+          <p>Обычный attention концептуально строит scores $S=QK^\top/\sqrt{d_k}$ размера $T\times T$, применяет softmax и умножает на $V$. FlashAttention не меняет эту формулу:</p>
+
+          $$
+          O=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
+          $$
+
+          <p>Главная экономия в memory traffic. Вместо материализации полной attention matrix в HBM алгоритм обрабатывает $Q,K,V$ blocks, хранит промежуточные величины и online-softmax statistics в быстрой SRAM/shared memory и записывает наружу итоговый output. Поэтому FlashAttention — точный efficient attention, а не sparse/window approximation.</p>
         </section>
       </article>
 
@@ -2499,7 +2542,7 @@
         <section>
           <p><strong>GPT-like</strong> модели — decoder-only language models, обученные предсказывать следующий токен по prefix.</p>
 
-          <p>Ключевые элементы: causal self-attention, next-token prediction, autoregressive generation и использование prompt-а как интерфейса к задачам. Модель задаёт распределение $p(x_{1:T})=\prod_t p(x_t\mid x_{<t})$.</p>
+          <p>Ключевые элементы: causal self-attention, next-token prediction, autoregressive generation и использование prompt-а как интерфейса к задачам. Модель задаёт распределение $p(x_{1:T})=\prod_t p(x_t\mid x_{\lt t})$.</p>
         </section>
       </article>
 
@@ -2545,10 +2588,10 @@
           <p><strong>Greedy decoding</strong> выбирает на каждом шаге самый вероятный token:</p>
 
           $$
-          \hat{x}_t=\arg\max_i p_\theta(i\mid x_{<t}).
+          \hat{x}_t=\arg\max_i p_\theta(i\mid x_{\lt t}).
           $$
 
-          <p>Метод детерминированный и быстрый, но близорукий: лучший token на текущем шаге не гарантирует лучшую последовательность целиком.</p>
+          <p>Метод детерминированный и быстрый, но близорукий: лучший token на текущем шаге не гарантирует лучшую последовательность целиком. В LLM-интерфейсах <code>temperature=0</code> обычно означает именно greedy режим: выбрать argmax без случайного sampling.</p>
         </section>
       </article>
 
@@ -3182,14 +3225,23 @@
       <article class="card" id="ref-layer-norm">
         <header><h2>LayerNorm</h2></header>
         <section>
-          <p><strong>LayerNorm</strong> нормализует признаки внутри одного объекта или токена:</p>
+          <p><strong>LayerNorm</strong> нормализует признаки внутри одного объекта или токена. Для $x\in\mathbb{R}^{d}$ среднее и дисперсия считаются по координатам feature-вектора:</p>
+
+          $$
+          \mu=\frac{1}{d}\sum_{k=1}^{d}x_k,\qquad
+          \sigma^2=\frac{1}{d}\sum_{k=1}^{d}(x_k-\mu)^2.
+          $$
+
+          <p>Дальше координаты центрируются, делятся на стандартное отклонение и проходят через обучаемые scale/shift параметры:</p>
 
           $$
           \operatorname{LayerNorm}(x)=
           \gamma\odot\frac{x-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta.
           $$
 
-          <p>В Transformer LayerNorm стабилизирует масштаб активаций и удобнее BatchNorm для autoregressive inference и переменных длин.</p>
+          <p>$\epsilon$ нужен для численной устойчивости, $\gamma$ и $\beta$ позволяют модели заново подобрать удобный масштаб и сдвиг после нормализации. В Transformer LayerNorm стабилизирует масштаб активаций, помогает градиентам проходить через глубокий стек и удобнее BatchNorm для autoregressive inference и переменных длин.</p>
+
+          <p><strong>BatchNorm vs LayerNorm:</strong> BatchNorm использует статистики по batch, а LayerNorm работает внутри одного примера. Поэтому LayerNorm не ломается при маленьком batch и естественно подходит для sequence models.</p>
         </section>
       </article>
 
@@ -3697,7 +3749,7 @@
           <p><strong>Next-token prediction</strong> — objective, где модель предсказывает следующий токен по предыдущим токенам.</p>
 
           $$
-          \mathcal{L}_{NTP}=-\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{<t}).
+          \mathcal{L}_{NTP}=-\sum_{t=1}^{T}\log p_\theta(x_t\mid x_{\lt t}).
           $$
 
           <p>Такой objective даёт autoregressive language model: после обучения модель может генерировать текст, многократно выбирая следующий токен и добавляя его в контекст.</p>
@@ -4392,6 +4444,26 @@
         </section>
       </article>
 
+      <article class="card" id="ref-repetition-penalty">
+        <header><h2>Repetition penalty</h2></header>
+        <section>
+          <p><strong>Repetition penalty</strong> — decoding эвристика, которая уменьшает вероятность tokens, уже встречавшихся в generated context, чтобы модель меньше зацикливалась.</p>
+
+          <p>Один распространённый вариант изменяет logits до softmax. Для уже встречавшегося token-а $i$:</p>
+
+          $$
+          z_i' =
+          \begin{cases}
+          z_i / r, & z_i>0,\\
+          z_i \cdot r, & z_i<0,
+          \end{cases}
+          \qquad r>1.
+          $$
+
+          <p>После этого применяют temperature, top-k/top-p и sampling. Больший $r$ сильнее давит повторы, но слишком большой penalty может вредить: иногда повтор нужен для имён, кода, терминов, списков и точного цитирования.</p>
+        </section>
+      </article>
+
       <article class="card" id="ref-reparameterization-trick">
         <header><h2>Reparameterization trick</h2></header>
         <section>
@@ -4614,7 +4686,7 @@
         <section>
           <p><strong>Sampling decoding</strong> выбирает следующий token случайно согласно распределению вероятностей модели.</p>
 
-          <p>В отличие от greedy, sampling может выдавать разные продолжения для одного prompt-а. Чтобы редкие мусорные tokens не портили ответ, sampling часто комбинируют с temperature, top-k или top-p.</p>
+          <p>В отличие от greedy, sampling может выдавать разные продолжения для одного prompt-а. Типичный pipeline: logits → temperature scaling → softmax → top-k/top-p filtering → renormalization → random draw from categorical distribution. Чтобы редкие мусорные tokens не портили ответ, sampling часто комбинируют с temperature, top-k или top-p.</p>
         </section>
       </article>
 
@@ -4933,7 +5005,7 @@
           <p><strong>Supervised fine-tuning</strong>, SFT, — дообучение LLM на размеченных парах prompt и желаемый ответ.</p>
 
           $$
-          \mathcal{L}_{SFT}=-\sum_t\log p_\theta(y_t\mid x,y_{<t}).
+          \mathcal{L}_{SFT}=-\sum_t\log p_\theta(y_t\mid x,y_{\lt t}).
           $$
 
           <p>SFT часто использует teacher forcing и loss masking, чтобы обучать модель отвечать на prompt, а не воспроизводить весь диалог целиком.</p>
@@ -5096,7 +5168,7 @@
       <article class="card" id="ref-temperature-softmax">
         <header><h2>Temperature softmax</h2></header>
         <section>
-          <p><strong>Temperature</strong> в softmax делит logits перед экспонентой:</p>
+          <p><strong>Temperature</strong> в softmax делит logits перед экспонентой и управляет sharpness распределения:</p>
 
           $$
           p_i^{(T)}
@@ -5105,7 +5177,17 @@
           {\sum_j \exp(z_j/T)}.
           $$
 
-          <p>При $T>1$ распределение становится мягче, при $T<1$ — острее. В distillation обычно используют $T>1$.</p>
+          <p>Temperature берётся не из обучения модели, а из inference-time правила выбора token-а. Она масштабирует logits: при $T<1$ различия между logits усиливаются, распределение становится острее; при $T>1$ различия сглаживаются, распределение становится более случайным.</p>
+
+          <p>При $T\to 0$ softmax стремится к one-hot на самом большом logit, поэтому <code>temperature=0</code> практически означает greedy decoding:</p>
+
+          $$
+          \lim_{T\to 0}\operatorname{softmax}(z/T)
+          =
+          \operatorname{onehot}\left(\arg\max_i z_i\right).
+          $$
+
+          <p>Формально $T=0$ нельзя подставлять в формулу из-за деления на ноль; в коде обычно делают отдельную ветку argmax. В distillation часто используют $T>1$, чтобы soft labels teacher-а стали мягче и информативнее.</p>
         </section>
       </article>
 
@@ -5195,7 +5277,7 @@
         <section>
           <p><strong>Top-k sampling</strong> оставляет только $k$ самых вероятных tokens, зануляет остальные вероятности, нормирует оставшееся распределение и sample-ит из него.</p>
 
-          <p>Порог по числу tokens фиксирован, поэтому метод может быть слишком широким, когда модель уверена, и слишком узким, когда есть много осмысленных вариантов.</p>
+          <p>Порог по числу tokens фиксирован, поэтому метод может быть слишком широким, когда модель уверена, и слишком узким, когда есть много осмысленных вариантов. Обычно top-k применяют после temperature scaling: сначала меняют форму distribution, затем отрезают хвост.</p>
         </section>
       </article>
 
@@ -5204,7 +5286,7 @@
         <section>
           <p><strong>Top-p sampling</strong>, или nucleus sampling, оставляет минимальный набор самых вероятных tokens с суммарной вероятностью не меньше $p$.</p>
 
-          <p>Размер набора адаптивен: если модель уверена, остаётся мало tokens; если распределение размазано, набор становится шире.</p>
+          <p>Размер набора адаптивен: если модель уверена, остаётся мало tokens; если распределение размазано, набор становится шире. Поэтому top-p часто лучше top-k для open-ended generation: он подстраивает число кандидатов под uncertainty модели.</p>
         </section>
       </article>
 
