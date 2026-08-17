@@ -1178,7 +1178,7 @@
 
             <details class="qa-item">
               <summary><h4>6. Чем опасна слишком большая capacity?</h4></summary>
-              <p>Модель с большой capacity может запомнить train set, включая шум и случайные корреляции. Тогда train loss будет малым, но validation/test качество ухудшится. Поэтому нужны регуляризация, validation, augmentation, early stopping and достаточный объём данных.</p>
+              <p>Модель с большой capacity может запомнить train set, включая шум и случайные корреляции. Тогда train loss будет малым, но validation/test качество ухудшится. Поэтому нужны регуляризация, validation, augmentation, early stopping и достаточный объём данных.</p>
             </details>
 
             <details class="qa-item">
@@ -3260,7 +3260,7 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>7. Почему validation может быть лучше train?</h4></summary>
-              <p>На train могут быть включены dropout, augmentation and label noise, поэтому train task harder. Но если разрыв слишком подозрительный, надо проверить leakage, split and одинаковость preprocessing на train/validation.</p>
+              <p>На train могут быть включены dropout, augmentation и label noise, поэтому train-задача объективно сложнее. Но если разрыв слишком подозрительный, надо проверить leakage, split и одинаковость preprocessing на train/validation.</p>
             </details>
 
             <details class="qa-item">
@@ -3440,7 +3440,7 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>6. Почему CNN требует меньше параметров?</h4></summary>
-              <p>Fully connected layer связывает каждый входной пиксель с каждым выходным нейроном, поэтому число весов растёт как $HWC\cdot M$. Свёртка использует маленький kernel and shared weights, поэтому число параметров равно $F_hF_wC_{in}C_{out}$ и не зависит напрямую от $H,W$.</p>
+              <p>Fully connected layer связывает каждый входной пиксель с каждым выходным нейроном, поэтому число весов растёт как $HWC\cdot M$. Свёртка использует маленький kernel и shared weights, поэтому число параметров равно $F_hF_wC_{in}C_{out}$ и не зависит напрямую от $H,W$.</p>
             </details>
 
             <details class="qa-item">
@@ -10617,7 +10617,7 @@ with torch.no_grad():
               </div>
               <div>
                 <h4>Balanced</h4>
-                <p>Compute распределён между parameters and tokens так, чтобы loss снижался эффективнее.</p>
+                <p>Compute распределён между parameters и tokens так, чтобы loss снижался эффективнее.</p>
               </div>
             </div>
           </div>
@@ -11520,7 +11520,7 @@ with torch.no_grad():
           \{y^{(1)}, y^{(2)}, \dots, y^{(K)}\}.
           $$
 
-          <p>Prompting полезен, когда знание уже есть в model/context and задача сводится к правильному извлечению или форматированию. Если нужны свежие facts, точные вычисления, поиск по документам or actions во внешней среде, лучше подключать retrieval/tools/agents. Хороший экзаменационный ответ должен сказать: prompt улучшает conditioning, но не превращает модель в источник проверенной истины.</p>
+          <p>Prompting полезен, когда знание уже есть в model/context и задача сводится к правильному извлечению или форматированию. Если нужны свежие facts, точные вычисления, поиск по документам или actions во внешней среде, лучше подключать retrieval/tools/agents. Хороший экзаменационный ответ должен сказать: prompt улучшает conditioning, но не превращает модель в источник проверенной истины.</p>
 
           <div class="visual-panel">
             <div class="visual-title">Когда prompt-а мало</div>
@@ -12802,7 +12802,7 @@ with torch.no_grad():
 
         <section>
           <h3>Failure Modes RAG и Agents</h3>
-          <p>RAG and agents ломаются не только из-за “плохой LLM”. Часто ошибка появляется до generation: не тот chunk retrieved, слишком большой chunk размыл answer, reranker выбрал passage с похожими словами, но неверным фактом, или tool вернул неполные данные.</p>
+          <p>RAG и agents ломаются не только из-за “плохой LLM”. Часто ошибка появляется до generation: не тот chunk retrieved, слишком большой chunk размыл answer, reranker выбрал passage с похожими словами, но неверным фактом, или tool вернул неполные данные.</p>
 
           <table>
             <thead>
@@ -12820,7 +12820,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>Prompt injection in retrieved text</td>
-                <td>Документ просит ignore instructions or leak secrets</td>
+                <td>Документ просит ignore instructions или leak secrets</td>
                 <td>Разделять instructions and data, sanitize context, constrain tools</td>
               </tr>
               <tr>
@@ -13021,7 +13021,7 @@ with torch.no_grad():
               <tr>
                 <td>M3. Tokenization и оценка</td>
                 <td><a href="#ticket-31">31</a>, <a href="#ticket-34">34</a>, <a href="#ticket-44">44</a></td>
-                <td>BPE и Unigram — два разных компромисса между словарём и длиной sequence. Tokenizer зависит от корпуса: языки, код, emoji and rare symbols могут давать разную цену в tokens. Perplexity полезна, но не равна human usefulness.</td>
+                <td>BPE и Unigram — два разных компромисса между словарём и длиной sequence. Tokenizer зависит от корпуса: языки, код, emoji и rare symbols могут давать разную цену в tokens. Perplexity полезна, но не равна human usefulness.</td>
               </tr>
               <tr>
                 <td>M4. BERT, SBERT, vector DB, RAG</td>
@@ -13041,7 +13041,7 @@ with torch.no_grad():
               <tr>
                 <td>M7. Fine-tuning и LoRA</td>
                 <td><a href="#ticket-38">38</a>, <a href="#ticket-41">41</a>, <a href="#ticket-43">43</a></td>
-                <td>LoRA обычно ставят в attention projections $Q,K,V,O$ and sometimes FFN. Ранг $r$ управляет capacity адаптера, коэффициент $\alpha$ масштабирует update. QLoRA добавляет quantized base model плюс trainable low-rank adapters, снижая память для обучения.</td>
+                <td>LoRA обычно ставят в attention projections $Q,K,V,O$ и иногда в FFN. Ранг $r$ управляет capacity адаптера, коэффициент $\alpha$ масштабирует update. QLoRA добавляет quantized base model плюс trainable low-rank adapters, снижая память для обучения.</td>
               </tr>
               <tr>
                 <td>M8. Inference и quantization</td>
@@ -13051,12 +13051,12 @@ with torch.no_grad():
               <tr>
                 <td>M9. MoE, DeepSeek, Qwen</td>
                 <td><a href="#ticket-37">37</a>, <a href="#ticket-42">42</a>, <a href="#ticket-43">43</a></td>
-                <td>MoE разделяет total parameters and active parameters: capacity большая, но на token работает top-k experts. Router требует load balancing, иначе experts используются неравномерно. DeepSeek-style идеи полезно упоминать как современные способы экономить compute/KV-cache and increase effective capacity.</td>
+                <td>MoE разделяет total parameters и active parameters: capacity большая, но на token работает top-k experts. Router требует load balancing, иначе experts используются неравномерно. DeepSeek-style идеи полезно упоминать как современные способы экономить compute/KV-cache и наращивать effective capacity.</td>
               </tr>
               <tr>
                 <td>M10. LLM agents</td>
                 <td><a href="#ticket-45">45</a></td>
-                <td>Agent — не просто prompt, а система: LLM получает goal, tools/functions, observations, memory and stopping rules. Workflow фиксирует граф шагов заранее, agent выбирает действия динамически. Главные риски: tool misuse, prompt injection, memory pollution, latency/cost and lack of reliable stopping.</td>
+                <td>Agent — не просто prompt, а система: LLM получает goal, tools/functions, observations, memory и stopping rules. Workflow фиксирует граф шагов заранее, agent выбирает действия динамически. Главные риски: tool misuse, prompt injection, memory pollution, latency/cost и отсутствие надёжного stopping-критерия.</td>
               </tr>
               <tr>
                 <td>M11. SSM, Mamba, альтернативы attention</td>
@@ -13096,7 +13096,7 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>KV-cache trade-off</h4></summary>
-              <p>При autoregressive generation старые $K,V$ не надо пересчитывать для каждого нового токена. KV-cache ускоряет decoding, но хранит key/value для всех layers, heads and context positions, поэтому long context быстро становится memory-bound.</p>
+              <p>При autoregressive generation старые $K,V$ не надо пересчитывать для каждого нового токена. KV-cache ускоряет decoding, но хранит key/value для всех layers, heads и context positions, поэтому long context быстро становится memory-bound.</p>
             </details>
 
             <details class="qa-item">
@@ -15211,7 +15211,7 @@ with torch.no_grad():
                 <figcaption>VAE: latent variable $z$ is sampled from a probabilistic posterior and regularized toward a prior.</figcaption>
               </figure>
             </div>
-            <p class="figure-caption"><strong>Figure.</strong> Autoencoder учит deterministic compression/reconstruction, а VAE добавляет probabilistic latent variable, prior and KL regularization, поэтому latent space становится пригодным для sampling.</p>
+            <p class="figure-caption"><strong>Figure.</strong> Autoencoder учит deterministic compression/reconstruction, а VAE добавляет probabilistic latent variable, prior и KL regularization, поэтому latent space становится пригодным для sampling.</p>
             <p class="diagram-source">Источник: Lilian Weng, <a href="https://lilianweng.github.io/posts/2018-08-12-vae/">From Autoencoder to Beta-VAE</a>.</p>
           </figure>
         </section>
@@ -15723,7 +15723,7 @@ with torch.no_grad():
           <div class="note good">
             <p><strong>Граф</strong> задаётся вершинами $V$, рёбрами $E$ и признаками nodes/edges. В отличие от изображения или текста, у графа нет фиксированного порядка вершин, у разных nodes разное число neighbours, а структура connectivity несёт ключевую информацию. GNN решает это через message passing: каждая node собирает messages от соседей permutation-invariant aggregation, затем обновляет своё hidden state. После $k$ layers node representation содержит информацию из $k$-hop neighborhood.</p>
 
-            <p><strong>GCN</strong> усредняет соседей с degree normalization, <strong>GraphSAGE</strong> samples neighbours и concatenates own representation with aggregated neighbour representation, <strong>GAT</strong> учит attention weights $\alpha_{uv}$ для разных neighbours. Главные проблемы GNN: oversmoothing при большой глубине, oversquashing при сжатии большого neighborhood в fixed-size vector, heterophily и scalability на больших graphs.</p>
+            <p><strong>GCN</strong> усредняет соседей с degree normalization, <strong>GraphSAGE</strong> сэмплирует neighbours и конкатенирует собственное representation с агрегированным representation соседей, <strong>GAT</strong> учит attention weights $\alpha_{uv}$ для разных neighbours. Главные проблемы GNN: oversmoothing при большой глубине, oversquashing при сжатии большого neighborhood в fixed-size vector, heterophily и scalability на больших graphs.</p>
           </div>
         </section>
 
@@ -15752,7 +15752,7 @@ with torch.no_grad():
 
         <section>
           <h3>Граф как тип данных</h3>
-          <p>Граф обычно записывают как $G=(V,E)$, где $V$ — set nodes, а $E$ — set edges. Node может иметь feature vector $x_v$, edge может иметь feature vector $e_{uv}$, а connectivity часто хранится через <a href="Справка.html#ref-adjacency-matrix">adjacency matrix</a> $A$:</p>
+          <p>Граф обычно записывают как $G=(V,E)$, где $V$ — множество nodes, а $E$ — множество edges. Node может иметь feature vector $x_v$, edge может иметь feature vector $e_{uv}$, а connectivity часто хранится через <a href="Справка.html#ref-adjacency-matrix">adjacency matrix</a> $A$:</p>
 
           $$
           A_{uv}=
@@ -15762,7 +15762,7 @@ with torch.no_grad():
           \end{cases}
           $$
 
-          <p>Ключевая сложность: neighbors of node образуют set, а не ordered sequence. Поэтому aggregation по соседям должна быть <a href="Справка.html#ref-permutation-invariance">permutation-invariant</a>: результат не должен зависеть от того, в каком порядке перечислили соседей.</p>
+          <p>Ключевая сложность: соседи node образуют множество, а не упорядоченную последовательность. Поэтому aggregation по соседям должна быть <a href="Справка.html#ref-permutation-invariance">permutation-invariant</a>: результат не должен зависеть от того, в каком порядке перечислили соседей.</p>
         </section>
 
         <section>
@@ -15833,7 +15833,7 @@ with torch.no_grad():
 
         <section>
           <h3>GCN: graph convolution с degree normalization</h3>
-          <p><a href="Справка.html#ref-gcn">GCN</a> можно воспринимать как усреднение node features по соседям и самой node, затем linear layer plus nonlinearity. В matrix form слой часто записывают так:</p>
+          <p><a href="Справка.html#ref-gcn">GCN</a> можно воспринимать как усреднение node features по соседям и самой node, затем linear layer и нелинейность. В matrix form слой часто записывают так:</p>
 
           $$
           H^{(k+1)}=
@@ -15884,7 +15884,7 @@ with torch.no_grad():
           \right]\right).
           $$
 
-          <p>Важная разница с GCN: own representation and neighbour representation не просто усредняются вместе, а concatenated. Модель может по-разному учитывать «я сам» и «моё окружение».</p>
+          <p>Важная разница с GCN: собственное representation и representation соседей не просто усредняются вместе, а конкатенируются. Модель может по-разному учитывать «я сам» и «моё окружение».</p>
         </section>
 
         <section>
@@ -15974,7 +15974,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: GNN нужны для данных с relational structure, где topology graph является частью input. Базовый механизм — message passing: node получает messages от neighbours, permutation-invariant aggregation собирает set messages в vector, update строит новый hidden state. $k$ layers дают доступ к $k$-hop neighborhood, но большая глубина приводит к oversmoothing и sometimes oversquashing. GCN использует normalized adjacency и shared linear transform; GraphSAGE samples neighbours and aggregates, поэтому хорошо scales и работает inductively; GAT учит attention weights для neighbours, что делает aggregation task-dependent. Выбор модели зависит от размера graph, важности разных neighbours, inductive/transductive setting и homophily/heterophily данных.</p>
+            <p>Сильный ответ: GNN нужны для данных с relational structure, где topology graph является частью input. Базовый механизм — message passing: node получает messages от neighbours, permutation-invariant aggregation собирает множество messages в один вектор, update строит новый hidden state. $k$ layers дают доступ к $k$-hop neighborhood, но большая глубина приводит к oversmoothing, а иногда и к oversquashing. GCN использует normalized adjacency и общий linear transform; GraphSAGE сэмплирует neighbours и агрегирует их, поэтому хорошо масштабируется и работает inductive; GAT учит attention weights для neighbours, что делает aggregation зависимой от задачи. Выбор модели зависит от размера graph, важности разных neighbours, inductive/transductive setting и homophily/heterophily данных.</p>
           </div>
         </section>
 
@@ -16001,12 +16001,12 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Почему не обычная сеть?</h4></summary>
-              <p>У graph нет fixed ordering nodes и fixed number neighbours. Fully connected network ждёт vector фиксированной структуры и не знает, какие coordinates связаны edges.</p>
+              <p>У graph нет фиксированного порядка nodes и фиксированного числа neighbours. Fully connected network ждёт вектор фиксированной структуры и не знает, какие coordinates связаны edges.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>2. Permutation invariance?</h4></summary>
-              <p>Neighbours are set, not sequence. Если поменять порядок neighbours в списке, graph не изменился, поэтому aggregation должна дать тот же result. Sum, mean, max подходят.</p>
+              <p>Neighbours — это множество, а не последовательность. Если поменять порядок neighbours в списке, graph не изменился, поэтому aggregation должна дать тот же результат. Sum, mean, max подходят.</p>
             </details>
 
             <details class="qa-item">
@@ -16026,17 +16026,17 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>6. GraphSAGE vs GCN?</h4></summary>
-              <p>GraphSAGE samples neighbours, агрегирует их и concatenates own state with neighbour aggregate. Такой подход лучше scales и позволяет inductive inference для unseen nodes.</p>
+              <p>GraphSAGE сэмплирует neighbours, агрегирует их и конкатенирует собственное state с агрегатом соседей. Такой подход лучше масштабируется и позволяет inductive inference для unseen nodes.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>7. GAT attention?</h4></summary>
-              <p>GAT применяет shared transform $W$, считает score пары $(u,v)$ через learnable vector $a$, нормирует scores по neighbours softmax и weighted-sums neighbour features.</p>
+              <p>GAT применяет shared transform $W$, считает score пары $(u,v)$ через learnable vector $a$, нормирует scores softmax по neighbours и суммирует neighbour features с этими весами.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>8. Почему deep GNN плохо?</h4></summary>
-              <p>Много layers repeatedly mixes neighbourhoods. Representations become similar, возникает oversmoothing; additionally distant information can be compressed too aggressively, что называют oversquashing.</p>
+              <p>Много layers раз за разом перемешивают neighbourhoods. Representations становятся похожими, возникает oversmoothing; кроме того, далёкая информация может сжиматься слишком агрессивно, что называют oversquashing.</p>
             </details>
           </div>
         </section>
@@ -16046,7 +16046,7 @@ with torch.no_grad():
           <div class="note danger">
             <ul>
               <li>Путать graph-level и node-level tasks: при graph classification нужен pooling/readout по nodes.</li>
-              <li>Забывать, что neighbours не упорядочены, поэтому aggregation должна быть invariant to permutation.</li>
+              <li>Забывать, что neighbours не упорядочены, поэтому aggregation должна быть permutation-invariant.</li>
               <li>Считать, что больше GNN layers всегда лучше. В graph часто быстро появляется oversmoothing.</li>
               <li>Путать GCN и GAT: в GCN weights задаются degree normalization, в GAT weights учатся attention mechanism.</li>
               <li>Говорить, что GraphSAGE всегда берёт всех neighbours. Главная practical идея — neighbour sampling.</li>
@@ -16070,7 +16070,7 @@ with torch.no_grad():
         <section>
           <h3>Короткий ответ</h3>
           <div class="note good">
-            <p>Главные проблемы GNN растут из одного механизма: node repeatedly aggregates neighbours. При большой глубине возникает <a href="Справка.html#ref-oversmoothing">oversmoothing</a>: node embeddings разных вершин становятся похожими. При дальних зависимостях появляется <a href="Справка.html#ref-oversquashing">oversquashing</a>: много remote information сжимается в fixed-size vector через narrow graph bottlenecks. На <a href="Справка.html#ref-heterophily">heterophily</a>-graphs простое усреднение соседей вредно, потому что connected nodes могут иметь разные labels. На huge graphs вычисления взрываются из-за роста neighbourhood, поэтому используют neighbour sampling, subgraph training и partitioning. Современное направление — <a href="Справка.html#ref-graph-foundation-model">graph foundation models</a>, которые пытаются переносить знания между разными graphs and tasks.</p>
+            <p>Главные проблемы GNN растут из одного механизма: node снова и снова агрегирует neighbours. При большой глубине возникает <a href="Справка.html#ref-oversmoothing">oversmoothing</a>: node embeddings разных вершин становятся похожими. При дальних зависимостях появляется <a href="Справка.html#ref-oversquashing">oversquashing</a>: много remote information сжимается в fixed-size vector через narrow graph bottlenecks. На <a href="Справка.html#ref-heterophily">heterophily</a>-graphs простое усреднение соседей вредно, потому что connected nodes могут иметь разные labels. На huge graphs вычисления взрываются из-за роста neighbourhood, поэтому используют neighbour sampling, subgraph training и partitioning. Современное направление — <a href="Справка.html#ref-graph-foundation-model">graph foundation models</a>, которые пытаются переносить знания между разными graphs и tasks.</p>
           </div>
         </section>
 
@@ -16080,7 +16080,7 @@ with torch.no_grad():
             <ul>
               <li><strong>Ограничения message passing.</strong> Простое усреднение соседей плохо работает, когда соседние nodes не похожи или нужная информация находится далеко.</li>
               <li><strong>Oversmoothing.</strong> При большой глубине node embeddings становятся слишком похожими.</li>
-              <li><strong>Oversquashing и heterophily.</strong> Oversquashing сжимает много далёкой информации в один vector, heterophily ломает предположение similarity among neighbors.</li>
+              <li><strong>Oversquashing и heterophily.</strong> Oversquashing сжимает много далёкой информации в один vector, heterophily ломает предположение о похожести соседей.</li>
             </ul>
           </div>
         </section>
@@ -16095,7 +16095,7 @@ with torch.no_grad():
           \hat{A}=\tilde{D}^{-1/2}\tilde{A}\tilde{D}^{-1/2}.
           $$
 
-          <p>Если убрать nonlinearities and weights для интуиции, repeated multiplication by normalized adjacency похоже на diffusion по graph. Signal сглаживается, high-frequency differences между соседними nodes затухают. Поэтому базовые GCN-like models часто держат неглубокими: 2-3 layers.</p>
+          <p>Если для интуиции убрать nonlinearities и weights, повторное умножение на normalized adjacency похоже на diffusion по graph. Signal сглаживается, high-frequency differences между соседними nodes затухают. Поэтому базовые GCN-like models часто держат неглубокими: 2-3 layers.</p>
 
           <div class="visual-panel flow-panel">
             <div class="flow-box">0 layers<br>distinct node features</div>
@@ -16112,7 +16112,7 @@ with torch.no_grad():
           <h3>Oversquashing</h3>
           <p>Oversquashing связан не с тем, что embeddings стали слишком похожими, а с тем, что distant information физически не проходит через graph bottlenecks. Для влияния distant node на target node signal должен пройти по path, но на каждом layer огромное neighbourhood сжимается в vector фиксированной размерности.</p>
 
-          <p>Особенно плохо на graphs с narrow bridges: две большие компоненты связаны малым числом edges, и вся information между ними должна пройти через узкое горлышко. Даже если depth достаточна, representation capacity and graph topology мешают передать signal.</p>
+          <p>Особенно плохо на graphs с narrow bridges: две большие компоненты связаны малым числом edges, и вся information между ними должна пройти через узкое горлышко. Даже если depth достаточна, representation capacity и graph topology мешают передать signal.</p>
 
           <div class="visual-panel flow-panel">
             <div class="flow-box">large region A<br>many signals</div>
@@ -16127,14 +16127,14 @@ with torch.no_grad():
 
         <section>
           <h3>Homophily и heterophily</h3>
-          <p><a href="Справка.html#ref-homophily">Homophily</a> означает, что connected nodes обычно похожи или имеют same label. Citation graph часто homophilic: статьи одной темы цитируют друг друга. <a href="Справка.html#ref-heterophily">Heterophily</a> означает обратное: connected nodes могут систематически отличаться.</p>
+          <p><a href="Справка.html#ref-homophily">Homophily</a> означает, что connected nodes обычно похожи или имеют одинаковый label. Citation graph часто homophilic: статьи одной темы цитируют друг друга. <a href="Справка.html#ref-heterophily">Heterophily</a> означает обратное: connected nodes могут систематически отличаться.</p>
 
           $$
           H(G)=
           \frac{|\{(u,v)\in E: y_u=y_v\}|}{|E|}.
           $$
 
-          <p>Высокий $H(G)$ соответствует homophily, низкий — heterophily. Базовый GCN implicitly assumes, что neighbours provide similar signal. На heterophily graph averaging может смешивать разные classes и портить separability.</p>
+          <p>Высокий $H(G)$ соответствует homophily, низкий — heterophily. Базовый GCN неявно предполагает, что neighbours дают похожий signal. На heterophily graph усреднение может смешивать разные classes и портить separability.</p>
 
           <p>Подходы к heterophily: сохранять own features через skip/residual connections, разделять self-representation и neighbour-representation, использовать signed/typed relations, higher-order neighborhoods, attention, или модели, которые учатся, когда соседский сигнал надо инвертировать, а не копировать.</p>
         </section>
@@ -16145,8 +16145,8 @@ with torch.no_grad():
 
           <p>Основные приёмы масштабирования:</p>
           <ul>
-            <li><a href="Справка.html#ref-neighbor-sampling">Neighbour sampling</a>: брать fixed number neighbours на каждом layer, как в GraphSAGE.</li>
-            <li><a href="Справка.html#ref-graph-partitioning">Graph partitioning</a>: делить graph на subgraphs and train mini-batches внутри частей.</li>
+            <li><a href="Справка.html#ref-neighbor-sampling">Neighbour sampling</a>: брать фиксированное число neighbours на каждом layer, как в GraphSAGE.</li>
+            <li><a href="Справка.html#ref-graph-partitioning">Graph partitioning</a>: делить graph на subgraphs и обучаться mini-batches внутри частей.</li>
             <li>Cluster/SAINT-like sampling: сэмплировать nodes, edges или random walks, чтобы строить manageable training subgraphs.</li>
             <li>Precompute propagation: заранее считать часть graph diffusion, когда architecture позволяет отделить propagation от learnable transformation.</li>
           </ul>
@@ -16154,9 +16154,9 @@ with torch.no_grad():
 
         <section>
           <h3>Graph foundation models</h3>
-          <p><a href="Справка.html#ref-graph-foundation-model">Graph foundation model</a> — идея обучить одну большую graph model на множестве graphs and tasks, а затем переносить её на new graphs through prompting, fine-tuning или adaptation. Аналогия с LLM понятна, но графы сложнее текста: у разных domains разные semantics nodes, edges and features.</p>
+          <p><a href="Справка.html#ref-graph-foundation-model">Graph foundation model</a> — идея обучить одну большую graph model на множестве graphs и tasks, а затем переносить её на новые graphs через prompting, fine-tuning или adaptation. Аналогия с LLM понятна, но графы сложнее текста: у разных domains разная семантика nodes, edges и features.</p>
 
-          <p>Self-supervised objectives для таких моделей: masked node/edge prediction, link prediction, context prediction, subgraph matching, contrastive learning between augmented graph views. Для molecule graph node — atom, для social graph node — user, для code graph node — program entity; unified representation across domains пока остаётся открытой задачей.</p>
+          <p>Self-supervised objectives для таких моделей: masked node/edge prediction, link prediction, context prediction, subgraph matching, contrastive learning между augmented graph views. Для molecule graph node — атом, для social graph node — пользователь, для code graph node — программная сущность; unified representation для разных domains пока остаётся открытой задачей.</p>
         </section>
 
         <section>
@@ -16173,27 +16173,27 @@ with torch.no_grad():
             <tbody>
               <tr>
                 <td>Oversmoothing</td>
-                <td>Repeated neighbour averaging</td>
+                <td>Повторное усреднение соседей</td>
                 <td>Residuals, normalization, shallow depth, decoupled propagation</td>
                 <td>Меньше дальнего контекста</td>
               </tr>
               <tr>
                 <td>Oversquashing</td>
-                <td>Bottlenecks and fixed-size embeddings</td>
+                <td>Bottlenecks и fixed-size embeddings</td>
                 <td>Rewiring, long-range edges, attention, positional encodings</td>
-                <td>Больше smoothing and compute</td>
+                <td>Больше smoothing и compute</td>
               </tr>
               <tr>
                 <td>Heterophily</td>
-                <td>Neighbours are not similar</td>
-                <td>Separate self/neighbour channels, signed relations, attention</td>
+                <td>Neighbours не похожи друг на друга</td>
+                <td>Раздельные self/neighbour каналы, signed relations, attention</td>
                 <td>Сложнее model selection</td>
               </tr>
               <tr>
                 <td>Scalability</td>
-                <td>Neighbourhood explosion</td>
+                <td>Взрывной рост neighbourhood</td>
                 <td>Sampling, partitioning, mini-batch subgraphs</td>
-                <td>Sampling variance and lost neighbours</td>
+                <td>Variance от sampling и потерянные neighbours</td>
               </tr>
             </tbody>
           </table>
@@ -16208,15 +16208,15 @@ with torch.no_grad():
             <div class="compare-grid">
               <div>
                 <h4>Oversmoothing</h4>
-                <p>Too much averaging. Node representations converge and lose class contrast.</p>
+                <p>Слишком много усреднения. Node representations сходятся и теряют контраст между классами.</p>
               </div>
               <div>
                 <h4>Oversquashing</h4>
-                <p>Too much distant information squeezed through few paths into fixed-size vector.</p>
+                <p>Слишком много далёкой информации сжимается через немногие paths в fixed-size vector.</p>
               </div>
               <div>
                 <h4>Heterophily</h4>
-                <p>Neighbour averaging is harmful because connected nodes are not label-similar.</p>
+                <p>Усреднение соседей вредно, потому что связанные nodes не похожи по labels.</p>
               </div>
             </div>
           </div>
@@ -16225,7 +16225,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: ограничения GNN не случайны, они следуют из message passing. Если много раз усреднять neighbour representations, получаем oversmoothing: embeddings nodes теряют различия. Если target зависит от distant nodes, signal должен пройти через paths and bottlenecks, и возникает oversquashing: экспоненциально растущее distant neighbourhood сжимается в fixed-size vector. На heterophily graphs базовое предположение «соседи похожи» нарушается, поэтому averaging становится вредным. На больших graphs naive neighbourhood expansion computationally infeasible, поэтому нужны sampling and partitioning. Современные направления пытаются исправлять graph topology, добавлять long-range/global mechanisms, строить heterophily-aware architectures и обучать graph foundation models на self-supervised objectives across many graphs.</p>
+            <p>Сильный ответ: ограничения GNN не случайны, они следуют из message passing. Если много раз усреднять neighbour representations, получаем oversmoothing: embeddings nodes теряют различия. Если target зависит от distant nodes, signal должен пройти через paths и bottlenecks, и возникает oversquashing: экспоненциально растущее distant neighbourhood сжимается в fixed-size vector. На heterophily graphs базовое предположение «соседи похожи» нарушается, поэтому averaging становится вредным. На больших graphs наивное расширение neighbourhood вычислительно неподъёмно, поэтому нужны sampling и partitioning. Современные направления пытаются исправлять graph topology, добавлять long-range/global механизмы, строить heterophily-aware архитектуры и обучать graph foundation models на self-supervised objectives сразу на многих graphs.</p>
           </div>
         </section>
 
@@ -16257,37 +16257,37 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>2. Почему diffusion?</h4></summary>
-              <p>GCN layer содержит multiplication by normalized adjacency. Повторное применение adjacency propagation похоже на сглаживание signal over graph, где local differences gradually decay.</p>
+              <p>GCN layer содержит умножение на normalized adjacency. Повторное применение adjacency propagation похоже на сглаживание signal по graph, где локальные различия постепенно затухают.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>3. Oversquashing vs oversmoothing?</h4></summary>
-              <p>Oversmoothing стирает различия embeddings. Oversquashing теряет distant information из-за bottlenecks and fixed-size hidden states. Embeddings могут не быть одинаковыми, но нужный дальний сигнал всё равно не доходит.</p>
+              <p>Oversmoothing стирает различия embeddings. Oversquashing теряет distant information из-за bottlenecks и fixed-size hidden states. Embeddings могут не быть одинаковыми, но нужный дальний сигнал всё равно не доходит.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>4. Rewiring?</h4></summary>
-              <p>Rewiring добавляет или меняет edges так, чтобы сократить graph distances and bypass bottlenecks. Signal проходит по меньшему числу hops и через большее число routes.</p>
+              <p>Rewiring добавляет или меняет edges так, чтобы сократить graph distances и bypass bottlenecks. Signal проходит по меньшему числу hops и через большее число routes.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>5. Homophily ratio?</h4></summary>
-              <p>Часто считают долю edges, соединяющих nodes одного class: $H(G)=|\{(u,v):y_u=y_v\}|/|E|$. High value means homophily, low value means heterophily.</p>
+              <p>Часто считают долю edges, соединяющих nodes одного class: $H(G)=|\{(u,v):y_u=y_v\}|/|E|$. Высокое значение означает homophily, низкое — heterophily.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. GCN на heterophily?</h4></summary>
-              <p>GCN aggregates neighbours as useful similar context. Если neighbours systematically have different labels, averaging mixes class signals and reduces separability.</p>
+              <p>GCN агрегирует neighbours как полезный похожий контекст. Если neighbours систематически имеют разные labels, усреднение смешивает сигналы классов и снижает separability.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>7. Huge graph cost?</h4></summary>
-              <p>Multi-layer GNN требует neighbours, neighbours of neighbours and further. Без sampling receptive field grows quickly, memory and compute explode.</p>
+              <p>Multi-layer GNN требует соседей, соседей соседей и так далее. Без sampling receptive field растёт быстро, память и compute взрываются.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>8. Graph foundation models?</h4></summary>
-              <p>В тексте tokens have shared semantics across corpora. В graphs semantics nodes/edges/features depend on domain: atom, user, road intersection and paper are not naturally same token type.</p>
+              <p>В тексте tokens имеют общую семантику во всех корпусах. В graphs семантика nodes/edges/features зависит от domain: атом, пользователь, дорожный перекрёсток и научная статья не сводятся естественно к одному типу token.</p>
             </details>
           </div>
         </section>
@@ -16298,10 +16298,10 @@ with torch.no_grad():
             <ul>
               <li>Считать oversmoothing обычным переобучением. Проблема связана с propagation dynamics, а не только с train/test gap.</li>
               <li>Путать oversmoothing и oversquashing: первая проблема про похожесть embeddings, вторая — про потерю distant information.</li>
-              <li>Говорить, что добавление edges всегда улучшает GNN. Rewiring может снизить bottlenecks, но усилить smoothing and noise.</li>
+              <li>Говорить, что добавление edges всегда улучшает GNN. Rewiring может снизить bottlenecks, но усилить smoothing и noise.</li>
               <li>Считать, что homophily всегда верна. Во многих real graphs полезный signal именно heterophilic.</li>
               <li>Игнорировать scalability: full-batch GCN на billion-edge graph практически невозможен.</li>
-              <li>Представлять graph foundation models как решённую задачу. Область активно развивается, но unified graph pretraining still hard.</li>
+              <li>Представлять graph foundation models как решённую задачу. Область активно развивается, но unified graph pretraining остаётся трудной задачей.</li>
             </ul>
           </div>
         </section>
@@ -16323,7 +16323,7 @@ with torch.no_grad():
           <div class="note good">
             <p><strong>Диффузионная модель</strong> обучается обращать постепенное зашумление данных. В forward process к clean sample $x_0$ за много шагов добавляют Gaussian noise, пока $x_T$ не становится почти $\mathcal{N}(0,I)$. На обучении можно сразу получить $x_t$ из $x_0$ по closed-form formula и знать настоящий шум $\varepsilon$. Neural network $\varepsilon_\theta(x_t,t)$ учится предсказывать этот noise через MSE. На generation стартуют с random noise $x_T$ и много раз применяют reverse denoising steps, пока не получают $x_0$.</p>
 
-            <p>С точки зрения score matching сеть учит направление $\nabla_x\log p_t(x)$, куда нужно двигать noisy point, чтобы попасть в область более вероятных data. Диффузия обычно даёт стабильное обучение и высокое качество, но generation медленнее GAN, потому что требует many neural network evaluations.</p>
+            <p>С точки зрения score matching сеть учит направление $\nabla_x\log p_t(x)$, куда нужно двигать noisy point, чтобы попасть в область более вероятных data. Диффузия обычно даёт стабильное обучение и высокое качество, но generation медленнее GAN, потому что требует много прогонов neural network.</p>
           </div>
           <figure class="paper-figure">
             <img class="source-image" src="assets/diagrams/external/diffusion-lilian-weng-ddpm.png" alt="DDPM forward and reverse diffusion diagram from Lilian Weng blog">
@@ -16334,11 +16334,11 @@ with torch.no_grad():
 
         <section>
           <h3>Идея: два процесса</h3>
-          <p>Diffusion model состоит из двух процессов, которые идут в противоположные стороны. Forward process фиксирован и не обучается: он постепенно разрушает clean data шумом. Reverse process обучается: он постепенно восстанавливает sample, убирая noise step by step.</p>
+          <p>Diffusion model состоит из двух процессов, которые идут в противоположные стороны. Forward process фиксирован и не обучается: он постепенно разрушает clean data шумом. Reverse process обучается: он постепенно восстанавливает sample, убирая noise шаг за шагом.</p>
 
           <figure class="paper-figure">
             <img class="source-image" src="assets/diagrams/external/diffusion-huggingface-figure.png" alt="Forward and reverse diffusion process from Hugging Face blog">
-            <p class="figure-caption"><strong>Figure.</strong> Forward process разрушает sample до noise, а learned reverse process постепенно denoise-ит trajectory обратно к data. Такая картинка хорошо объясняет, почему generation требует many denoising steps.</p>
+            <p class="figure-caption"><strong>Figure.</strong> Forward process разрушает sample до noise, а learned reverse process постепенно denoise-ит trajectory обратно к data. Такая картинка хорошо объясняет, почему generation требует много denoising steps.</p>
             <p class="diagram-source">Источник: <a href="https://huggingface.co/blog/annotated-diffusion">Hugging Face: The Annotated Diffusion Model</a>, diffusion process figure.</p>
           </figure>
 
@@ -16363,7 +16363,7 @@ with torch.no_grad():
           \bar{\alpha}_t=\prod_{s=1}^{t}\alpha_s.
           $$
 
-          <p>Благодаря Gaussian composition можно сэмплировать $x_t$ directly from $x_0$ без прохода через все предыдущие steps:</p>
+          <p>Благодаря Gaussian composition можно сэмплировать $x_t$ напрямую из $x_0$ без прохода через все предыдущие steps:</p>
 
           $$
           q(x_t|x_0)=
@@ -16404,7 +16404,7 @@ with torch.no_grad():
           \right].
           $$
 
-          <p>Почему noise prediction удобно: network output имеет ту же форму, что и image, target known exactly, loss is stable MSE. В отличие от GAN, нет adversarial game; в отличие от VAE, качество samples часто выше, хотя sampling дороже.</p>
+          <p>Почему noise prediction удобно: network output имеет ту же форму, что и image, target известен точно, loss — стабильный MSE. В отличие от GAN, нет adversarial game; в отличие от VAE, качество samples часто выше, хотя sampling дороже.</p>
 
           <p><strong>Откуда берётся $\mathcal{L}_{simple}$: вариационный вывод.</strong> DDPM — это иерархическая латентная модель, и честный objective — ELBO, который распадается на сумму KL-членов по шагам: $\mathcal{L}_{t-1} = D_{KL}\big(q(x_{t-1}\mid x_t, x_0)\,\|\,p_\theta(x_{t-1}\mid x_t)\big)$. Ключевой факт: при условии на $x_0$ posterior одного шага диффузии гауссов и известен в замкнутой форме:</p>
 
@@ -16447,18 +16447,18 @@ with torch.no_grad():
           \qquad z\sim\mathcal{N}(0,I).
           $$
 
-          <p>На последнем шаге noise term часто убирают. Full generation: sample $x_T\sim\mathcal{N}(0,I)$, затем iterate $t=T,T-1,\dots,1$. Именно repeated denoising делает диффузию медленной.</p>
+          <p>На последнем шаге noise term часто убирают. Полная generation: сэмплируем $x_T\sim\mathcal{N}(0,I)$, затем итерируем $t=T,T-1,\dots,1$. Именно повторное denoising делает диффузию медленной.</p>
         </section>
 
         <section>
           <h3>Score matching взгляд</h3>
-          <p><a href="Справка.html#ref-score">Score</a> distribution — gradient log-density:</p>
+          <p><a href="Справка.html#ref-score">Score</a> распределения — это градиент log-density:</p>
 
           $$
           s(x,t)=\nabla_x \log p_t(x).
           $$
 
-          <p>Он показывает направление, в котором density noisy data растёт быстрее всего. Для Gaussian corruption noise prediction and score связаны масштабом:</p>
+          <p>Он показывает направление, в котором density noisy data растёт быстрее всего. Для Gaussian corruption noise prediction и score связаны масштабом:</p>
 
           $$
           s_\theta(x_t,t)\approx
@@ -16466,20 +16466,20 @@ with torch.no_grad():
           \varepsilon_\theta(x_t,t).
           $$
 
-          <p>Интуитивно predicted noise указывает, что надо убрать из $x_t$, а score указывает, куда сдвинуть $x_t$, чтобы стать более похожим на clean data. Поэтому denoising diffusion and denoising score matching являются близкими описаниями одной идеи.</p>
+          <p>Интуитивно predicted noise указывает, что надо убрать из $x_t$, а score указывает, куда сдвинуть $x_t$, чтобы стать более похожим на clean data. Поэтому denoising diffusion и denoising score matching являются близкими описаниями одной идеи.</p>
         </section>
 
         <section>
           <h3>Почему U-Net</h3>
-          <p>Для images сеть должна принимать noisy image and timestep, а возвращать noise map той же spatial shape. U-Net подходит, потому что encoder path собирает global context, decoder path восстанавливает spatial resolution, а skip connections переносят local details.</p>
+          <p>Для images сеть должна принимать noisy image и timestep, а возвращать noise map той же spatial shape. U-Net подходит, потому что encoder path собирает global context, decoder path восстанавливает spatial resolution, а skip connections переносят local details.</p>
 
           <figure class="paper-figure">
             <img class="source-image" src="assets/diagrams/external/unet-ronneberger-lmb.png" alt="Original U-Net architecture from Ronneberger et al.">
-            <p class="figure-caption"><strong>Figure.</strong> U-Net combines encoder context with decoder resolution through skip connections; в diffusion такая форма удобна, потому что network должна вернуть noise map той же spatial shape, что и noisy input.</p>
+            <p class="figure-caption"><strong>Figure.</strong> U-Net сочетает контекст encoder-а и разрешение decoder-а через skip connections; в diffusion такая форма удобна, потому что network должна вернуть noise map той же spatial shape, что и noisy input.</p>
             <p class="diagram-source">Источник: Ronneberger, Fischer, Brox, <a href="https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/">U-Net: Convolutional Networks for Biomedical Image Segmentation</a>.</p>
           </figure>
 
-          <p>Timestep embedding нужен, потому что network behavior depends on noise level: на больших $t$ model работает почти с pure noise, на малых $t$ корректирует fine details.</p>
+          <p>Timestep embedding нужен, потому что поведение network зависит от noise level: на больших $t$ model работает почти с pure noise, на малых $t$ корректирует fine details.</p>
         </section>
 
         <section>
@@ -16494,15 +16494,15 @@ with torch.no_grad():
             <tbody>
               <tr>
                 <td>Плюсы</td>
-                <td>Stable training, high sample quality, good mode coverage, no discriminator collapse.</td>
+                <td>Стабильное обучение, высокое качество samples, хорошее покрытие modes, нет discriminator collapse.</td>
               </tr>
               <tr>
                 <td>Минусы</td>
-                <td>Slow sampling: hundreds or thousands denoising steps in original DDPM.</td>
+                <td>Медленный sampling: сотни или тысячи denoising steps в оригинальном DDPM.</td>
               </tr>
               <tr>
                 <td>Ускорение</td>
-                <td>DDIM, improved samplers, fewer steps, latent diffusion, distillation, consistency models.</td>
+                <td>DDIM, улучшенные samplers, меньше шагов, latent diffusion, distillation, consistency models.</td>
               </tr>
             </tbody>
           </table>
@@ -16511,7 +16511,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: diffusion model задаёт known forward Markov chain $q(x_t|x_{t-1})$, которая постепенно превращает data $x_0$ в Gaussian noise. Благодаря Gaussian form можно directly sample $x_t=\sqrt{\bar{\alpha}_t}x_0+\sqrt{1-\bar{\alpha}_t}\varepsilon$, поэтому training сводится к supervised denoising: сеть $\varepsilon_\theta(x_t,t)$ предсказывает добавленный noise. Reverse generative chain стартует с $x_T\sim\mathcal{N}(0,I)$ и repeatedly uses network to compute $p_\theta(x_{t-1}|x_t)$. Score matching view говорит, что модель учит $\nabla_x\log p_t(x)$, то есть направление к области higher data density. Для images обычно используют U-Net with timestep embeddings and skip connections. Главный trade-off: очень высокое качество и стабильность обучения против медленного sampling.</p>
+            <p>Сильный ответ: diffusion model задаёт известную forward Markov chain $q(x_t|x_{t-1})$, которая постепенно превращает data $x_0$ в Gaussian noise. Благодаря гауссовой форме можно напрямую сэмплировать $x_t=\sqrt{\bar{\alpha}_t}x_0+\sqrt{1-\bar{\alpha}_t}\varepsilon$, поэтому training сводится к supervised denoising: сеть $\varepsilon_\theta(x_t,t)$ предсказывает добавленный noise. Reverse generative chain стартует с $x_T\sim\mathcal{N}(0,I)$ и много раз применяет network для вычисления $p_\theta(x_{t-1}|x_t)$. Score matching view говорит, что модель учит $\nabla_x\log p_t(x)$, то есть направление к области большей плотности data. Для images обычно используют U-Net с timestep embeddings и skip connections. Главный trade-off: очень высокое качество и стабильность обучения против медленного sampling.</p>
           </div>
         </section>
 
@@ -16524,7 +16524,7 @@ with torch.no_grad():
             <li>Почему сеть предсказывает noise, а не clean image?</li>
             <li>Как выглядит reverse sampling step?</li>
             <li>Что такое score и как он связан с noise prediction?</li>
-            <li>Почему diffusion stable compared to GAN?</li>
+            <li>Почему diffusion стабильнее GAN?</li>
             <li>Почему sampling медленный?</li>
           </ol>
         </section>
@@ -16538,7 +16538,7 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Forward process?</h4></summary>
-              <p>Forward process creates supervised training pairs. Мы сами добавляем known noise к data и поэтому знаем target, который должна предсказать network.</p>
+              <p>Forward process создаёт supervised training pairs. Мы сами добавляем известный noise к data и поэтому знаем target, который должна предсказать network.</p>
             </details>
 
             <details class="qa-item">
@@ -16548,32 +16548,32 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>3. Noise schedule?</h4></summary>
-              <p>Schedule задаёт $\beta_t$ or $\alpha_t$ over timesteps, то есть скорость разрушения signal and growth noise. Он влияет на training difficulty and sample quality.</p>
+              <p>Schedule задаёт $\beta_t$ или $\alpha_t$ по timesteps, то есть скорость разрушения signal и роста noise. Он влияет на сложность обучения и качество samples.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>4. Почему noise?</h4></summary>
-              <p>Noise target exactly known, имеет simple Gaussian distribution and same shape as image. Через predicted noise можно восстановить estimate clean sample or reverse mean.</p>
+              <p>Целевой noise известен точно, имеет простое гауссово распределение и ту же форму, что изображение. Через predicted noise можно восстановить оценку clean sample или reverse mean.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>5. Reverse step?</h4></summary>
-              <p>Model predicts noise in $x_t$, then formula subtracts scaled noise, rescales by $\alpha_t$ and optionally adds fresh Gaussian noise with variance $\sigma_t^2$.</p>
+              <p>Model предсказывает noise в $x_t$, затем формула вычитает отмасштабированный noise, ремасштабирует на $\alpha_t$ и опционально добавляет свежий Gaussian noise с дисперсией $\sigma_t^2$.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. Score?</h4></summary>
-              <p>Score is $\nabla_x\log p_t(x)$. Under Gaussian corruption predicted noise is proportional to negative score, so denoising and score following are two views of same process.</p>
+              <p>Score — это $\nabla_x\log p_t(x)$. При Gaussian corruption predicted noise пропорционален отрицательному score, поэтому denoising и движение по score — два взгляда на один процесс.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>7. Почему stable?</h4></summary>
-              <p>Training is supervised regression with MSE, not minimax game. Нет discriminator-generator instability and mode collapse pressure typical for GAN.</p>
+              <summary><h4>7. Почему стабильно?</h4></summary>
+              <p>Обучение — supervised regression с MSE, а не minimax game. Нет нестабильности discriminator-generator и давления к mode collapse, типичных для GAN.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>8. Почему slow?</h4></summary>
-              <p>Original DDPM samples by many small reverse steps. Each step requires network forward pass, so generation needs hundreds or thousands evaluations.</p>
+              <summary><h4>8. Почему медленно?</h4></summary>
+              <p>Оригинальный DDPM сэмплирует множеством маленьких reverse steps. Каждый шаг требует forward pass сети, поэтому generation нужны сотни или тысячи вычислений.</p>
             </details>
           </div>
         </section>
@@ -16582,12 +16582,12 @@ with torch.no_grad():
           <h3>Опасные ошибки</h3>
           <div class="note danger">
             <ul>
-              <li>Путать forward process and generation. Forward process используется для training, generation идёт reverse.</li>
+              <li>Путать forward process и generation. Forward process используется для training, generation идёт reverse.</li>
               <li>Забывать timestep $t$: network должна знать noise level.</li>
-              <li>Считать, что diffusion directly outputs final image за один pass. Original sampling is iterative.</li>
-              <li>Путать predicted noise $\varepsilon_\theta$ and added fresh sampling noise $z$ in reverse step.</li>
-              <li>Говорить, что score is probability. Score — gradient log-density, direction field.</li>
-              <li>Не упоминать главный trade-off: quality/stability vs slow sampling.</li>
+              <li>Считать, что diffusion напрямую выдаёт финальное изображение за один pass. Оригинальный sampling итеративный.</li>
+              <li>Путать predicted noise $\varepsilon_\theta$ и свежий sampling noise $z$, добавляемый на reverse step.</li>
+              <li>Говорить, что score — это вероятность. Score — градиент log-density, поле направлений.</li>
+              <li>Не упоминать главный trade-off: качество и стабильность против медленного sampling.</li>
             </ul>
           </div>
         </section>
@@ -16601,27 +16601,27 @@ with torch.no_grad():
 
         <section>
           <h3>Формулировка</h3>
-          <p>Нужно объяснить, как <a href="Справка.html#ref-conditional-diffusion">conditional diffusion</a> управляет generation через condition $y$, почему используют <a href="Справка.html#ref-classifier-free-guidance">classifier-free guidance</a>, как text prompts попадают в U-Net через <a href="Справка.html#ref-cross-attention">cross-attention</a>, и как ускоряют sampling: <a href="Справка.html#ref-ddim">DDIM</a>, diffusion solvers, distillation, consistency models and latent diffusion.</p>
+          <p>Нужно объяснить, как <a href="Справка.html#ref-conditional-diffusion">conditional diffusion</a> управляет generation через condition $y$, почему используют <a href="Справка.html#ref-classifier-free-guidance">classifier-free guidance</a>, как text prompts попадают в U-Net через <a href="Справка.html#ref-cross-attention">cross-attention</a>, и как ускоряют sampling: <a href="Справка.html#ref-ddim">DDIM</a>, diffusion solvers, distillation, consistency models и latent diffusion.</p>
         </section>
 
         <section>
           <h3>Короткий ответ</h3>
           <div class="note good">
-            <p><strong>Conditional diffusion</strong> учит denoising network предсказывать noise не только по $x_t$ and timestep $t$, но и по condition $y$: class label, text, image mask, layout или другой signal. Guidance усиливает влияние condition during sampling. На практике стандарт — classifier-free guidance: одна сеть обучается и conditional, и unconditional режиму, а на sampling используют смесь $\varepsilon_\theta(x_t,t,\varnothing)$ and $\varepsilon_\theta(x_t,t,y)$.</p>
+            <p><strong>Conditional diffusion</strong> учит denoising network предсказывать noise не только по $x_t$ и timestep $t$, но и по condition $y$: class label, text, image mask, layout или другой signal. Guidance усиливает влияние condition во время sampling. На практике стандарт — classifier-free guidance: одна сеть обучается и conditional, и unconditional режиму, а на sampling используют смесь $\varepsilon_\theta(x_t,t,\varnothing)$ и $\varepsilon_\theta(x_t,t,y)$.</p>
 
-            <p>Базовый DDPM медленный, потому что требует сотни или тысячи U-Net passes. Ускорение делают через DDIM and ODE/SDE solvers без переобучения, через distillation/consistency models с обучением faster student, и через latent diffusion, где denoising происходит не в pixel space, а в compressed latent space VAE.</p>
+            <p>Базовый DDPM медленный, потому что требует сотни или тысячи U-Net passes. Ускорение делают через DDIM и ODE/SDE solvers без переобучения, через distillation/consistency models с обучением более быстрого student, и через latent diffusion, где denoising происходит не в pixel space, а в compressed latent space VAE.</p>
           </div>
         </section>
 
         <section>
           <h3>Conditional diffusion</h3>
-          <p>В unconditional diffusion модель генерирует sample из data distribution без контроля. Conditional diffusion моделирует $p_\theta(x|y)$: картинку при заданном class label, text prompt, mask, segmentation map, depth map or another condition.</p>
+          <p>В unconditional diffusion модель генерирует sample из data distribution без контроля. Conditional diffusion моделирует $p_\theta(x|y)$: картинку при заданном class label, text prompt, mask, segmentation map, depth map или другом condition.</p>
 
           $$
           \varepsilon_\theta=\varepsilon_\theta(x_t,t,y).
           $$
 
-          <p>На обучении берут paired data $(x_0,y)$, зашумляют $x_0$ до $x_t$ и учат сеть предсказывать added noise with access to condition. Условие можно подать concatenation, embeddings, adaptive normalization или cross-attention. Для text-to-image обычно используют text encoder + cross-attention inside U-Net.</p>
+          <p>На обучении берут paired data $(x_0,y)$, зашумляют $x_0$ до $x_t$ и учат сеть предсказывать добавленный noise с доступом к condition. Условие можно подать через concatenation, embeddings, adaptive normalization или cross-attention. Для text-to-image обычно используют text encoder + cross-attention внутри U-Net.</p>
         </section>
 
         <section>
@@ -16635,12 +16635,12 @@ with torch.no_grad():
           s\Sigma_t\nabla_{x_t}\log p_\phi(y|x_t).
           $$
 
-          <p>$s$ — guidance scale. Чем больше $s$, тем сильнее модель слушает condition, но тем выше риск потерять diversity and naturalness. Недостаток classifier guidance: нужен отдельный classifier for every noise level, а это усложняет pipeline.</p>
+          <p>$s$ — guidance scale. Чем больше $s$, тем сильнее модель слушает condition, но тем выше риск потерять diversity и naturalness. Недостаток classifier guidance: нужен отдельный classifier для каждого noise level, а это усложняет pipeline.</p>
         </section>
 
         <section>
           <h3>Classifier-free guidance</h3>
-          <p><a href="Справка.html#ref-classifier-free-guidance">Classifier-free guidance</a> не требует внешнего classifier. На training condition иногда заменяют на empty condition $\varnothing$, поэтому одна сеть умеет предсказывать noise in two modes:</p>
+          <p><a href="Справка.html#ref-classifier-free-guidance">Classifier-free guidance</a> не требует внешнего classifier. На training condition иногда заменяют на empty condition $\varnothing$, поэтому одна сеть умеет предсказывать noise в двух режимах:</p>
 
           $$
           \varepsilon_{uncond}=\varepsilon_\theta(x_t,t,\varnothing),
@@ -16648,7 +16648,7 @@ with torch.no_grad():
           \varepsilon_{cond}=\varepsilon_\theta(x_t,t,y).
           $$
 
-          <p>На sampling усиливают разность conditional and unconditional predictions:</p>
+          <p>На sampling усиливают разность conditional и unconditional predictions:</p>
 
           $$
           \hat{\varepsilon}
@@ -16668,12 +16668,12 @@ with torch.no_grad():
             <div class="flow-box">guided noise<br>$\hat{\varepsilon}$</div>
           </div>
 
-          <p>Guidance scale $w$ — ручка prompt adherence. Large $w$ делает output более соответствующим text, но может давать artifacts, oversaturation and lower diversity.</p>
+          <p>Guidance scale $w$ — ручка prompt adherence. Большой $w$ делает output более соответствующим тексту, но может давать artifacts, oversaturation и меньшую diversity.</p>
         </section>
 
         <section>
           <h3>Text-to-image pipeline</h3>
-          <p>В text-to-image condition $y$ — text prompt. Его кодируют text encoder, например Transformer/CLIP-like encoder, в sequence text embeddings. U-Net на каждом denoising step смотрит на these embeddings through cross-attention:</p>
+          <p>В text-to-image condition $y$ — text prompt. Его кодируют text encoder-ом, например Transformer/CLIP-like encoder, в последовательность text embeddings. U-Net на каждом denoising step смотрит на эти embeddings через cross-attention:</p>
 
           $$
           Q=W_Q h_{image},\qquad
@@ -16681,19 +16681,19 @@ with torch.no_grad():
           V=W_V h_{text}.
           $$
 
-          <p>Image latent tokens produce queries, text tokens produce keys and values. Так spatial generation привязывается к prompt semantics. В Stable Diffusion denoising идёт в latent space VAE: image first compressed to latent $z$, U-Net denoises $z_t$, decoder VAE maps final latent back to pixels. Такой режим резко дешевле, чем diffusion in pixel space.</p>
+          <p>Image latent tokens дают queries, text tokens дают keys и values. Так пространственная generation привязывается к семантике prompt. В Stable Diffusion denoising идёт в latent space VAE: изображение сначала сжимается в latent $z$, U-Net denoise-ит $z_t$, decoder VAE переводит финальный latent обратно в пиксели. Такой режим резко дешевле, чем diffusion в pixel space.</p>
         </section>
 
         <section>
           <h3>Почему нужно ускорение</h3>
-          <p>DDPM sampling использует many small reverse steps. Если $T=1000$, one image requires roughly 1000 U-Net evaluations. U-Net expensive, поэтому generation can be slow. Ускорение aims to reduce number of function evaluations, NFE, while preserving quality.</p>
+          <p>DDPM sampling использует много маленьких reverse steps. Если $T=1000$, одно изображение требует примерно 1000 вычислений U-Net. U-Net дорогой, поэтому generation может быть медленной. Цель ускорения — сократить число вычислений функции (NFE), сохранив качество.</p>
         </section>
 
         <section>
           <h3>DDIM</h3>
-          <p><a href="Справка.html#ref-ddim">DDIM</a> переосмысливает sampling as deterministic non-Markovian process. Он использует already trained DDPM model, но идёт по fewer timesteps and can set stochasticity parameter $\eta=0$ for deterministic path.</p>
+          <p><a href="Справка.html#ref-ddim">DDIM</a> переосмысливает sampling как детерминированный немарковский процесс. Он использует уже обученную DDPM model, но идёт по меньшему числу timesteps и может выставить параметр стохастичности $\eta=0$ для детерминированного пути.</p>
 
-          <p>Ключевой эффект: вместо 1000 steps можно использовать, например, 50 or 25 steps, without retraining. Deterministic trajectory also allows latent interpolation: близкие initial noises produce smoothly related outputs.</p>
+          <p>Ключевой эффект: вместо 1000 steps можно использовать, например, 50 или 25 steps без переобучения. Детерминированная траектория также позволяет latent interpolation: близкие начальные noises дают плавно связанные outputs.</p>
         </section>
 
         <section>
@@ -16710,27 +16710,27 @@ with torch.no_grad():
             <tbody>
               <tr>
                 <td>DDPM</td>
-                <td>Stochastic Markov chain</td>
+                <td>Стохастическая Markov chain</td>
                 <td>Нет</td>
                 <td>Много маленьких noisy reverse steps</td>
               </tr>
               <tr>
                 <td>DDIM</td>
-                <td>Deterministic or partially stochastic path</td>
+                <td>Детерминированный или частично стохастический путь</td>
                 <td>Нет</td>
                 <td>Идём по выбранным timesteps крупнее, используя ту же noise model</td>
               </tr>
               <tr>
                 <td>ODE/SDE solvers</td>
-                <td>Numerical integration</td>
+                <td>Численное интегрирование</td>
                 <td>Нет</td>
                 <td>Смотрим на reverse dynamics как на differential equation</td>
               </tr>
               <tr>
                 <td>Distillation</td>
-                <td>Learned fast student</td>
+                <td>Обученный быстрый student</td>
                 <td>Да</td>
-                <td>Student imitates several teacher steps with fewer steps</td>
+                <td>Student имитирует несколько шагов teacher меньшим числом шагов</td>
               </tr>
             </tbody>
           </table>
@@ -16738,29 +16738,29 @@ with torch.no_grad():
 
         <section>
           <h3>Solvers</h3>
-          <p><a href="Справка.html#ref-diffusion-solver">Diffusion solvers</a> смотрят на reverse process as differential equation. Если sampling path is ODE/SDE, можно применять numerical methods higher order: Euler, Heun, DPM-Solver family and similar.</p>
+          <p><a href="Справка.html#ref-diffusion-solver">Diffusion solvers</a> смотрят на reverse process как на дифференциальное уравнение. Если sampling path — это ODE/SDE, можно применять численные методы более высокого порядка: Euler, Heun, семейство DPM-Solver и похожие.</p>
 
-          <p>Solvers reduce NFE to dozens or sometimes less than ten steps without retraining. Они особенно важны в production, где latency matters. Цена — tuning sampler settings and possible quality drop if steps too few.</p>
+          <p>Solvers сокращают NFE до десятков, а иногда и меньше десяти шагов без переобучения. Они особенно важны в production, где важна latency. Цена — подбор настроек sampler и возможная потеря качества при слишком малом числе шагов.</p>
         </section>
 
         <section>
           <h3>Distillation и consistency models</h3>
-          <p><a href="Справка.html#ref-diffusion-distillation">Diffusion distillation</a> trains a faster student to imitate a slow teacher. Progressive distillation repeatedly halves number of steps: student learns to match result of two teacher steps in one step.</p>
+          <p><a href="Справка.html#ref-diffusion-distillation">Diffusion distillation</a> обучает более быстрого student имитировать медленного teacher. Progressive distillation раз за разом уполовинивает число шагов: student учится воспроизводить результат двух шагов teacher за один шаг.</p>
 
-          <p><a href="Справка.html#ref-consistency-model">Consistency models</a> train network to map any noisy point on same denoising trajectory to same clean sample:</p>
+          <p><a href="Справка.html#ref-consistency-model">Consistency models</a> обучают network переводить любую noisy точку одной denoising trajectory в один и тот же clean sample:</p>
 
           $$
           f_\theta(x_t,t)\approx f_\theta(x_s,s)\approx x_0.
           $$
 
-          <p>Идея позволяет generate in one or few steps. Trade-off: extra training and often some loss of fidelity/diversity compared with full multi-step diffusion.</p>
+          <p>Идея позволяет генерировать за один или несколько шагов. Trade-off: дополнительное обучение и часто некоторая потеря fidelity/diversity по сравнению с полной многошаговой diffusion.</p>
         </section>
 
         <section>
           <h3>Inpainting и editing</h3>
-          <p><a href="Справка.html#ref-inpainting">Inpainting</a> естественно ложится на diffusion: known pixels are kept fixed, missing region is denoised. На каждом step known part заменяют на original image with matching noise level, while masked part follows reverse diffusion.</p>
+          <p><a href="Справка.html#ref-inpainting">Inpainting</a> естественно ложится на diffusion: известные пиксели фиксируются, недостающая область denoise-ится. На каждом step известную часть заменяют на original image с соответствующим noise level, а masked часть следует reverse diffusion.</p>
 
-          <p>Для editing можно взять real image, add noise to intermediate timestep and denoise with a new condition. Такой family methods часто связывают с SDEdit-like approach: чем сильнее noise, тем больше свободы редактирования и тем меньше сохранение исходной структуры.</p>
+          <p>Для editing можно взять реальное изображение, зашумить его до промежуточного timestep и denoise-ить с новым condition. Такое семейство методов часто связывают с SDEdit-подобным подходом: чем сильнее noise, тем больше свободы редактирования и тем меньше сохранение исходной структуры.</p>
         </section>
 
         <section>
@@ -16778,26 +16778,26 @@ with torch.no_grad():
               <tr>
                 <td>DDIM</td>
                 <td>Нет</td>
-                <td>Fewer deterministic sampling steps</td>
-                <td>Quality can drop at very few steps</td>
+                <td>Меньше детерминированных sampling steps</td>
+                <td>Качество может падать при очень малом числе шагов</td>
               </tr>
               <tr>
                 <td>Solvers</td>
                 <td>Нет</td>
-                <td>Numerical ODE/SDE integration</td>
-                <td>Sampler tuning and instability at too large steps</td>
+                <td>Численное интегрирование ODE/SDE</td>
+                <td>Подбор sampler и нестабильность при слишком крупных шагах</td>
               </tr>
               <tr>
                 <td>Distillation</td>
                 <td>Да</td>
-                <td>Train fast student from slow teacher</td>
-                <td>Extra training, possible quality loss</td>
+                <td>Обучить быстрого student по медленному teacher</td>
+                <td>Дополнительное обучение, возможная потеря качества</td>
               </tr>
               <tr>
                 <td>Latent diffusion</td>
-                <td>Да, architecture choice</td>
-                <td>Denoise compressed latent instead of pixels</td>
-                <td>VAE compression can lose fine detail</td>
+                <td>Да, выбор архитектуры</td>
+                <td>Denoise сжатого latent вместо пикселей</td>
+                <td>VAE-сжатие может терять мелкие детали</td>
               </tr>
             </tbody>
           </table>
@@ -16806,7 +16806,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: conditional diffusion models learn $p_\theta(x|y)$ by giving denoising network condition $y$. Guidance improves condition adherence; modern standard is classifier-free guidance, where the same network is trained with and without condition, then sampling uses $\hat{\varepsilon}=\varepsilon_{uncond}+w(\varepsilon_{cond}-\varepsilon_{uncond})$. Text-to-image uses a text encoder and cross-attention between image latents and text embeddings; Stable Diffusion additionally performs denoising in VAE latent space for speed. Acceleration reduces number of U-Net evaluations: DDIM and solvers reuse trained model with smarter sampling, while distillation/consistency models train a faster student for one/few-step generation. Inpainting follows naturally by fixing known pixels and denoising only masked regions.</p>
+            <p>Сильный ответ: conditional diffusion учит $p_\theta(x|y)$, подавая denoising network condition $y$. Guidance улучшает соответствие condition; современный стандарт — classifier-free guidance, где одна и та же сеть обучается с condition и без него, а на sampling используется $\hat{\varepsilon}=\varepsilon_{uncond}+w(\varepsilon_{cond}-\varepsilon_{uncond})$. Text-to-image использует text encoder и cross-attention между image latents и text embeddings; Stable Diffusion дополнительно выполняет denoising в latent space VAE ради скорости. Ускорение сокращает число вычислений U-Net: DDIM и solvers переиспользуют обученную модель с более умным sampling, а distillation/consistency models обучают более быстрого student для генерации за один или несколько шагов. Inpainting получается естественно: известные пиксели фиксируются, denoise-ится только masked область.</p>
           </div>
         </section>
 
@@ -16833,42 +16833,42 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Conditional vs unconditional?</h4></summary>
-              <p>Unconditional model samples from $p(x)$. Conditional model samples from $p(x|y)$ and receives condition $y$ in denoising network.</p>
+              <p>Unconditional model сэмплирует из $p(x)$. Conditional model сэмплирует из $p(x|y)$ и получает condition $y$ в denoising network.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>2. Guidance scale?</h4></summary>
-              <p>Scale controls strength of condition direction. Higher value improves prompt adherence, but can reduce diversity and introduce artifacts.</p>
+              <p>Scale управляет силой направления condition. Большее значение улучшает prompt adherence, но может снижать diversity и добавлять artifacts.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>3. Почему no classifier?</h4></summary>
-              <p>During training condition is randomly dropped. Same model learns conditional and unconditional predictions, so sampling can combine them without separate classifier.</p>
+              <summary><h4>3. Почему без classifier?</h4></summary>
+              <p>Во время training condition случайно выбрасывается. Одна и та же модель учит conditional и unconditional предсказания, поэтому sampling может комбинировать их без отдельного classifier.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>4. Prompt into U-Net?</h4></summary>
-              <p>Text encoder produces token embeddings. U-Net image features query those embeddings through cross-attention, so denoising depends on prompt tokens.</p>
+              <summary><h4>4. Prompt в U-Net?</h4></summary>
+              <p>Text encoder выдаёт token embeddings. Image features в U-Net делают query к этим embeddings через cross-attention, поэтому denoising зависит от tokens prompt-а.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>5. Latent space?</h4></summary>
-              <p>Pixel images are high-dimensional. VAE latent is smaller spatially and semantically richer, so U-Net denoising is much cheaper.</p>
+              <p>Пиксельные изображения высокоразмерны. VAE latent меньше пространственно и семантически богаче, поэтому denoising в U-Net намного дешевле.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. DDIM vs DDPM?</h4></summary>
-              <p>DDPM sampling is stochastic Markov chain with many small steps. DDIM can use deterministic trajectory and skip timesteps without retraining.</p>
+              <p>DDPM sampling — стохастическая Markov chain с множеством маленьких шагов. DDIM может использовать детерминированную траекторию и пропускать timesteps без переобучения.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>7. Solvers?</h4></summary>
-              <p>Solvers treat reverse diffusion as numerical integration problem and use higher-order methods to take fewer, more accurate steps.</p>
+              <p>Solvers рассматривают reverse diffusion как задачу численного интегрирования и используют методы более высокого порядка, чтобы делать меньше шагов, но точнее.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>8. Inpainting?</h4></summary>
-              <p>Known pixels are clamped to original image at matching noise level on each step; masked pixels are generated by reverse denoising conditioned on context.</p>
+              <p>Известные пиксели на каждом шаге фиксируются к original image с соответствующим noise level; masked пиксели генерируются reverse denoising с учётом контекста.</p>
             </details>
           </div>
         </section>
@@ -16877,12 +16877,12 @@ with torch.no_grad():
           <h3>Опасные ошибки</h3>
           <div class="note danger">
             <ul>
-              <li>Считать guidance частью training only. Главная формула CFG применяется during sampling.</li>
-              <li>Путать classifier guidance and classifier-free guidance: в первом есть external classifier, во втором condition-dropout in same model.</li>
-              <li>Думать, что больший guidance scale всегда лучше. Слишком сильный scale портит diversity and naturalness.</li>
-              <li>Называть DDIM новой обученной моделью. DDIM usually changes sampler, not training.</li>
+              <li>Считать guidance только частью training. Главная формула CFG применяется во время sampling.</li>
+              <li>Путать classifier guidance и classifier-free guidance: в первом есть внешний classifier, во втором — condition-dropout в той же модели.</li>
+              <li>Думать, что больший guidance scale всегда лучше. Слишком сильный scale портит diversity и naturalness.</li>
+              <li>Называть DDIM новой обученной моделью. DDIM обычно меняет sampler, а не training.</li>
               <li>Путать latent diffusion с VAE generation: VAE compresses/decompresses, diffusion generates latent.</li>
-              <li>Забывать, что distillation требует additional training and can reduce quality.</li>
+              <li>Забывать, что distillation требует дополнительного обучения и может снижать качество.</li>
             </ul>
           </div>
         </section>
@@ -16896,34 +16896,34 @@ with torch.no_grad():
 
         <section>
           <h3>Формулировка</h3>
-          <p>Нужно объяснить, что такое <a href="Справка.html#ref-multimodal-learning">multimodal learning</a>, как <a href="Справка.html#ref-clip">CLIP</a> выравнивает изображения и тексты в общем embedding space, как работает <a href="Справка.html#ref-contrastive-learning">contrastive learning</a> with InfoNCE loss, и почему из этого получаются <a href="Справка.html#ref-zero-shot-classification">zero-shot classification</a> and <a href="Справка.html#ref-image-text-retrieval">image-text retrieval</a>.</p>
+          <p>Нужно объяснить, что такое <a href="Справка.html#ref-multimodal-learning">multimodal learning</a>, как <a href="Справка.html#ref-clip">CLIP</a> выравнивает изображения и тексты в общем embedding space, как работает <a href="Справка.html#ref-contrastive-learning">contrastive learning</a> с InfoNCE loss, и почему из этого получаются <a href="Справка.html#ref-zero-shot-classification">zero-shot classification</a> и <a href="Справка.html#ref-image-text-retrieval">image-text retrieval</a>.</p>
         </section>
 
         <section>
           <h3>Короткий ответ</h3>
           <div class="note good">
-            <p><strong>CLIP</strong> — dual-encoder model: image encoder maps image to vector $v_i$, text encoder maps caption to vector $t_i$. Векторы нормируют и сравнивают cosine similarity. Training uses image-text pairs: correct pairs in batch are positives, all other combinations are negatives. Contrastive loss makes matching image and text close, mismatched pairs far. Результат — shared multimodal embedding space, where semantic similarity matters more than modality.</p>
+            <p><strong>CLIP</strong> — dual-encoder model: image encoder переводит изображение в вектор $v_i$, text encoder переводит caption в вектор $t_i$. Векторы нормируют и сравнивают по cosine similarity. Обучение идёт на image-text парах: правильные пары в batch — positives, все остальные комбинации — negatives. Contrastive loss делает подходящие image и text близкими, а несовпадающие пары — далёкими. Результат — общее multimodal embedding space, где семантическая близость важнее модальности.</p>
 
-            <p>Для zero-shot classification class names превращают в text prompts вроде “a photo of a cat”, получают text embeddings and choose class with maximum similarity to image embedding. Для retrieval заранее индексируют image/text embeddings and find nearest neighbours across modalities. Ограничения CLIP: слабая compositional reasoning, counting, spatial relations, sensitivity to prompts and biases from web data.</p>
+            <p>Для zero-shot classification имена классов превращают в text prompts вроде “a photo of a cat”, получают text embeddings и выбирают класс с максимальной similarity к image embedding. Для retrieval заранее индексируют image/text embeddings и ищут ближайших соседей между модальностями. Ограничения CLIP: слабые compositional reasoning, counting и spatial relations, чувствительность к prompts и biases из web data.</p>
           </div>
         </section>
 
         <section>
           <h3>Multimodal learning</h3>
-          <p>Multimodal task связывает разные modalities: image, text, audio, video, graph, sensor data. Для vision-language наиболее частые задачи: image captioning, visual question answering, text-to-image retrieval, image-to-text retrieval, grounding and zero-shot recognition.</p>
+          <p>Multimodal task связывает разные modalities: image, text, audio, video, graph, sensor data. Для vision-language наиболее частые задачи: image captioning, visual question answering, text-to-image retrieval, image-to-text retrieval, grounding и zero-shot recognition.</p>
 
-          <p>Главная проблема: pixels and words are not directly comparable. Нужно построить representation, где image and text can be compared by one similarity function. CLIP решает это через image-text alignment in shared embedding space.</p>
+          <p>Главная проблема: пиксели и слова напрямую несравнимы. Нужно построить representation, где image и text можно сравнивать одной similarity function. CLIP решает это через image-text alignment в общем embedding space.</p>
         </section>
 
         <section>
           <h3>Архитектура CLIP: dual encoder</h3>
-          <p>CLIP состоит из двух encoders with separate weights:</p>
+          <p>CLIP состоит из двух encoders с раздельными весами:</p>
           <ul>
-            <li>image encoder $f_I(x)$: ResNet or Vision Transformer maps image to vector;</li>
-            <li>text encoder $f_T(c)$: Transformer maps caption/prompt to vector.</li>
+            <li>image encoder $f_I(x)$: ResNet или Vision Transformer переводит изображение в вектор;</li>
+            <li>text encoder $f_T(c)$: Transformer переводит caption/prompt в вектор.</li>
           </ul>
 
-          <p>После projection vectors have same dimension and are usually normalized:</p>
+          <p>После projection векторы имеют одну размерность и обычно нормируются:</p>
 
           $$
           v_i=\frac{f_I(x_i)}{\|f_I(x_i)\|},
@@ -16931,7 +16931,7 @@ with torch.no_grad():
           t_i=\frac{f_T(c_i)}{\|f_T(c_i)\|}.
           $$
 
-          <p>Similarity is dot product of normalized vectors, equivalent to cosine similarity:</p>
+          <p>Similarity — скалярное произведение нормированных векторов, эквивалентное cosine similarity:</p>
 
           $$
           s_{ij}=v_i^\top t_j.
@@ -16939,20 +16939,20 @@ with torch.no_grad():
 
           <figure class="paper-figure">
             <img class="source-image" src="assets/diagrams/external/clip-openai.png" alt="CLIP architecture and zero-shot transfer diagram from OpenAI">
-            <p class="figure-caption"><strong>Figure.</strong> CLIP learns image-text alignment with two encoders and contrastive matching, then performs zero-shot classification by comparing image embedding with text prompt embeddings.</p>
+            <p class="figure-caption"><strong>Figure.</strong> CLIP учит image-text alignment двумя encoders и contrastive matching, затем выполняет zero-shot classification, сравнивая image embedding с embeddings текстовых prompts.</p>
             <p class="diagram-source">Источник: OpenAI, <a href="https://github.com/openai/CLIP">CLIP GitHub repository</a>, architecture diagram.</p>
           </figure>
         </section>
 
         <section>
-          <h3>Contrastive learning and InfoNCE</h3>
-          <p>Batch contains $N$ true image-text pairs $(x_i,c_i)$. Model computes $N\times N$ similarity matrix $S$, where diagonal elements are correct pairs and off-diagonal elements are negatives.</p>
+          <h3>Contrastive learning и InfoNCE</h3>
+          <p>Batch содержит $N$ настоящих image-text пар $(x_i,c_i)$. Model считает $N\times N$ матрицу similarity $S$, где диагональные элементы — правильные пары, а внедиагональные — negatives.</p>
 
           $$
           S_{ij}=\frac{v_i^\top t_j}{\tau}.
           $$
 
-          <p>$\tau$ is temperature. Smaller $\tau$ makes softmax sharper. Image-to-text loss treats each image as query and asks model to choose correct caption among $N$ captions:</p>
+          <p>$\tau$ — temperature. Меньший $\tau$ делает softmax острее. Image-to-text loss рассматривает каждое изображение как query и просит модель выбрать правильный caption среди $N$ captions:</p>
 
           $$
           \mathcal{L}_{I\to T}
@@ -16964,7 +16964,7 @@ with torch.no_grad():
           {\sum_{j=1}^{N}\exp(v_i^\top t_j/\tau)}.
           $$
 
-          <p>Text-to-image direction is symmetric:</p>
+          <p>Направление text-to-image симметрично:</p>
 
           $$
           \mathcal{L}_{T\to I}
@@ -16983,12 +16983,12 @@ with torch.no_grad():
           (\mathcal{L}_{I\to T}+\mathcal{L}_{T\to I}).
           $$
 
-          <p>In-batch negatives make training scalable: each batch of $N$ pairs gives $N$ positives and $N(N-1)$ mismatched comparisons per direction.</p>
+          <p>In-batch negatives делают обучение масштабируемым: каждый batch из $N$ пар даёт $N$ positives и $N(N-1)$ несовпадающих сравнений на направление.</p>
         </section>
 
         <section>
           <h3>Shared image-text embedding space</h3>
-          <p>After training, matching image and text lie close in shared space. This does not mean model translates pixels to words directly; it learns semantic geometry. A dog image embedding should be close to many dog-related captions and far from unrelated captions.</p>
+          <p>После обучения подходящие image и text лежат близко в общем space. Это не значит, что модель напрямую переводит пиксели в слова; она учит семантическую геометрию. Embedding фотографии собаки должен быть близко ко многим captions про собак и далеко от нерелевантных captions.</p>
 
           <div class="visual-panel flow-panel">
             <div class="flow-box">cat image<br>$v_{cat}$</div>
@@ -17001,13 +17001,13 @@ with torch.no_grad():
 
         <section>
           <h3>Zero-shot classification</h3>
-          <p>CLIP turns classification into image-text matching. For class names $\{y_1,\dots,y_K\}$ create prompt templates:</p>
+          <p>CLIP превращает classification в image-text matching. Для имён классов $\{y_1,\dots,y_K\}$ строят prompt templates:</p>
 
           $$
           c_k=\text{``a photo of a } y_k\text{''}.
           $$
 
-          <p>Encode all prompts into text embeddings $t_k$, encode image into $v$, then choose class with maximum similarity:</p>
+          <p>Кодируем все prompts в text embeddings $t_k$, изображение — в $v$, затем выбираем класс с максимальной similarity:</p>
 
           $$
           \hat{y}
@@ -17015,36 +17015,36 @@ with torch.no_grad():
           \arg\max_k v^\top t_k.
           $$
 
-          <p>Prompt engineering matters because CLIP was trained on natural captions, not bare class ids. Often use multiple templates and average text embeddings for better robustness.</p>
+          <p>Prompt engineering важен, потому что CLIP обучался на естественных captions, а не на голых идентификаторах классов. Часто используют несколько templates и усредняют text embeddings для большей устойчивости.</p>
         </section>
 
         <section>
           <h3>Image-text retrieval</h3>
-          <p>Retrieval uses same embedding space. For text-to-image search, precompute embeddings for image database, encode text query, then return nearest image vectors by cosine similarity. For image-to-text search, reverse the roles.</p>
+          <p>Retrieval использует то же embedding space. Для text-to-image поиска заранее считают embeddings базы изображений, кодируют текстовый query и возвращают ближайшие image векторы по cosine similarity. Для image-to-text поиска роли меняются местами.</p>
 
-          <p>Practical advantage: embeddings can be indexed in vector database, so search scales to large collections. No task-specific classifier is needed.</p>
+          <p>Практическое преимущество: embeddings можно индексировать в vector database, поэтому поиск масштабируется на большие коллекции. Отдельный task-specific classifier не нужен.</p>
         </section>
 
         <section>
           <h3>Ограничения CLIP</h3>
           <ul>
-            <li><strong>Compositionality:</strong> model may confuse “dog left of cat” and “cat left of dog”.</li>
-            <li><strong>Counting:</strong> weak at exact number of objects.</li>
-            <li><strong>Fine-grained localization:</strong> global embedding may miss small details.</li>
-            <li><strong>Prompt sensitivity:</strong> wording changes quality.</li>
-            <li><strong>Web bias:</strong> training data captions can contain social and cultural biases.</li>
+            <li><strong>Compositionality:</strong> модель может путать “dog left of cat” и “cat left of dog”.</li>
+            <li><strong>Counting:</strong> слабо оценивает точное число объектов.</li>
+            <li><strong>Fine-grained localization:</strong> глобальный embedding может упускать мелкие детали.</li>
+            <li><strong>Prompt sensitivity:</strong> формулировка меняет качество.</li>
+            <li><strong>Web bias:</strong> captions в training data могут содержать социальные и культурные biases.</li>
           </ul>
         </section>
 
         <section>
           <h3>Где CLIP используют</h3>
-          <p>CLIP-like encoders are used as image encoders in vision-language models, as retrieval backbones, as zero-shot classifiers, as alignment metrics for generated images, and as conditioning/evaluation components in text-to-image systems. CLIP also provides a convenient bridge from visual content to language models.</p>
+          <p>CLIP-подобные encoders используют как image encoders в vision-language models, как retrieval backbones, как zero-shot classifiers, как alignment метрики для сгенерированных изображений и как conditioning/evaluation компоненты в text-to-image системах. CLIP также даёт удобный мост от визуального контента к language models.</p>
         </section>
 
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: CLIP solves image-text alignment through dual encoders and contrastive learning. Image and text encoders map inputs into same normalized embedding space; cosine similarity measures semantic compatibility. In each batch, diagonal image-text pairs are positives and off-diagonal pairs are negatives. Symmetric InfoNCE loss trains image-to-text and text-to-image matching. The learned space enables zero-shot classification by comparing image embedding with prompt embeddings for class names, and image-text retrieval by nearest-neighbour search across modalities. CLIP is powerful because it uses web-scale natural supervision, but it remains limited in spatial relations, counting, fine details, prompt robustness and bias control.</p>
+            <p>Сильный ответ: CLIP решает image-text alignment через dual encoders и contrastive learning. Image и text encoders переводят inputs в одно нормированное embedding space; cosine similarity измеряет семантическую совместимость. В каждом batch диагональные image-text пары — positives, внедиагональные — negatives. Симметричный InfoNCE loss обучает matching в направлениях image-to-text и text-to-image. Выученное space даёт zero-shot classification через сравнение image embedding с embeddings prompts для имён классов и image-text retrieval через поиск ближайших соседей между модальностями. CLIP силён, потому что использует естественную supervision веб-масштаба, но остаётся ограниченным в spatial relations, counting, мелких деталях, устойчивости к prompt и контроле bias.</p>
           </div>
         </section>
 
@@ -17053,7 +17053,7 @@ with torch.no_grad():
           <ol>
             <li>Почему CLIP называют dual encoder?</li>
             <li>Почему нужен общий embedding space?</li>
-            <li>Что такое positives and negatives in CLIP training?</li>
+            <li>Что такое positives и negatives в CLIP training?</li>
             <li>Как выглядит InfoNCE loss?</li>
             <li>Зачем temperature $\tau$?</li>
             <li>Как CLIP делает zero-shot classification?</li>
@@ -17071,42 +17071,42 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Dual encoder?</h4></summary>
-              <p>CLIP has separate image encoder and text encoder. They produce vectors in same dimension and are trained jointly through contrastive loss.</p>
+              <p>У CLIP отдельные image encoder и text encoder. Они выдают векторы одной размерности и обучаются совместно через contrastive loss.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>2. Shared space?</h4></summary>
-              <p>Image and text are different modalities. Shared space makes them comparable by one similarity measure, so retrieval and zero-shot classification become nearest-neighbour problems.</p>
+              <p>Image и text — разные модальности. Общее space делает их сравнимыми одной мерой similarity, поэтому retrieval и zero-shot classification становятся задачами поиска ближайших соседей.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>3. Positives/negatives?</h4></summary>
-              <p>True image-caption pairs in batch are positives. Non-matching combinations inside same batch act as negatives.</p>
+              <p>Настоящие image-caption пары в batch — positives. Несовпадающие комбинации внутри того же batch выступают negatives.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>4. InfoNCE?</h4></summary>
-              <p>For each image, softmax over all text embeddings should assign highest probability to its true caption; symmetric direction does same for each text over images.</p>
+              <p>Для каждого изображения softmax по всем text embeddings должен дать наибольшую вероятность его настоящему caption; симметричное направление делает то же для каждого текста по изображениям.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>5. Temperature?</h4></summary>
-              <p>$\tau$ controls sharpness of similarity logits. Smaller $\tau$ makes softmax more confident and increases pressure to separate positives from negatives.</p>
+              <p>$\tau$ управляет остротой similarity logits. Меньший $\tau$ делает softmax увереннее и усиливает давление отделять positives от negatives.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. Zero-shot?</h4></summary>
-              <p>Class names are converted to prompts, encoded as text vectors, and image is assigned to class with maximum image-text similarity.</p>
+              <p>Имена классов превращают в prompts, кодируют как text векторы, и изображению присваивается класс с максимальной image-text similarity.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>7. Retrieval?</h4></summary>
-              <p>Encode query modality and database modality into shared space. Return items with highest cosine similarity.</p>
+              <p>Кодируем query и базу данных (каждую модальность своим encoder) в общее space. Возвращаем элементы с наибольшей cosine similarity.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>8. Weaknesses?</h4></summary>
-              <p>CLIP is global and contrastive, so it can miss spatial relations, counts, small details and can be sensitive to prompt wording and web-data biases.</p>
+              <summary><h4>8. Слабые места?</h4></summary>
+              <p>CLIP глобален и contrastive, поэтому может упускать spatial relations, счёт и мелкие детали, а также быть чувствительным к формулировке prompt и biases веб-данных.</p>
             </details>
           </div>
         </section>
@@ -17115,12 +17115,12 @@ with torch.no_grad():
           <h3>Опасные ошибки</h3>
           <div class="note danger">
             <ul>
-              <li>Считать CLIP image captioning model. CLIP compares image and text embeddings; it does not generate caption by itself.</li>
-              <li>Путать CLIP with cross-attention VLM. Original CLIP uses dual encoders, not token-level fusion during encoding.</li>
-              <li>Забывать symmetric loss: image-to-text and text-to-image directions both matter.</li>
-              <li>Называть all non-diagonal pairs truly false. In web data, some “negatives” can be semantically related false negatives.</li>
-              <li>Считать zero-shot classification magical. It depends on prompt templates and pretrained alignment quality.</li>
-              <li>Игнорировать limitations in spatial reasoning and counting.</li>
+              <li>Считать CLIP моделью image captioning. CLIP сравнивает image и text embeddings; сам по себе он не генерирует caption.</li>
+              <li>Путать CLIP с cross-attention VLM. Оригинальный CLIP использует dual encoders, а не token-level fusion во время кодирования.</li>
+              <li>Забывать про симметричный loss: важны оба направления, image-to-text и text-to-image.</li>
+              <li>Называть все внедиагональные пары по-настоящему ложными. В web data часть «negatives» может быть семантически связанными false negatives.</li>
+              <li>Считать zero-shot classification магией. Она зависит от prompt templates и качества предобученного alignment.</li>
+              <li>Игнорировать ограничения в spatial reasoning и counting.</li>
             </ul>
           </div>
         </section>
@@ -17134,15 +17134,15 @@ with torch.no_grad():
 
         <section>
           <h3>Формулировка</h3>
-          <p>Нужно объяснить, как <a href="Справка.html#ref-vision-language-model">Vision-Language Model</a> or <a href="Справка.html#ref-mllm">MLLM</a> соединяет image understanding with text generation: visual encoder превращает изображение в <a href="Справка.html#ref-visual-token">visual tokens</a>, <a href="Справка.html#ref-projector-vlm">projector</a> переводит их в пространство LLM, а <a href="Справка.html#ref-llm">LLM</a> генерирует answer. Важно сравнить LLaVA-style simple projector and BLIP-2 Q-Former.</p>
+          <p>Нужно объяснить, как <a href="Справка.html#ref-vision-language-model">Vision-Language Model</a> или <a href="Справка.html#ref-mllm">MLLM</a> соединяет image understanding с генерацией текста: visual encoder превращает изображение в <a href="Справка.html#ref-visual-token">visual tokens</a>, <a href="Справка.html#ref-projector-vlm">projector</a> переводит их в пространство LLM, а <a href="Справка.html#ref-llm">LLM</a> генерирует answer. Важно сравнить простой projector в стиле LLaVA и Q-Former из BLIP-2.</p>
         </section>
 
         <section>
           <h3>Короткий ответ</h3>
           <div class="note good">
-            <p><strong>VLM/MLLM</strong> — языковая модель, которая принимает visual input. Типовая архитектура: pretrained visual encoder, projector, pretrained LLM. Visual encoder, часто CLIP ViT, maps image patches to visual embeddings. Projector maps these embeddings to LLM hidden dimension. Then visual tokens are concatenated with text tokens, and LLM uses self-attention to generate text answer.</p>
+            <p><strong>VLM/MLLM</strong> — языковая модель, которая принимает visual input. Типовая архитектура: pretrained visual encoder, projector, pretrained LLM. Visual encoder, часто CLIP ViT, переводит image patches в visual embeddings. Projector переводит эти embeddings в hidden dimension LLM. Затем visual tokens конкатенируются с text tokens, и LLM через self-attention генерирует текстовый ответ.</p>
 
-            <p><strong>LLaVA</strong> uses simple linear/MLP projector and passes many visual tokens to LLM. <strong>BLIP-2</strong> uses Q-Former: learnable query tokens attend to visual features and compress image into fewer tokens. CLIP only compares image and text embeddings; VLM/MLLM can generate captions, answer visual questions and perform OCR-like dialogue.</p>
+            <p><strong>LLaVA</strong> использует простой linear/MLP projector и передаёт в LLM много visual tokens. <strong>BLIP-2</strong> использует Q-Former: обучаемые query tokens attention-ом смотрят на visual features и сжимают изображение в меньшее число tokens. CLIP только сравнивает image и text embeddings; VLM/MLLM может генерировать captions, отвечать на визуальные вопросы и вести OCR-подобный диалог.</p>
           </div>
         </section>
 
@@ -17159,23 +17159,23 @@ with torch.no_grad():
             <tbody>
               <tr>
                 <td>Image captioning</td>
-                <td>Image</td>
-                <td>Text description</td>
+                <td>Изображение</td>
+                <td>Текстовое описание</td>
               </tr>
               <tr>
                 <td>Visual Question Answering</td>
-                <td>Image + question</td>
-                <td>Text answer</td>
+                <td>Изображение + вопрос</td>
+                <td>Текстовый ответ</td>
               </tr>
               <tr>
                 <td>OCR / document understanding</td>
-                <td>Image with text</td>
-                <td>Recognized text or structured answer</td>
+                <td>Изображение с текстом</td>
+                <td>Распознанный текст или структурированный ответ</td>
               </tr>
               <tr>
                 <td>Visual reasoning</td>
-                <td>Image + instruction</td>
-                <td>Explanation, count, comparison, action</td>
+                <td>Изображение + инструкция</td>
+                <td>Объяснение, подсчёт, сравнение, действие</td>
               </tr>
             </tbody>
           </table>
@@ -17183,7 +17183,7 @@ with torch.no_grad():
 
         <section>
           <h3>Общая архитектура</h3>
-          <p>Современные VLM часто reuse сильные pretrained components. Зрение не учат from scratch; language не учат from scratch. Их соединяют trainable adapter/projector.</p>
+          <p>Современные VLM часто переиспользуют сильные pretrained компоненты. Зрение не учат с нуля; язык не учат с нуля. Их соединяет обучаемый adapter/projector.</p>
 
           <div class="visual-panel flow-panel">
             <div class="flow-box">image<br>$x$</div>
@@ -17195,12 +17195,12 @@ with torch.no_grad():
             <div class="flow-box">LLM<br>answer tokens</div>
           </div>
 
-          <p>Text question is tokenized as usual. Visual embeddings and text embeddings become one sequence. LLM processes them jointly and autoregressively generates answer.</p>
+          <p>Текстовый вопрос токенизируется как обычно. Visual embeddings и text embeddings становятся одной последовательностью. LLM обрабатывает их совместно и авторегрессионно генерирует ответ.</p>
         </section>
 
         <section>
           <h3>Visual tokens</h3>
-          <p>LLM understands sequences of token embeddings. Image must be converted to token-like vectors. Vision Transformer splits image into patches and outputs embeddings:</p>
+          <p>LLM понимает последовательности token embeddings. Изображение нужно превратить в token-подобные векторы. Vision Transformer режет изображение на patches и выдаёт embeddings:</p>
 
           $$
           X_{img}\in\mathbb{R}^{H\times W\times C}
@@ -17208,21 +17208,21 @@ with torch.no_grad():
           \{z_1,\dots,z_M\},\qquad z_i\in\mathbb{R}^{d_v}.
           $$
 
-          <p>Each $z_i$ corresponds roughly to image patch or visual region. After projector, tokens have LLM dimension $d_{llm}$:</p>
+          <p>Каждый $z_i$ примерно соответствует image patch или визуальной области. После projector tokens имеют размерность LLM $d_{llm}$:</p>
 
           $$
           \tilde{z}_i=P_\theta(z_i),\qquad
           \tilde{z}_i\in\mathbb{R}^{d_{llm}}.
           $$
 
-          <p>For LLM, visual tokens are just additional prefix tokens. Attention can connect words in prompt with relevant image patches.</p>
+          <p>Для LLM visual tokens — просто дополнительные prefix tokens. Attention может связывать слова в prompt с релевантными image patches.</p>
         </section>
 
         <section>
           <h3>Projector: зачем нужен переходник</h3>
-          <p>Visual encoder and LLM have different representation spaces. Visual features may have dimension 1024, while LLM hidden states may have dimension 4096. Even if dimensions match, semantics of coordinates differ. Projector learns mapping from visual feature space to language model embedding space.</p>
+          <p>У visual encoder и LLM разные representation spaces. Visual features могут иметь размерность 1024, а hidden states LLM — 4096. Даже при совпадении размерностей семантика координат различается. Projector учит отображение из visual feature space в embedding space языковой модели.</p>
 
-          <p>Simple projector:</p>
+          <p>Простой projector:</p>
 
           $$
           \tilde{Z}=Z W_P+b_P.
@@ -17234,25 +17234,25 @@ with torch.no_grad():
           \tilde{Z}=W_2\,\phi(W_1Z+b_1)+b_2.
           $$
 
-          <p>Training often starts by freezing visual encoder and LLM, then training only projector on image-caption pairs. Later instruction tuning teaches model to answer visual questions and follow multimodal instructions.</p>
+          <p>Обучение часто начинают с заморозки visual encoder и LLM, обучая только projector на image-caption парах. Затем instruction tuning учит модель отвечать на визуальные вопросы и следовать multimodal инструкциям.</p>
         </section>
 
         <section>
           <h3>LLaVA-style architecture</h3>
-          <p><a href="Справка.html#ref-llava">LLaVA</a> is intentionally simple: CLIP visual encoder + linear/MLP projector + LLaMA/Vicuna-like LLM. Visual tokens are projected and prepended to text tokens.</p>
+          <p><a href="Справка.html#ref-llava">LLaVA</a> сознательно проста: CLIP visual encoder + linear/MLP projector + LLaMA/Vicuna-подобная LLM. Visual tokens проецируются и ставятся перед text tokens.</p>
 
-          <p>Training idea:</p>
+          <p>Идея обучения:</p>
           <ol>
-            <li><strong>Alignment stage:</strong> freeze visual encoder and LLM, train projector on image-text pairs.</li>
-            <li><strong>Instruction tuning:</strong> train projector and often LLM on multimodal instruction data.</li>
+            <li><strong>Alignment stage:</strong> заморозить visual encoder и LLM, обучить projector на image-text парах.</li>
+            <li><strong>Instruction tuning:</strong> обучить projector и часто LLM на multimodal instruction data.</li>
           </ol>
 
-          <p>Strength: simplicity and strong use of pretrained models. Weakness: many visual tokens consume context length and increase compute.</p>
+          <p>Сильная сторона: простота и мощное использование pretrained моделей. Слабая: много visual tokens съедают context length и увеличивают compute.</p>
         </section>
 
         <section>
-          <h3>BLIP-2 and Q-Former</h3>
-          <p><a href="Справка.html#ref-blip2">BLIP-2</a> uses Q-Former instead of simple pass-through projector. Q-Former has learned query tokens that attend to visual encoder outputs and extract compact representation.</p>
+          <h3>BLIP-2 и Q-Former</h3>
+          <p><a href="Справка.html#ref-blip2">BLIP-2</a> использует Q-Former вместо простого сквозного projector. У Q-Former есть обучаемые query tokens, которые attention-ом смотрят на выходы visual encoder и извлекают компактное representation.</p>
 
           <div class="visual-panel flow-panel">
             <div class="flow-box">many visual patches<br>$M$ tokens</div>
@@ -17264,18 +17264,18 @@ with torch.no_grad():
             <div class="flow-box">LLM</div>
           </div>
 
-          <p>Q-Former compresses visual information before passing it to LLM. Advantage: shorter LLM input and lower cost. Cost: additional architecture and training complexity.</p>
+          <p>Q-Former сжимает визуальную информацию перед передачей в LLM. Преимущество: более короткий вход LLM и меньшая стоимость. Цена: дополнительная сложность архитектуры и обучения.</p>
         </section>
 
         <section>
-          <h3>How VQA works step by step</h3>
-          <p>Example: image of kitchen and question “How many chairs are at the table?”</p>
+          <h3>Как VQA работает шаг за шагом</h3>
+          <p>Пример: изображение кухни и вопрос “How many chairs are at the table?”</p>
           <ol>
-            <li>Visual encoder extracts patch features from image.</li>
-            <li>Projector maps visual features into LLM space.</li>
-            <li>Question is tokenized and embedded.</li>
-            <li>Visual tokens and text tokens are concatenated.</li>
-            <li>LLM attends to visual tokens relevant to “chairs” and generates answer.</li>
+            <li>Visual encoder извлекает patch features из изображения.</li>
+            <li>Projector переводит visual features в пространство LLM.</li>
+            <li>Вопрос токенизируется и превращается в embeddings.</li>
+            <li>Visual tokens и text tokens конкатенируются.</li>
+            <li>LLM attention-ом смотрит на visual tokens, релевантные “chairs”, и генерирует ответ.</li>
           </ol>
         </section>
 
@@ -17292,35 +17292,35 @@ with torch.no_grad():
             <tbody>
               <tr>
                 <td>CLIP</td>
-                <td>Compares image and text embeddings</td>
-                <td>Similarity score / retrieval / zero-shot class</td>
+                <td>Сравнивает image и text embeddings</td>
+                <td>Similarity score / retrieval / zero-shot класс</td>
               </tr>
               <tr>
                 <td>VLM / MLLM</td>
-                <td>Uses image as context for language generation</td>
-                <td>Free-form text answer, caption, reasoning</td>
+                <td>Использует изображение как контекст для генерации текста</td>
+                <td>Свободный текстовый ответ, caption, reasoning</td>
               </tr>
             </tbody>
           </table>
 
-          <p>CLIP often provides visual encoder for VLM, but original CLIP itself does not generate text. VLM attaches visual encoder to LLM, so model can answer and converse.</p>
+          <p>CLIP часто даёт visual encoder для VLM, но сам оригинальный CLIP не генерирует текст. VLM присоединяет visual encoder к LLM, поэтому модель может отвечать и вести диалог.</p>
         </section>
 
         <section>
           <h3>Ограничения VLM</h3>
           <ul>
-            <li><strong>Hallucination:</strong> model may describe objects absent from image.</li>
-            <li><strong>Counting and spatial relations:</strong> still difficult, especially with many objects.</li>
-            <li><strong>OCR robustness:</strong> small, rotated, low-resolution text can fail.</li>
-            <li><strong>Context cost:</strong> visual tokens consume LLM context and compute.</li>
-            <li><strong>Alignment quality:</strong> projector may not perfectly translate visual features to LLM space.</li>
+            <li><strong>Hallucination:</strong> модель может описывать объекты, которых нет на изображении.</li>
+            <li><strong>Counting и spatial relations:</strong> всё ещё трудны, особенно при большом числе объектов.</li>
+            <li><strong>OCR robustness:</strong> мелкий, повёрнутый или низкоразрешённый текст может распознаваться с ошибками.</li>
+            <li><strong>Context cost:</strong> visual tokens расходуют контекст LLM и compute.</li>
+            <li><strong>Alignment quality:</strong> projector может неидеально переводить visual features в пространство LLM.</li>
           </ul>
         </section>
 
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
-            <p>Сильный ответ: VLM/MLLM extends a language model with visual input. A pretrained visual encoder maps image patches to visual tokens; a projector maps these tokens to LLM hidden dimension and representation space; then visual tokens are concatenated with text tokens and processed by LLM autoregressively. LLaVA uses simple linear/MLP projector and passes many visual tokens, which is simple but context-expensive. BLIP-2 uses Q-Former with learned query tokens to compress many visual patches into a small number of visual tokens. Main tasks are captioning, VQA, OCR/document understanding and visual dialogue. Difference from CLIP: CLIP gives similarity in shared embedding space, while VLM generates text conditioned on image.</p>
+            <p>Сильный ответ: VLM/MLLM расширяет языковую модель визуальным входом. Pretrained visual encoder переводит image patches в visual tokens; projector переводит эти tokens в hidden dimension и representation space LLM; затем visual tokens конкатенируются с text tokens и обрабатываются LLM авторегрессионно. LLaVA использует простой linear/MLP projector и передаёт много visual tokens — это просто, но дорого по контексту. BLIP-2 использует Q-Former с обучаемыми query tokens, чтобы сжать много visual patches в небольшое число visual tokens. Главные задачи — captioning, VQA, OCR/document understanding и визуальный диалог. Отличие от CLIP: CLIP даёт similarity в общем embedding space, а VLM генерирует текст при условии изображения.</p>
           </div>
         </section>
 
@@ -17347,42 +17347,42 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Почему LLM?</h4></summary>
-              <p>LLM already has language generation, instruction following and reasoning ability. VLM adds visual context instead of training language from scratch.</p>
+              <p>У LLM уже есть генерация языка, следование инструкциям и способность к reasoning. VLM добавляет визуальный контекст вместо обучения языку с нуля.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>2. Visual tokens?</h4></summary>
-              <p>Visual tokens are vector representations of image patches or regions, projected into a form that LLM can process like token embeddings.</p>
+              <p>Visual tokens — векторные представления image patches или областей, спроецированные в форму, которую LLM может обрабатывать как token embeddings.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>3. Projector?</h4></summary>
-              <p>Projector maps visual encoder features into LLM hidden dimension and semantic space. Without it, LLM cannot interpret visual vectors correctly.</p>
+              <p>Projector переводит features из visual encoder в hidden dimension и семантическое пространство LLM. Без него LLM не может корректно интерпретировать визуальные векторы.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>4. LLaVA training?</h4></summary>
-              <p>First train projector for image-text alignment with frozen encoders; then perform multimodal instruction tuning, often updating projector and LLM.</p>
+              <p>Сначала обучают projector для image-text alignment с замороженными encoders; затем проводят multimodal instruction tuning, часто обновляя projector и LLM.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>5. Q-Former?</h4></summary>
-              <p>Q-Former uses learned query tokens with attention over visual features to extract compact visual representation before LLM.</p>
+              <p>Q-Former использует обучаемые query tokens с attention по visual features, чтобы извлечь компактное визуальное representation перед LLM.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. VLM vs CLIP?</h4></summary>
-              <p>CLIP compares embeddings and returns similarity. VLM uses visual tokens as context for LLM and generates free-form text.</p>
+              <p>CLIP сравнивает embeddings и возвращает similarity. VLM использует visual tokens как контекст для LLM и генерирует свободный текст.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>7. Why expensive?</h4></summary>
-              <p>Each visual token occupies context length and participates in attention. Hundreds of image tokens increase memory and compute.</p>
+              <summary><h4>7. Почему дорого?</h4></summary>
+              <p>Каждый visual token занимает context length и участвует в attention. Сотни image tokens увеличивают память и compute.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>8. Weaknesses?</h4></summary>
-              <p>Hallucinations, counting errors, weak spatial reasoning, OCR failures and high context cost are common issues.</p>
+              <summary><h4>8. Слабые места?</h4></summary>
+              <p>Hallucinations, ошибки счёта, слабый spatial reasoning, сбои OCR и высокая стоимость контекста — типичные проблемы.</p>
             </details>
           </div>
         </section>
@@ -17391,12 +17391,12 @@ with torch.no_grad():
           <h3>Опасные ошибки</h3>
           <div class="note danger">
             <ul>
-              <li>Считать VLM просто CLIP plus classifier. VLM generates text through LLM.</li>
-              <li>Забывать projector: visual encoder output cannot be fed raw into LLM.</li>
-              <li>Путать LLaVA and BLIP-2: LLaVA uses simple projector; BLIP-2 uses Q-Former compression.</li>
-              <li>Думать, что visual tokens are pixels. They are learned patch/region embeddings.</li>
-              <li>Игнорировать cost of visual tokens in context length.</li>
-              <li>Переоценивать OCR/counting: VLM can still fail on precise visual details.</li>
+              <li>Считать VLM просто CLIP плюс classifier. VLM генерирует текст через LLM.</li>
+              <li>Забывать projector: выход visual encoder нельзя подать в LLM сырым.</li>
+              <li>Путать LLaVA и BLIP-2: LLaVA использует простой projector; BLIP-2 — сжатие через Q-Former.</li>
+              <li>Думать, что visual tokens — это пиксели. Это обученные patch/region embeddings.</li>
+              <li>Игнорировать стоимость visual tokens в context length.</li>
+              <li>Переоценивать OCR/counting: VLM всё ещё может ошибаться в точных визуальных деталях.</li>
             </ul>
           </div>
         </section>
@@ -17410,29 +17410,29 @@ with torch.no_grad():
 
         <section>
           <h3>Формулировка</h3>
-          <p>Нужно объяснить, как оценивают <a href="Справка.html#ref-vision-language-model">Vision-Language Models</a> and <a href="Справка.html#ref-mllm">MLLM</a>, почему обычная accuracy не всегда достаточна, какие существуют <a href="Справка.html#ref-multimodal-benchmark">multimodal benchmarks</a>, и где такие модели систематически ошибаются: <a href="Справка.html#ref-hallucination">hallucinations</a>, слабый counting, spatial reasoning, <a href="Справка.html#ref-ocr">OCR</a>, большие изображения and multi-image reasoning.</p>
+          <p>Нужно объяснить, как оценивают <a href="Справка.html#ref-vision-language-model">Vision-Language Models</a> и <a href="Справка.html#ref-mllm">MLLM</a>, почему обычная accuracy не всегда достаточна, какие существуют <a href="Справка.html#ref-multimodal-benchmark">multimodal benchmarks</a>, и где такие модели систематически ошибаются: <a href="Справка.html#ref-hallucination">hallucinations</a>, слабый counting, spatial reasoning, <a href="Справка.html#ref-ocr">OCR</a>, большие изображения и multi-image reasoning.</p>
         </section>
 
         <section>
           <h3>Короткий ответ</h3>
-          <p><a href="Справка.html#ref-vlm-evaluation">VLM evaluation</a> сложна, потому что модель часто выдаёт свободный текст, а ошибка может возникнуть на разных уровнях: visual perception, <a href="Справка.html#ref-grounding">grounding</a>, OCR, reasoning and language generation. Поэтому модели проверяют не одним тестом, а набором benchmarks: VQA, captioning, OCR/document understanding, grounding, chart reasoning, hallucination tests, multi-image tasks and human evaluation.</p>
+          <p><a href="Справка.html#ref-vlm-evaluation">VLM evaluation</a> сложна, потому что модель часто выдаёт свободный текст, а ошибка может возникнуть на разных уровнях: visual perception, <a href="Справка.html#ref-grounding">grounding</a>, OCR, reasoning и language generation. Поэтому модели проверяют не одним тестом, а набором benchmarks: VQA, captioning, OCR/document understanding, grounding, chart reasoning, hallucination tests, multi-image tasks и human evaluation.</p>
 
           <p>Главная мысль для экзамена: высокий benchmark score не означает полной надёжности. Модель может быть сильной в общих описаниях, но ошибаться в мелком тексте, счёте объектов, пространственных отношениях, больших изображениях и случаях, где надо сравнить несколько картинок. Поэтому VLM надо оценивать по конкретному сценарию применения, а не только по общей таблице лидеров.</p>
         </section>
 
         <section>
           <h3>Почему оценка VLM труднее обычной classification</h3>
-          <p>В classification есть вход $x$, дискретная метка $y$, prediction $\hat{y}$ and simple metric:</p>
+          <p>В classification есть вход $x$, дискретная метка $y$, prediction $\hat{y}$ и простая метрика:</p>
 
           $$
           \operatorname{Acc} =
           \frac{1}{N}\sum_{i=1}^{N}\mathbf{1}[\hat{y}_i = y_i].
           $$
 
-          <p>Для VLM ситуация менее аккуратная. На вопрос “сколько кошек на фото?” ответы “две”, “на изображении две кошки” and “вижу пару котов” семантически эквивалентны, но как строки различаются. Простое exact match начинает штрафовать правильные переформулировки.</p>
+          <p>Для VLM ситуация менее аккуратная. На вопрос “сколько кошек на фото?” ответы “две”, “на изображении две кошки” и “вижу пару котов” семантически эквивалентны, но как строки различаются. Простое exact match начинает штрафовать правильные переформулировки.</p>
 
           <div class="note">
-            <p><strong>Вывод.</strong> Для мультимодальных моделей часто используют один из трёх способов: загоняют ответ в multiple choice, оценивают свободный ответ через human/LLM judge, либо используют task-specific metrics для grounding, captioning, OCR and detection.</p>
+            <p><strong>Вывод.</strong> Для мультимодальных моделей часто используют один из трёх способов: загоняют ответ в multiple choice, оценивают свободный ответ через human/LLM judge, либо используют task-specific metrics для grounding, captioning, OCR и detection.</p>
           </div>
 
           <div class="visual-panel">
@@ -17504,7 +17504,7 @@ with torch.no_grad():
 
         <section>
           <h3>Метрики и математика</h3>
-          <p>Для multiple choice обычно считают accuracy. Для свободных ответов могут считать semantic score через judge, но такой judge сам является моделью и может быть biased. Для localization and grounding используют intersection over union:</p>
+          <p>Для multiple choice обычно считают accuracy. Для свободных ответов могут считать semantic score через judge, но такой judge сам является моделью и может быть biased. Для localization и grounding используют intersection over union:</p>
 
           $$
           \operatorname{IoU}(B_{\text{pred}}, B_{\text{gt}})=
@@ -17512,7 +17512,7 @@ with torch.no_grad():
           {|B_{\text{pred}}\cup B_{\text{gt}}|}.
           $$
 
-          <p>Если модель должна выбрать region, prediction считается корректной, когда $\operatorname{IoU}$ больше порога, например $0.5$. Для OCR часто нормализуют строку: приводят регистр, убирают лишние пробелы and punctuation, чтобы не штрафовать несущественные отличия.</p>
+          <p>Если модель должна выбрать region, prediction считается корректной, когда $\operatorname{IoU}$ больше порога, например $0.5$. Для OCR часто нормализуют строку: приводят регистр, убирают лишние пробелы и punctuation, чтобы не штрафовать несущественные отличия.</p>
 
           <p>Для ответственных задач полезна ещё calibration: если модель говорит “уверен на 90%”, среди таких случаев около 90% должны быть правильными. Expected Calibration Error можно записать как:</p>
 
@@ -17536,7 +17536,7 @@ with torch.no_grad():
           \frac{H}{P}\cdot\frac{W}{P},
           $$
 
-          <p>где $H,W$ — height and width image, $P$ — patch size. Если увеличить и высоту, и ширину в 2 раза, число visual tokens вырастет примерно в 4 раза. Attention в LLM затем должен обработать text tokens plus visual tokens, поэтому цена быстро растёт.</p>
+          <p>где $H,W$ — height и width image, $P$ — patch size. Если увеличить и высоту, и ширину в 2 раза, число visual tokens вырастет примерно в 4 раза. Attention в LLM затем должен обработать text tokens плюс visual tokens, поэтому цена быстро растёт.</p>
 
           <div class="visual-panel">
             <div class="visual-title">Дилемма resolution</div>
@@ -17551,10 +17551,10 @@ with torch.no_grad():
               </div>
               <div>
                 <h4>Multi-scale</h4>
-                <p>Глобальная картинка plus локальные crops; хороший компромисс.</p>
+                <p>Глобальная картинка плюс локальные crops; хороший компромисс.</p>
               </div>
             </div>
-            <p class="caption">Для OCR, documents, charts and UI screenshots модель должна видеть и global layout, и local details. Простое сжатие часто ломает именно local evidence.</p>
+            <p class="caption">Для OCR, documents, charts и UI screenshots модель должна видеть и global layout, и local details. Простое сжатие часто ломает именно local evidence.</p>
           </div>
         </section>
 
@@ -17568,7 +17568,7 @@ with torch.no_grad():
           T_{\text{total}} \approx T_{\text{text}} + \sum_{k=1}^{K}T_{\text{image}}^{(k)}.
           $$
 
-          <p>Если images большие, context quickly заполняется visual tokens. Модель может начать путать “первая/вторая картинка”, переносить детали между изображениями или отвечать по самой заметной картинке, игнорируя остальные.</p>
+          <p>Если images большие, context быстро заполняется visual tokens. Модель может начать путать “первая/вторая картинка”, переносить детали между изображениями или отвечать по самой заметной картинке, игнорируя остальные.</p>
         </section>
 
         <section>
@@ -17579,9 +17579,9 @@ with torch.no_grad():
             <li><strong>Spatial errors.</strong> Отношения “слева”, “справа”, “над”, “между” требуют точной геометрии, которую global embedding может хранить плохо.</li>
             <li><strong>OCR failures.</strong> Мелкий, наклонённый, плотный или частично закрытый текст приводит к пропускам и выдуманным символам.</li>
             <li><strong><a href="Справка.html#ref-grounding-failure">Grounding failure</a>.</strong> Ответ звучит правдоподобно, но не опирается на правильную область изображения.</li>
-            <li><strong>Chart/table errors.</strong> Модель может перепутать axis, legend, scale or row/column alignment.</li>
+            <li><strong>Chart/table errors.</strong> Модель может перепутать axis, legend, scale или выравнивание строк/столбцов.</li>
             <li><strong>Prompt sensitivity.</strong> Небольшая переформулировка вопроса меняет answer, хотя visual evidence не изменилась.</li>
-            <li><strong>Bias and safety issues.</strong> Обучение на web data переносит social biases and unsafe assumptions into visual interpretation.</li>
+            <li><strong>Bias и safety issues.</strong> Обучение на web data переносит социальные biases и небезопасные допущения в визуальную интерпретацию.</li>
           </ul>
         </section>
 
@@ -17592,17 +17592,17 @@ with torch.no_grad():
             <li>Собрать небольшой private test set из настоящих примеров, а не только смотреть public benchmark leaderboard.</li>
             <li>Разделить оценку по skills: отдельно text reading, localization, reasoning, answer formatting.</li>
             <li>Проверять negative examples: задавать вопросы про объекты, которых нет на картинке.</li>
-            <li>Для high-stakes cases требовать цитату visual evidence: bounding box, crop, text span, or reasoning trace tied to image.</li>
-            <li>Добавить human evaluation там, где ответ open-ended and several phrasings are acceptable.</li>
+            <li>Для high-stakes cases требовать цитату visual evidence: bounding box, crop, text span или reasoning trace, привязанный к изображению.</li>
+            <li>Добавить human evaluation там, где ответ open-ended и допустимы несколько формулировок.</li>
           </ol>
         </section>
 
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="excellent">
-            <p>Оценка мультимодальных моделей не сводится к одной accuracy, потому что VLM объединяет несколько способностей: видеть объекты, читать текст, привязывать слова к областям изображения, рассуждать and генерировать ответ. Поэтому benchmark должен соответствовать skill, который мы хотим проверить. Для VQA подходят accuracy or judge-based scores, для grounding — IoU, для OCR — normalized string accuracy, для hallucinations — yes/no presence tests, для open-ended answers — human evaluation.</p>
+            <p>Оценка мультимодальных моделей не сводится к одной accuracy, потому что VLM объединяет несколько способностей: видеть объекты, читать текст, привязывать слова к областям изображения, рассуждать и генерировать ответ. Поэтому benchmark должен соответствовать skill, который мы хотим проверить. Для VQA подходят accuracy или judge-based scores, для grounding — IoU, для OCR — normalized string accuracy, для hallucinations — yes/no presence tests, для open-ended answers — human evaluation.</p>
 
-            <p>Ограничения VLM в основном связаны с тем, что visual signal compressed into tokens, а language model склонна генерировать plausible text. При плохом visual evidence модель не молчит, а досочиняет. Большие изображения создают trade-off между resolution and token budget; multi-image tasks дополнительно требуют связывать несколько visual contexts. Поэтому в реальном применении VLM надо валидировать на собственных данных, проверять negative cases and не путать high benchmark score with reliability.</p>
+            <p>Ограничения VLM в основном связаны с тем, что visual signal сжат в tokens, а language model склонна генерировать правдоподобный текст. При плохом visual evidence модель не молчит, а досочиняет. Большие изображения создают trade-off между resolution и token budget; multi-image tasks дополнительно требуют связывать несколько visual contexts. Поэтому в реальном применении VLM надо валидировать на собственных данных, проверять negative cases и не путать высокий benchmark score с надёжностью.</p>
           </div>
         </section>
 
@@ -17616,7 +17616,7 @@ with torch.no_grad():
             <li>Почему большие изображения трудны для VLM?</li>
             <li>Почему multi-image reasoning сложнее single-image?</li>
             <li>Почему возникают visual hallucinations?</li>
-            <li>Как practically проверять модель перед внедрением?</li>
+            <li>Как на практике проверять модель перед внедрением?</li>
           </ol>
         </section>
 
@@ -17629,7 +17629,7 @@ with torch.no_grad():
           <div class="qa">
             <details class="qa-item">
               <summary><h4>1. Exact match?</h4></summary>
-              <p>Свободный ответ может быть семантически правильным, но отличаться словами. Exact match засчитает “две кошки” and “пара котов” как разные ответы, хотя смысл совпадает.</p>
+              <p>Свободный ответ может быть семантически правильным, но отличаться словами. Exact match засчитает “две кошки” и “пара котов” как разные ответы, хотя смысл совпадает.</p>
             </details>
 
             <details class="qa-item">
@@ -17639,32 +17639,32 @@ with torch.no_grad():
 
             <details class="qa-item">
               <summary><h4>3. LLM judge?</h4></summary>
-              <p>Judge хорошо оценивает semantic similarity, но сам может иметь bias, быть sensitive to prompt and иногда предпочитать verbose answer. Поэтому для серьёзной оценки нужен контроль humans or task-specific metrics.</p>
+              <p>Judge хорошо оценивает semantic similarity, но сам может иметь bias, быть чувствительным к prompt и иногда предпочитать многословный ответ. Поэтому для серьёзной оценки нужен контроль людьми или task-specific metrics.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>4. Grounding?</h4></summary>
-              <p>Если модель должна указать region, сравнивают predicted box and ground-truth box through IoU. Если $\operatorname{IoU}$ выше threshold, localization считается successful.</p>
+              <p>Если модель должна указать region, сравнивают predicted box и ground-truth box через IoU. Если $\operatorname{IoU}$ выше порога, localization считается успешной.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>5. Large images?</h4></summary>
-              <p>При resize теряются детали; при tiling растёт число visual tokens. Значит, high resolution improves perception but increases context length, memory and latency.</p>
+              <summary><h4>5. Большие изображения?</h4></summary>
+              <p>При resize теряются детали; при tiling растёт число visual tokens. Значит, высокое разрешение улучшает восприятие, но увеличивает context length, память и latency.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>6. Multi-image?</h4></summary>
-              <p>Нужно не просто понять каждую картинку, а связать их между собой. Model must keep image identities, compare details and manage much larger visual context.</p>
+              <p>Нужно не просто понять каждую картинку, а связать их между собой. Model должна удерживать идентичность каждой картинки, сравнивать детали и работать с куда большим визуальным контекстом.</p>
             </details>
 
             <details class="qa-item">
               <summary><h4>7. Hallucinations?</h4></summary>
-              <p>Language model has strong priors from text data. Когда visual evidence weak or ambiguous, model may generate a plausible object/action that usually appears in similar scenes.</p>
+              <p>У language model сильные priors из текстовых данных. Когда visual evidence слаба или неоднозначна, модель может сгенерировать правдоподобный объект или действие, которые обычно встречаются в похожих сценах.</p>
             </details>
 
             <details class="qa-item">
-              <summary><h4>8. Practical eval?</h4></summary>
-              <p>Берут реальные examples, добавляют negative cases, отдельно мерят OCR/grounding/reasoning, проверяют calibration and оставляют human review for high-risk outputs.</p>
+              <summary><h4>8. Практическая проверка?</h4></summary>
+              <p>Берут реальные examples, добавляют negative cases, отдельно мерят OCR/grounding/reasoning, проверяют calibration и оставляют human review для high-risk outputs.</p>
             </details>
           </div>
         </section>
@@ -17674,11 +17674,11 @@ with torch.no_grad():
           <div class="note danger">
             <ul>
               <li>Говорить, что VLM можно оценить только общей accuracy.</li>
-              <li>Путать captioning quality and factual grounding: красивое описание может содержать hallucinations.</li>
+              <li>Путать captioning quality и factual grounding: красивое описание может содержать hallucinations.</li>
               <li>Забывать про resolution: плохой OCR часто вызван потерей деталей при resize.</li>
-              <li>Считать, что benchmark leaderboard guarantees reliability in production.</li>
-              <li>Не разделять ошибки восприятия, grounding, reasoning and language generation.</li>
-              <li>Игнорировать multi-image cases, где модель путает изображения and порядок.</li>
+              <li>Считать, что benchmark leaderboard гарантирует надёжность в production.</li>
+              <li>Не разделять ошибки восприятия, grounding, reasoning и language generation.</li>
+              <li>Игнорировать multi-image cases, где модель путает изображения и порядок.</li>
             </ul>
           </div>
         </section>
@@ -17692,7 +17692,7 @@ with torch.no_grad():
 
         <section>
           <h3>Главная стратегия</h3>
-          <p>Билеты уже закрывают полный маршрут: от базовой нейросети and backpropagation до CNN, NLP, LLM, audio, generative models, GNN and VLM. Для сильного ответа надо не заучить 62 текста подряд, а видеть несколько больших линий, которые проходят через весь курс.</p>
+          <p>Билеты уже закрывают полный маршрут: от базовой нейросети и backpropagation до CNN, NLP, LLM, audio, generative models, GNN и VLM. Для сильного ответа надо не заучить 62 текста подряд, а видеть несколько больших линий, которые проходят через весь курс.</p>
 
           <div class="note">
             <p><strong>Цель финального прогона.</strong> На каждый билет уметь за 2–3 минуты дать основной ответ, затем выдержать 3–5 дополнительных вопросов: формула, интуиция, ограничение, практический пример, отличие от соседней темы.</p>
@@ -17721,7 +17721,7 @@ with torch.no_grad():
                 <td>Изображения</td>
                 <td>9–23</td>
                 <td>Locality, weight sharing, receptive field, feature maps, segmentation, detection, metrics</td>
-                <td>“CNN использует spatial inductive bias, а dense tasks требуют сохранить location, поэтому появляются encoder-decoder, skip connections, boxes and masks.”</td>
+                <td>“CNN использует spatial inductive bias, а dense tasks требуют сохранить location, поэтому появляются encoder-decoder, skip connections, boxes и masks.”</td>
               </tr>
               <tr>
                 <td>Representation learning</td>
@@ -17733,25 +17733,25 @@ with torch.no_grad():
                 <td>Sequence modeling</td>
                 <td>28–45</td>
                 <td>RNN, attention, Transformer, pretraining, scaling, fine-tuning, prompting, inference</td>
-                <td>“Transformer заменяет последовательную рекуррентность параллельным attention, а pretraining превращает next-token or masked prediction в универсальное обучение представлений.”</td>
+                <td>“Transformer заменяет последовательную рекуррентность параллельным attention, а pretraining превращает next-token или masked prediction в универсальное обучение представлений.”</td>
               </tr>
               <tr>
                 <td>Сигналы и звук</td>
                 <td>46–50</td>
                 <td>Waveform, sampling, frequency, STFT, ASR alignment, CTC, TTS</td>
-                <td>“Звук — временной сигнал; через sampling and spectral features его переводят в форму, удобную для sequence models.”</td>
+                <td>“Звук — временной сигнал; через sampling и spectral features его переводят в форму, удобную для sequence models.”</td>
               </tr>
               <tr>
                 <td>Генерация</td>
                 <td>52–59</td>
                 <td>GAN, VAE, normalizing flows, diffusion, guidance, solvers, distillation</td>
-                <td>“Разные generative models задают distribution по-разному: implicit adversarial learning, latent variable likelihood, exact likelihood or iterative denoising.”</td>
+                <td>“Разные generative models задают distribution по-разному: implicit adversarial learning, latent variable likelihood, exact likelihood или iterative denoising.”</td>
               </tr>
               <tr>
                 <td>Структуры и мультимодальность</td>
                 <td>56–62</td>
                 <td>Graphs, message passing, CLIP, VLM, visual tokens, benchmarks, limitations</td>
-                <td>“Модель должна совместить modality-specific encoder with shared representation or LLM, но evaluation and grounding become critical.”</td>
+                <td>“Модель должна совместить modality-specific encoder с общим representation или LLM, но evaluation и grounding становятся критичными.”</td>
               </tr>
             </tbody>
           </table>
@@ -17764,7 +17764,7 @@ with torch.no_grad():
             <li><strong>Второй проход, 10–12 часов.</strong> По каждому билету проговорить устный ответ вслух: определение, схема, формула, ограничение, практический пример. Всё, что не проговаривается, помечать как слабое место.</li>
             <li><strong>Математический проход, 8–10 часов.</strong> Выписать и объяснить формулы: softmax, cross-entropy, backprop chain rule, convolution size, IoU, attention, CTC, ELBO, GAN objective, diffusion forward process, KL, InfoNCE.</li>
             <li><strong>Доп вопросы, 8–10 часов.</strong> Идти не по билетам, а по “почему”: why AdamW, why residuals, why attention scales, why KV-cache, why diffusion slow, why VLM hallucinate.</li>
-            <li><strong>Последний прогон, 3–4 часа.</strong> Только короткие ответы and опасные ошибки. Цель — не углубляться, а убрать провалы и стабилизировать уверенность.</li>
+            <li><strong>Последний прогон, 3–4 часа.</strong> Только короткие ответы и опасные ошибки. Цель — не углубляться, а убрать провалы и стабилизировать уверенность.</li>
           </ol>
         </section>
 
@@ -17783,11 +17783,11 @@ with torch.no_grad():
           </div>
 
           <ul>
-            <li><strong>Definition.</strong> Одним предложением назвать объект: “attention computes weighted sum of values based on query-key similarity”.</li>
+            <li><strong>Definition.</strong> Одним предложением назвать объект: “attention считает weighted sum значений на основе query-key similarity”.</li>
             <li><strong>Intuition.</strong> Объяснить, какую проблему решает идея: locality, long-range dependencies, alignment, compression, generation.</li>
             <li><strong>Math.</strong> Дать ключевую формулу и расшифровать символы.</li>
             <li><strong>Architecture.</strong> Показать, где блок стоит в pipeline.</li>
-            <li><strong>Limitations.</strong> Назвать failure mode: overfitting, cost, instability, hallucination, loss of resolution, data bias.</li>
+            <li><strong>Limitations.</strong> Назвать failure mode: overfitting, стоимость, нестабильность, hallucination, потеря resolution, data bias.</li>
           </ul>
         </section>
 
@@ -17805,42 +17805,42 @@ with torch.no_grad():
               <tr>
                 <td>Backprop</td>
                 <td>$\frac{\partial L}{\partial x}=\frac{\partial L}{\partial y}\frac{\partial y}{\partial x}$</td>
-                <td>Reverse-mode выгоден, когда параметров много, а loss scalar.</td>
+                <td>Reverse-mode выгоден, когда параметров много, а loss скалярный.</td>
               </tr>
               <tr>
                 <td>Softmax + CE</td>
                 <td>$p_i=\frac{e^{z_i}}{\sum_j e^{z_j}}$, $L=-\log p_y$</td>
-                <td>Logits convert to distribution; CE штрафует low probability correct class.</td>
+                <td>Logits превращаются в распределение; CE штрафует низкую вероятность правильного класса.</td>
               </tr>
               <tr>
                 <td>Convolution</td>
                 <td>$W_{out}=\lfloor\frac{W+2P-K}{S}\rfloor+1$</td>
-                <td>Locality and weight sharing reduce parameters and encode image structure.</td>
+                <td>Locality и weight sharing сокращают число параметров и кодируют структуру изображения.</td>
               </tr>
               <tr>
                 <td>Attention</td>
                 <td>$\operatorname{softmax}(QK^\top/\sqrt{d_k})V$</td>
-                <td>Attention is content-based weighted aggregation over tokens.</td>
+                <td>Attention — это content-based взвешенная агрегация по tokens.</td>
               </tr>
               <tr>
                 <td>CTC</td>
                 <td>$p(y|x)=\sum_{\pi\in B^{-1}(y)}p(\pi|x)$</td>
-                <td>CTC sums over alignments and uses blank/collapse operation.</td>
+                <td>CTC суммирует по alignments и использует операцию blank/collapse.</td>
               </tr>
               <tr>
                 <td>VAE</td>
                 <td>$\log p(x)\ge E_{q(z|x)}\log p(x|z)-KL(q(z|x)\|p(z))$</td>
-                <td>ELBO balances reconstruction and latent regularization.</td>
+                <td>ELBO балансирует reconstruction и регуляризацию latent.</td>
               </tr>
               <tr>
                 <td>GAN</td>
                 <td>$\min_G\max_D E\log D(x)+E\log(1-D(G(z)))$</td>
-                <td>Generator and discriminator play minimax game; training can be unstable.</td>
+                <td>Generator и discriminator играют в minimax game; обучение может быть нестабильным.</td>
               </tr>
               <tr>
                 <td>Diffusion</td>
                 <td>$q(x_t|x_0)=\mathcal{N}(\sqrt{\bar{\alpha}_t}x_0,(1-\bar{\alpha}_t)I)$</td>
-                <td>Forward process corrupts data; reverse model learns denoising.</td>
+                <td>Forward process разрушает данные; reverse model учится denoising.</td>
               </tr>
             </tbody>
           </table>
@@ -17849,18 +17849,18 @@ with torch.no_grad():
         <section>
           <h3>Мини-тренажёр доп вопросов</h3>
           <ol>
-            <li>Почему deep model без nonlinearity collapses into one linear layer?</li>
-            <li>Почему validation loss can grow while train loss falls?</li>
+            <li>Почему deep model без nonlinearity схлопывается в один линейный слой?</li>
+            <li>Почему validation loss может расти, пока train loss падает?</li>
             <li>Почему residual connections помогают глубоким сетям?</li>
-            <li>Почему IoU лучше pixel accuracy for imbalanced segmentation?</li>
+            <li>Почему IoU лучше pixel accuracy для несбалансированной segmentation?</li>
             <li>Почему attention делят на $\sqrt{d_k}$?</li>
             <li>Почему BERT не является autoregressive model?</li>
             <li>Почему LoRA может дообучать модель с малым числом параметров?</li>
             <li>Почему KV-cache ускоряет decode, но не отменяет memory bottleneck?</li>
-            <li>Почему CTC нужен для ASR without frame-level labels?</li>
+            <li>Почему CTC нужен для ASR без frame-level labels?</li>
             <li>Почему WGAN использует Lipschitz constraint?</li>
             <li>Почему diffusion sampling медленнее GAN generation?</li>
-            <li>Почему VLM can hallucinate even when image is available?</li>
+            <li>Почему VLM может hallucinate, даже когда изображение доступно?</li>
           </ol>
         </section>
 
@@ -17900,7 +17900,7 @@ with torch.no_grad():
               <tr>
                 <td>RNN/BPTT ↔ Transformer</td>
                 <td>Transformer убирает sequential bottleneck RNN.</td>
-                <td>RNN передаёт информацию через hidden state step by step, а self-attention соединяет позиции напрямую, лучше параллелится, но стоит $O(T^2)$.</td>
+                <td>RNN передаёт информацию через hidden state шаг за шагом, а self-attention соединяет позиции напрямую, лучше параллелится, но стоит $O(T^2)$.</td>
               </tr>
               <tr>
                 <td>CTC ↔ Attention decoder</td>
@@ -17939,13 +17939,13 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>Feature extraction или fine-tuning?</td>
-                <td>Feature extraction — мало данных, риск переобучения, быстрый baseline, backbone already strong.</td>
+                <td>Feature extraction — мало данных, риск переобучения, быстрый baseline, backbone уже достаточно сильный.</td>
                 <td>Fine-tuning — domain shift, достаточно данных, нужно адаптировать глубокие признаки под новую задачу.</td>
               </tr>
               <tr>
                 <td>CTC или seq2seq attention для ASR?</td>
                 <td>CTC проще, монотонен, быстрый, хорошо подходит для frame-to-text без сложного decoder.</td>
-                <td>Seq2seq attention гибче, может лучше моделировать language dependencies, но требует аккуратного decoding and больше compute.</td>
+                <td>Seq2seq attention гибче, может лучше моделировать language dependencies, но требует аккуратного decoding и больше compute.</td>
               </tr>
               <tr>
                 <td>GAN или diffusion для generation?</td>
@@ -17954,7 +17954,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>GCN, GraphSAGE или GAT?</td>
-                <td>GCN — простой transductive baseline; GraphSAGE — inductive setting and neighbour sampling.</td>
+                <td>GCN — простой transductive baseline; GraphSAGE — inductive setting и neighbour sampling.</td>
                 <td>GAT — когда разные neighbours должны иметь разные learned weights, но attention дороже.</td>
               </tr>
             </tbody>
@@ -18458,7 +18458,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>Оптимизаторы</td>
-                <td>GD/SGD/minibatch, learning rate, momentum as velocity, Nesterov lookahead, Adagrad/RMSProp/Adam as adaptive per-coordinate scaling.</td>
+                <td>GD/SGD/minibatch, learning rate, momentum как velocity, Nesterov lookahead, Adagrad/RMSProp/Adam как adaptive per-coordinate scaling.</td>
                 <td><a href="https://d2l.ai/chapter_optimization/index.html">Dive into Deep Learning: Optimization Algorithms</a>; <a href="https://www.ruder.io/optimizing-gradient-descent/">Sebastian Ruder: overview of gradient descent optimizers</a>; <a href="https://arxiv.org/abs/1412.6980">Adam paper</a>; optimizer GIFs в билете 5.</td>
                 <td>5-8</td>
               </tr>
@@ -18470,7 +18470,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>Регуляризация и обобщение</td>
-                <td>Bias-variance, train/val gap, L1/L2 as penalty or MAP prior, dropout as noisy ensemble, early stopping, data augmentation.</td>
+                <td>Bias-variance, train/val gap, L1/L2 как penalty или MAP prior, dropout как noisy ensemble, early stopping, data augmentation.</td>
                 <td>CS231n practical notes; Understanding Deep Learning: generalization/regularization chapters; <a href="https://stepik.org/course/326/promo">CSC/Stepik: Математическая статистика</a> для оценок, гипотез и регрессии.</td>
                 <td>6, 8-9, 15</td>
               </tr>
@@ -18482,19 +18482,19 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>Attention и Transformer math</td>
-                <td>Dot-product attention as soft retrieval, Q/K/V projections, scaling by \(\sqrt{d_k}\), causal mask, residual+LayerNorm, FFN as per-token MLP.</td>
+                <td>Dot-product attention как soft retrieval, Q/K/V projections, масштабирование на \(\sqrt{d_k}\), causal mask, residual+LayerNorm, FFN как per-token MLP.</td>
                 <td>CS224n attention/transformer lectures; Dive into Deep Learning: attention and transformers; The Illustrated Transformer; Teach-in LLM.</td>
                 <td>32-45, 51, 60-62</td>
               </tr>
               <tr>
                 <td>Generative math</td>
-                <td>ELBO and reparameterization in VAE, minimax objective in GAN, change of variables in flows, score/noise prediction in diffusion.</td>
+                <td>ELBO и reparameterization в VAE, minimax objective в GAN, change of variables во flows, score/noise prediction в diffusion.</td>
                 <td>Stanford CS236; Understanding Deep Learning: generative chapters; Lilian Weng notes; HSE diffusion course; Hugging Face Diffusion Course.</td>
                 <td>52-59</td>
               </tr>
               <tr>
                 <td>Audio math</td>
-                <td>Fourier transform, STFT, windowing, spectrogram, mel scale, CTC dynamic programming and monotonic alignment.</td>
+                <td>Fourier transform, STFT, windowing, spectrogram, mel scale, CTC dynamic programming и monotonic alignment.</td>
                 <td>ФКН/HSE audio course; Stanford CS224S; Hugging Face Audio Course; Distill CTC; статья “Преобразование Фурье и звук” в математической справке.</td>
                 <td>46-50</td>
               </tr>
@@ -18534,7 +18534,7 @@ with torch.no_grad():
               <tr>
                 <td>Computer Vision</td>
                 <td><a href="https://cs231n.stanford.edu/">Stanford CS231n — Deep Learning for Computer Vision</a></td>
-                <td>Главный курс для CNN, backprop, optimization, architectures, detection/segmentation and visual recognition.</td>
+                <td>Главный курс для CNN, backprop, optimization, architectures, detection/segmentation и visual recognition.</td>
               </tr>
               <tr>
                 <td>Computer Vision на русском</td>
@@ -18544,7 +18544,7 @@ with torch.no_grad():
               <tr>
                 <td>NLP, embeddings, Transformers</td>
                 <td><a href="https://web.stanford.edu/class/cs224n/">Stanford CS224N — NLP with Deep Learning</a></td>
-                <td>Word vectors, RNN, attention, Transformers, LLM evaluation and neural NLP assignments на PyTorch.</td>
+                <td>Word vectors, RNN, attention, Transformers, LLM evaluation и neural NLP assignments на PyTorch.</td>
               </tr>
               <tr>
                 <td>Transformers и современные LLM</td>
@@ -18564,12 +18564,12 @@ with torch.no_grad():
               <tr>
                 <td>Generative models</td>
                 <td><a href="https://deepgenerativemodels.github.io/">Stanford CS236 — Deep Generative Models</a></td>
-                <td>VAE, GAN, normalizing flows, diffusion and likelihood-based/probabilistic view of generation.</td>
+                <td>VAE, GAN, normalizing flows, diffusion и likelihood-based/вероятностный взгляд на генерацию.</td>
               </tr>
               <tr>
                 <td>Speech / ASR</td>
                 <td><a href="https://deeplearning.cs.cmu.edu/">CMU 11-785 — Introduction to Deep Learning</a></td>
-                <td>Сильная практическая школа по deep learning с заметным уклоном в speech, sequence modeling and PyTorch homework.</td>
+                <td>Сильная практическая школа по deep learning с заметным уклоном в speech, sequence modeling и PyTorch homework.</td>
               </tr>
               <tr>
                 <td>Spoken language systems</td>
@@ -18743,7 +18743,7 @@ with torch.no_grad():
             <li><strong>Затем источники по провалам.</strong> Если билет не восстанавливается из принципов, открыть соответствующую строку таблицы выше и прочитать только нужный раздел.</li>
             <li><strong>Архитектуры учить визуально.</strong> Для CNN, detection, segmentation, transformers, RNN-T, GNN и diffusion сначала смотреть схему, затем формулу, затем ограничения.</li>
             <li><strong>Перед сном прогнать доп вопросы.</strong> Они лучше вскрывают слабые места, чем повторное пассивное чтение.</li>
-            <li><strong>В день экзамена держать минимум.</strong> Definitions, key formula, intuition, limitation, example application.</li>
+            <li><strong>В день экзамена держать минимум.</strong> Определение, ключевая формула, интуиция, ограничение, пример применения.</li>
           </ol>
 
           <h4>Must know formulas</h4>
@@ -18881,7 +18881,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>SGD vs Adam</td>
-                <td>SGD прост и часто хорошо generalizes, Adam адаптирует шаги по координатам.</td>
+                <td>SGD прост и часто хорошо обобщает, Adam адаптирует шаги по координатам.</td>
                 <td>Почему Adam может быстрее стартовать, но не всегда лучше обобщает?</td>
               </tr>
               <tr>
@@ -18891,7 +18891,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>BERT vs GPT</td>
-                <td>BERT bidirectional encoder with masked LM, GPT autoregressive decoder with next-token prediction.</td>
+                <td>BERT — bidirectional encoder с masked LM, GPT — autoregressive decoder с next-token prediction.</td>
                 <td>Почему BERT не генерирует текст слева направо естественным образом?</td>
               </tr>
               <tr>
@@ -18921,7 +18921,7 @@ with torch.no_grad():
               </tr>
               <tr>
                 <td>VAE vs Normalizing Flow</td>
-                <td>VAE optimizes lower bound, flow даёт exact likelihood через invertible transform.</td>
+                <td>VAE оптимизирует lower bound, flow даёт exact likelihood через invertible transform.</td>
                 <td>Почему flows ограничены требованием обратимости?</td>
               </tr>
               <tr>
@@ -18974,7 +18974,7 @@ with torch.no_grad():
             <li>Почему CTC вводит blank token?</li>
             <li>Чем RNN-T отличается от CTC?</li>
             <li>Почему ViT требует patch embedding?</li>
-            <li>Почему GAN training unstable?</li>
+            <li>Почему GAN training нестабилен?</li>
             <li>Как ELBO объясняет компромисс VAE?</li>
             <li>Почему normalizing flow обязан быть invertible?</li>
             <li>Почему diffusion sampling можно ускорять DDIM или solvers?</li>
@@ -18987,7 +18987,7 @@ with torch.no_grad():
         <section>
           <h3>Критерий готовности</h3>
           <div class="excellent">
-            <p>Готовность к хорошему экзамену начинается там, где Вы можете не только пересказать билет, но и восстановить его из принципов. Если забыта деталь, надо уметь вывести её из общей идеи: optimization minimizes empirical risk, CNN uses locality, attention computes weighted aggregation, generative model approximates data distribution, VLM combines visual evidence with language generation.</p>
+            <p>Готовность к хорошему экзамену начинается там, где Вы можете не только пересказать билет, но и восстановить его из принципов. Если забыта деталь, надо уметь вывести её из общей идеи: optimization минимизирует empirical risk, CNN использует locality, attention считает взвешенную агрегацию, generative model приближает распределение данных, VLM соединяет visual evidence с генерацией языка.</p>
           </div>
         </section>
       </article>

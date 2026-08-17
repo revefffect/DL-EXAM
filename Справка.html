@@ -1195,9 +1195,9 @@
       <article class="card" id="ref-blip2">
         <header><h2>BLIP-2</h2></header>
         <section>
-          <p><strong>BLIP-2</strong> — vision-language architecture that connects frozen image encoder and frozen LLM through Q-Former.</p>
+          <p><strong>BLIP-2</strong> — vision-language архитектура, соединяющая замороженный image encoder и замороженную LLM через Q-Former.</p>
 
-          <p>Q-Former uses learnable queries to extract a compact set of visual tokens, reducing the number of tokens passed to LLM.</p>
+          <p>Q-Former использует обучаемые queries, чтобы извлечь компактный набор visual tokens и уменьшить число tokens, передаваемых в LLM.</p>
         </section>
       </article>
 
@@ -1390,9 +1390,9 @@
       <article class="card" id="ref-chart-understanding">
         <header><h2>Chart understanding</h2></header>
         <section>
-          <p><strong>Chart understanding</strong> — способность модели понимать plots, diagrams, tables and графики: оси, legend, scale, подписи и численные значения.</p>
+          <p><strong>Chart understanding</strong> — способность модели понимать plots, diagrams, tables и графики: оси, legend, scale, подписи и численные значения.</p>
 
-          <p>Задача трудна для VLM, потому что объединяет OCR, spatial reasoning, arithmetic and semantic interpretation. Ошибка в одной подписи оси может полностью поменять ответ.</p>
+          <p>Задача трудна для VLM, потому что объединяет OCR, spatial reasoning, arithmetic и semantic interpretation. Ошибка в одной подписи оси может полностью поменять ответ.</p>
         </section>
       </article>
 
@@ -1441,7 +1441,7 @@
       <article class="card" id="ref-classifier-free-guidance">
         <header><h2>Classifier-free guidance</h2></header>
         <section>
-          <p><strong>Classifier-free guidance</strong>, CFG, усиливает condition in diffusion without external classifier.</p>
+          <p><strong>Classifier-free guidance</strong>, CFG, усиливает condition в diffusion без внешнего classifier.</p>
 
           $$
           \hat{\varepsilon}
@@ -1451,16 +1451,16 @@
           w(\varepsilon_\theta(x_t,t,y)-\varepsilon_\theta(x_t,t,\varnothing)).
           $$
 
-          <p>Модель обучают с condition dropout, поэтому она умеет работать both conditional and unconditional. Scale $w$ controls prompt adherence.</p>
+          <p>Модель обучают с condition dropout, поэтому она умеет работать и conditional, и unconditional. Scale $w$ управляет prompt adherence.</p>
         </section>
       </article>
 
       <article class="card" id="ref-clip">
         <header><h2>CLIP</h2></header>
         <section>
-          <p><strong>CLIP</strong>, Contrastive Language-Image Pretraining, — dual-encoder model for image-text alignment.</p>
+          <p><strong>CLIP</strong>, Contrastive Language-Image Pretraining, — dual-encoder модель для image-text alignment.</p>
 
-          <p>Image encoder and text encoder map inputs into shared normalized embedding space. Contrastive loss pulls matching image-caption pairs together and pushes mismatched pairs apart.</p>
+          <p>Image encoder и text encoder отображают входы в общее нормированное embedding space. Contrastive loss стягивает совпадающие пары image-caption и расталкивает несовпадающие.</p>
         </section>
       </article>
 
@@ -1521,9 +1521,9 @@
       <article class="card" id="ref-conditional-diffusion">
         <header><h2>Conditional diffusion</h2></header>
         <section>
-          <p><strong>Conditional diffusion</strong> models distribution $p_\theta(x|y)$ by giving denoising network an extra condition $y$.</p>
+          <p><strong>Conditional diffusion</strong> моделирует распределение $p_\theta(x|y)$, передавая denoising network дополнительное condition $y$.</p>
 
-          <p>Condition can be class label, text prompt, mask, image, layout, depth map or another control signal. Network predicts noise as $\varepsilon_\theta(x_t,t,y)$.</p>
+          <p>Condition может быть class label, text prompt, mask, изображением, layout, depth map или другим управляющим сигналом. Сеть предсказывает шум как $\varepsilon_\theta(x_t,t,y)$.</p>
         </section>
       </article>
 
@@ -1548,7 +1548,7 @@
       <article class="card" id="ref-consistency-model">
         <header><h2>Consistency model</h2></header>
         <section>
-          <p><strong>Consistency model</strong> учит model mapping from noisy point on diffusion trajectory directly to the same clean sample.</p>
+          <p><strong>Consistency model</strong> учит модель отображать noisy point на diffusion trajectory сразу в тот же clean sample.</p>
 
           <p>Требование согласованности: разные noisy states одного reverse path должны давать consistent clean output. Такой подход позволяет one-step or few-step generation.</p>
         </section>
@@ -1586,7 +1586,7 @@
         <section>
           <p><strong>Contrastive learning</strong> учит representation через сравнение positive and negative pairs.</p>
 
-          <p>Positive pairs pull together in embedding space, negative pairs push apart. В CLIP positives are matching image-text pairs, negatives are other captions/images in the batch.</p>
+          <p>Positive pairs стягиваются в embedding space, negative pairs расталкиваются. В CLIP positives — совпадающие пары image-text, negatives — остальные captions/изображения в batch.</p>
         </section>
       </article>
 
@@ -1769,16 +1769,16 @@
       <article class="card" id="ref-ddim">
         <header><h2>DDIM</h2></header>
         <section>
-          <p><strong>DDIM</strong>, Denoising Diffusion Implicit Model, — sampler, который позволяет использовать fewer deterministic denoising steps without retraining DDPM.</p>
+          <p><strong>DDIM</strong>, Denoising Diffusion Implicit Model, — sampler, который позволяет использовать меньше детерминированных denoising steps без переобучения DDPM.</p>
 
-          <p>При $\eta=0$ path становится deterministic, поэтому можно пропускать timesteps and generate much faster, often with moderate quality trade-off.</p>
+          <p>При $\eta=0$ path становится deterministic, поэтому можно пропускать timesteps и генерировать значительно быстрее, обычно с умеренной потерей качества.</p>
         </section>
       </article>
 
       <article class="card" id="ref-ddpm">
         <header><h2>DDPM</h2></header>
         <section>
-          <p><strong>DDPM</strong>, Denoising Diffusion Probabilistic Model, — классическая diffusion formulation with stochastic reverse denoising steps.</p>
+          <p><strong>DDPM</strong>, Denoising Diffusion Probabilistic Model, — классическая diffusion formulation со стохастическими reverse denoising steps.</p>
 
           <p>DDPM обычно требует many sampling steps, потому что reverse chain идёт постепенно from $x_T$ to $x_0$.</p>
         </section>
@@ -1897,9 +1897,9 @@
       <article class="card" id="ref-diffusion-distillation">
         <header><h2>Diffusion distillation</h2></header>
         <section>
-          <p><strong>Diffusion distillation</strong> trains fast student sampler to imitate a slower teacher diffusion model.</p>
+          <p><strong>Diffusion distillation</strong> обучает быстрый student sampler имитировать более медленную teacher diffusion model.</p>
 
-          <p>Progressive distillation часто учит student делать one step where teacher did two steps, repeatedly reducing number of sampling steps.</p>
+          <p>Progressive distillation часто учит student делать один шаг там, где teacher делал два, многократно уменьшая число sampling steps.</p>
         </section>
       </article>
 
@@ -1915,9 +1915,9 @@
       <article class="card" id="ref-diffusion-solver">
         <header><h2>Diffusion solver</h2></header>
         <section>
-          <p><strong>Diffusion solver</strong> treats reverse diffusion as numerical ODE/SDE integration and uses higher-order methods for fewer steps.</p>
+          <p><strong>Diffusion solver</strong> рассматривает reverse diffusion как численное интегрирование ODE/SDE и использует методы высокого порядка ради меньшего числа шагов.</p>
 
-          <p>Solvers such as DPM-Solver can reduce number of neural function evaluations without retraining, but need careful step schedule and sampler settings.</p>
+          <p>Solvers вроде DPM-Solver позволяют сократить число вызовов сети без переобучения, но требуют аккуратного step schedule и настроек sampler.</p>
         </section>
       </article>
 
@@ -1986,9 +1986,9 @@
       <article class="card" id="ref-dual-encoder">
         <header><h2>Dual encoder</h2></header>
         <section>
-          <p><strong>Dual encoder</strong> architecture uses two separate encoders for two inputs and compares final embeddings.</p>
+          <p><strong>Dual encoder</strong> — архитектура, которая использует два отдельных encoder для двух входов и сравнивает итоговые embeddings.</p>
 
-          <p>В CLIP один encoder processes image, другой processes text. Такой подход efficient for retrieval, because embeddings can be precomputed independently.</p>
+          <p>В CLIP один encoder обрабатывает изображение, другой — текст. Такой подход эффективен для retrieval, потому что embeddings можно предвычислить независимо.</p>
         </section>
       </article>
 
@@ -2114,7 +2114,7 @@
       <article class="card" id="ref-exact-likelihood">
         <header><h2>Exact likelihood</h2></header>
         <section>
-          <p><strong>Exact likelihood</strong> означает, что model can compute $\log p_\theta(x)$ directly, without variational lower bound or adversarial proxy.</p>
+          <p><strong>Exact likelihood</strong> означает, что модель может вычислить $\log p_\theta(x)$ напрямую, без variational lower bound и adversarial proxy.</p>
 
           <p>Normalizing Flows получают exact likelihood через обратимое отображение в prior space и correction term с Jacobian determinant. В VAE обычно доступен ELBO, а GAN explicit likelihood не оптимизирует.</p>
         </section>
@@ -2604,16 +2604,16 @@
         <section>
           <p><strong>Graph</strong> — структура данных из nodes $V$ и edges $E$, обычно записываемая как $G=(V,E)$.</p>
 
-          <p>Graph описывает не только признаки объектов, но и relations between objects. Примеры: social network, molecule, road network, citation graph, user-item recommendation graph.</p>
+          <p>Graph описывает не только признаки объектов, но и relations между объектами. Примеры: social network, molecule, road network, citation graph, user-item recommendation graph.</p>
         </section>
       </article>
 
       <article class="card" id="ref-graph-foundation-model">
         <header><h2>Graph foundation model</h2></header>
         <section>
-          <p><strong>Graph foundation model</strong> — большая pretrained graph model, которую хотят применять к разным graphs and tasks с малым дообучением или prompting.</p>
+          <p><strong>Graph foundation model</strong> — большая pretrained graph model, которую хотят применять к разным graphs и tasks с малым дообучением или prompting.</p>
 
-          <p>Главная трудность по сравнению с LLM: semantics nodes, edges and features сильно зависят от domain. Atom in molecule, user in social graph and paper in citation graph не имеют общего естественного vocabulary.</p>
+          <p>Главная трудность по сравнению с LLM: semantics nodes, edges и features сильно зависят от domain. Atom в molecule, user в social graph и paper в citation graph не имеют общего естественного vocabulary.</p>
         </section>
       </article>
 
@@ -2622,14 +2622,14 @@
         <section>
           <p><strong>Graph Neural Network</strong>, GNN, — neural architecture для данных с graph structure.</p>
 
-          <p>Базовая идея — message passing: nodes repeatedly aggregate information from neighbours and update hidden states. GNN можно применять для node classification, link prediction и graph classification.</p>
+          <p>Базовая идея — message passing: nodes многократно агрегируют информацию от соседей и обновляют hidden states. GNN можно применять для node classification, link prediction и graph classification.</p>
         </section>
       </article>
 
       <article class="card" id="ref-graph-partitioning">
         <header><h2>Graph partitioning</h2></header>
         <section>
-          <p><strong>Graph partitioning</strong> делит большой graph на smaller subgraphs или clusters, чтобы training and inference GNN помещались в memory.</p>
+          <p><strong>Graph partitioning</strong> делит большой graph на smaller subgraphs или clusters, чтобы training и inference GNN помещались в memory.</p>
 
           <p>Хорошее partitioning старается сохранить many edges внутри parts и минимизировать число cut edges between parts, иначе теряется важный message passing signal.</p>
         </section>
@@ -2640,14 +2640,14 @@
         <section>
           <p><strong>Graph rewiring</strong> изменяет topology graph: добавляет, удаляет или переназначает edges, чтобы улучшить information flow for GNN.</p>
 
-          <p>Rewiring может помогать при oversquashing, сокращая graph distances and bypassing bottlenecks. Риск — лишние edges усиливают oversmoothing or add noise.</p>
+          <p>Rewiring может помогать при oversquashing, сокращая graph distances и bypassing bottlenecks. Риск — лишние edges усиливают oversmoothing or add noise.</p>
         </section>
       </article>
 
       <article class="card" id="ref-graphsage">
         <header><h2>GraphSAGE</h2></header>
         <section>
-          <p><strong>GraphSAGE</strong> означает sample and aggregate: модель samples fixed number neighbours и агрегирует их representations.</p>
+          <p><strong>GraphSAGE</strong> означает sample and aggregate: модель сэмплирует фиксированное число neighbours и агрегирует их representations.</p>
 
           <p>В отличие от transductive методов, GraphSAGE удобен для inductive inference: можно получить embedding новой node, если известны её features и neighbourhood.</p>
         </section>
@@ -2714,9 +2714,9 @@
       <article class="card" id="ref-guidance-scale">
         <header><h2>Guidance scale</h2></header>
         <section>
-          <p><strong>Guidance scale</strong> в conditional diffusion controls strength of condition during sampling.</p>
+          <p><strong>Guidance scale</strong> в conditional diffusion управляет силой condition во время sampling.</p>
 
-          <p>В classifier-free guidance scale $w$ усиливает direction from unconditional prediction to conditional prediction. Higher scale gives stronger prompt adherence, but can reduce diversity and create artifacts.</p>
+          <p>В classifier-free guidance scale $w$ усиливает направление от unconditional prediction к conditional prediction. Больший scale даёт более сильное prompt adherence, но может снижать diversity и порождать артефакты.</p>
         </section>
       </article>
 
@@ -2751,7 +2751,7 @@
       <article class="card" id="ref-heterophily">
         <header><h2>Heterophily</h2></header>
         <section>
-          <p><strong>Heterophily</strong> в graph означает, что connected nodes часто отличаются по label or features.</p>
+          <p><strong>Heterophily</strong> в graph означает, что connected nodes часто отличаются по label или features.</p>
 
           <p>На heterophilic graphs простое усреднение neighbours может вредить: GNN смешивает сигналы разных classes. Нужны architectures, которые отделяют self signal, учитывают relation type или learn when neighbour signal should be transformed differently.</p>
         </section>
@@ -2816,7 +2816,7 @@
         <section>
           <p><strong>Image captioning</strong> — задача генерации текстового описания изображения.</p>
 
-          <p>В VLM captioning можно рассматривать как instruction “describe this image”: visual tokens provide image context, LLM generates natural language caption.</p>
+          <p>В VLM captioning можно рассматривать как instruction “describe this image”: visual tokens дают контекст изображения, LLM генерирует caption на естественном языке.</p>
         </section>
       </article>
 
@@ -2845,18 +2845,18 @@
       <article class="card" id="ref-image-text-alignment">
         <header><h2>Image-text alignment</h2></header>
         <section>
-          <p><strong>Image-text alignment</strong> — выравнивание visual and textual representations so matching image-caption pairs become close in shared space.</p>
+          <p><strong>Image-text alignment</strong> — выравнивание visual и textual representations, чтобы совпадающие пары image-caption оказались близко в общем space.</p>
 
-          <p>CLIP достигает alignment через contrastive learning: correct image-text pairs are positives, mismatched pairs are negatives.</p>
+          <p>CLIP достигает alignment через contrastive learning: правильные пары image-text — positives, несовпадающие — negatives.</p>
         </section>
       </article>
 
       <article class="card" id="ref-image-text-retrieval">
         <header><h2>Image-text retrieval</h2></header>
         <section>
-          <p><strong>Image-text retrieval</strong> — поиск across modalities: по text query найти relevant images или по image найти matching texts.</p>
+          <p><strong>Image-text retrieval</strong> — поиск между модальностями: по text query найти релевантные изображения или по изображению — подходящие тексты.</p>
 
-          <p>CLIP-style retrieval encodes query and database items into same embedding space, then ranks by cosine similarity.</p>
+          <p>CLIP-style retrieval кодирует запрос и элементы базы в одно embedding space, затем ранжирует по cosine similarity.</p>
         </section>
       </article>
 
@@ -2900,7 +2900,7 @@
           {\exp(s_{pos}/\tau)+\sum_j\exp(s_{neg,j}/\tau)}.
           $$
 
-          <p>В CLIP InfoNCE применяется symmetrically: image-to-text and text-to-image.</p>
+          <p>В CLIP InfoNCE применяется симметрично: image-to-text и text-to-image.</p>
         </section>
       </article>
 
@@ -3152,9 +3152,9 @@
       <article class="card" id="ref-latent-diffusion">
         <header><h2>Latent diffusion</h2></header>
         <section>
-          <p><strong>Latent diffusion</strong> performs denoising in compressed latent space instead of pixel space.</p>
+          <p><strong>Latent diffusion</strong> выполняет denoising в сжатом latent space вместо pixel space.</p>
 
-          <p>Обычно VAE encoder maps image to latent, diffusion U-Net generates/denoises latent, and VAE decoder maps latent back to pixels. Подход dramatically reduces compute, but quality depends on VAE compression.</p>
+          <p>Обычно VAE encoder отображает изображение в latent, diffusion U-Net генерирует и денойзит latent, а VAE decoder возвращает latent обратно в пиксели. Подход резко сокращает compute, но качество зависит от VAE compression.</p>
         </section>
       </article>
 
@@ -3250,18 +3250,18 @@
       <article class="card" id="ref-llava">
         <header><h2>LLaVA</h2></header>
         <section>
-          <p><strong>LLaVA</strong>, Large Language and Vision Assistant, — VLM architecture that connects CLIP-like vision encoder to LLM through simple projector.</p>
+          <p><strong>LLaVA</strong>, Large Language and Vision Assistant, — VLM-архитектура, соединяющая CLIP-подобный vision encoder с LLM через простой projector.</p>
 
-          <p>Visual tokens are projected into LLM space and concatenated with text tokens. Training usually includes alignment stage and multimodal instruction tuning.</p>
+          <p>Visual tokens проецируются в пространство LLM и конкатенируются с text tokens. Training обычно включает alignment stage и multimodal instruction tuning.</p>
         </section>
       </article>
 
       <article class="card" id="ref-llm">
         <header><h2>LLM</h2></header>
         <section>
-          <p><strong>LLM</strong>, Large Language Model, — large neural language model trained to model and generate text.</p>
+          <p><strong>LLM</strong>, Large Language Model, — большая нейронная языковая модель, обученная моделировать и генерировать текст.</p>
 
-          <p>In VLM, LLM serves as the generative reasoning component: it receives text tokens plus projected visual tokens and outputs answer tokens autoregressively.</p>
+          <p>В VLM LLM служит генеративным reasoning-компонентом: она получает text tokens вместе со спроецированными visual tokens и авторегрессионно выдаёт tokens ответа.</p>
         </section>
       </article>
 
@@ -3283,7 +3283,7 @@
           z=\log(M|X|^2+\varepsilon).
           $$
 
-          <p>Mel filterbank приближает human frequency perception, а logarithm compresses dynamic range. Log-mel features часто служат входом для neural speech и audio classification models.</p>
+          <p>Mel filterbank приближает human frequency perception, а логарифм сжимает dynamic range. Log-mel features часто служат входом для neural speech и audio classification models.</p>
         </section>
       </article>
 
@@ -3550,7 +3550,7 @@
       <article class="card" id="ref-mllm">
         <header><h2>MLLM</h2></header>
         <section>
-          <p><strong>MLLM</strong>, Multimodal Large Language Model, — LLM extended to handle non-text modalities such as images, audio or video.</p>
+          <p><strong>MLLM</strong>, Multimodal Large Language Model, — LLM, расширенная для работы с нетекстовыми modalities, такими как изображения, аудио или видео.</p>
 
           <p>Для vision-language MLLM обычно combines visual encoder, projector and LLM, enabling visual dialogue, VQA and captioning.</p>
         </section>
@@ -3616,16 +3616,16 @@
         <section>
           <p><strong>Multimodal benchmark</strong> — набор задач для оценки моделей, которые работают сразу с несколькими modalities, например image plus text.</p>
 
-          <p>Хороший benchmark должен явно говорить, какой skill он проверяет: VQA, OCR, grounding, chart reasoning, hallucination resistance, multi-image comparison or instruction following.</p>
+          <p>Хороший benchmark должен явно говорить, какой skill он проверяет: VQA, OCR, grounding, chart reasoning, hallucination resistance, multi-image comparison или instruction following.</p>
         </section>
       </article>
 
       <article class="card" id="ref-multimodal-learning">
         <header><h2>Multimodal learning</h2></header>
         <section>
-          <p><strong>Multimodal learning</strong> works with multiple data modalities, for example image, text, audio, video or sensor data.</p>
+          <p><strong>Multimodal learning</strong> работает с несколькими data modalities, например image, text, audio, video или sensor data.</p>
 
-          <p>Vision-language tasks include image-text retrieval, captioning, visual question answering, grounding and text-to-image generation.</p>
+          <p>Vision-language задачи включают image-text retrieval, captioning, visual question answering, grounding и text-to-image generation.</p>
         </section>
       </article>
 
@@ -3658,7 +3658,7 @@
       <article class="card" id="ref-neighborhood-graph">
         <header><h2>Neighborhood in graph</h2></header>
         <section>
-          <p><strong>Neighborhood</strong> $\mathcal{N}(u)$ — set nodes, connected to node $u$ by edges.</p>
+          <p><strong>Neighborhood</strong> $\mathcal{N}(u)$ — множество nodes, соединённых с node $u$ рёбрами.</p>
 
           <p>$k$-hop neighborhood содержит nodes, reachable from $u$ за не более чем $k$ edges. После $k$ message passing layers node representation получает информацию именно из такого радиуса.</p>
         </section>
@@ -3669,7 +3669,7 @@
         <section>
           <p><strong>Neighbour sampling</strong> — scalable training trick for GNN, где для каждой node берут не всех neighbours, а случайную выборку fixed size.</p>
 
-          <p>Приём ограничивает growth computational graph across layers. Плата — sampling variance and risk of missing important neighbours.</p>
+          <p>Приём ограничивает рост computational graph по слоям. Плата — sampling variance и риск пропустить важных neighbours.</p>
         </section>
       </article>
 
@@ -3722,16 +3722,16 @@
         <section>
           <p><strong>Node</strong> — вершина graph, то есть объект. <strong>Edge</strong> — связь между двумя nodes.</p>
 
-          <p>Nodes and edges могут иметь features: atom type and bond type in molecule, user attributes and interaction strength in recommendation graph.</p>
+          <p>Nodes и edges могут иметь features: atom type и bond type в molecule, user attributes и interaction strength в recommendation graph.</p>
         </section>
       </article>
 
       <article class="card" id="ref-noise-schedule">
         <header><h2>Noise schedule</h2></header>
         <section>
-          <p><strong>Noise schedule</strong> в diffusion models задаёт sequence noise levels, например $\beta_t$, across timesteps.</p>
+          <p><strong>Noise schedule</strong> в diffusion models задаёт последовательность noise levels, например $\beta_t$, по timesteps.</p>
 
-          <p>Schedule определяет, как быстро clean signal disappears and Gaussian noise dominates. От него зависят training stability, signal-to-noise ratio and sampling quality.</p>
+          <p>Schedule определяет, как быстро исчезает clean signal и начинает доминировать Gaussian noise. От него зависят training stability, signal-to-noise ratio и sampling quality.</p>
         </section>
       </article>
 
@@ -3807,7 +3807,7 @@
         <section>
           <p><strong>OCR</strong>, Optical Character Recognition, — распознавание текста на изображении.</p>
 
-          <p>В VLM OCR can be framed as visual question answering or instruction following: “read the sign” or “extract text from this document”.</p>
+          <p>В VLM OCR можно оформить как visual question answering или instruction following: “read the sign” или “extract text from this document”.</p>
         </section>
       </article>
 
@@ -4176,9 +4176,9 @@
       <article class="card" id="ref-projector-vlm">
         <header><h2>Projector in VLM</h2></header>
         <section>
-          <p><strong>Projector</strong> in VLM maps visual encoder features into LLM hidden dimension and representation space.</p>
+          <p><strong>Projector</strong> в VLM отображает features визуального encoder в hidden dimension и representation space LLM.</p>
 
-          <p>Simple projector can be linear layer or MLP. More complex projector, such as Q-Former, can also compress many visual tokens into fewer tokens.</p>
+          <p>Простой projector может быть linear layer или MLP. Более сложный projector, например Q-Former, может также сжимать много visual tokens в меньшее число tokens.</p>
         </section>
       </article>
 
@@ -4203,9 +4203,9 @@
       <article class="card" id="ref-prompt-template">
         <header><h2>Prompt template</h2></header>
         <section>
-          <p><strong>Prompt template</strong> — reusable text pattern, into which task-specific variables are inserted.</p>
+          <p><strong>Prompt template</strong> — переиспользуемый текстовый шаблон, в который подставляются task-specific переменные.</p>
 
-          <p>В CLIP zero-shot classification class name often inserted into template such as “a photo of a {class}”, because natural phrases match pretraining data better than bare labels.</p>
+          <p>В CLIP zero-shot classification имя класса часто подставляют в шаблон вроде “a photo of a {class}”, потому что естественные фразы лучше совпадают с pretraining data, чем голые labels.</p>
         </section>
       </article>
 
@@ -4240,9 +4240,9 @@
       <article class="card" id="ref-q-former">
         <header><h2>Q-Former</h2></header>
         <section>
-          <p><strong>Q-Former</strong> — querying transformer from BLIP-2, which uses learned query tokens to extract compact information from visual features.</p>
+          <p><strong>Q-Former</strong> — querying transformer из BLIP-2, который использует learned query tokens для извлечения компактной информации из visual features.</p>
 
-          <p>Queries attend to many image patch features and output a small number of visual tokens for LLM, reducing context cost.</p>
+          <p>Queries через attention смотрят на многие image patch features и выдают небольшое число visual tokens для LLM, снижая стоимость контекста.</p>
         </section>
       </article>
 
@@ -4518,7 +4518,7 @@
         <section>
           <p><strong>Reverse diffusion process</strong> — learned denoising chain, которая превращает Gaussian noise в sample data distribution.</p>
 
-          <p>На каждом step model approximates $p_\theta(x_{t-1}|x_t)$, usually through predicted noise or predicted clean sample. Sampling starts from $x_T\sim\mathcal{N}(0,I)$ and iterates down to $x_0$.</p>
+          <p>На каждом step модель приближает $p_\theta(x_{t-1}|x_t)$, обычно через предсказанный шум или предсказанный clean sample. Sampling стартует из $x_T\sim\mathcal{N}(0,I)$ и итеративно спускается к $x_0$.</p>
         </section>
       </article>
 
@@ -4693,7 +4693,7 @@
           s(x)=\nabla_x\log p(x).
           $$
 
-          <p>Интуитивно score показывает direction, in which probability density increases fastest. В diffusion models score указывает, куда двигать noisy sample toward data manifold.</p>
+          <p>Интуитивно score показывает направление, в котором probability density растёт быстрее всего. В diffusion models score указывает, куда двигать noisy sample в сторону data manifold.</p>
         </section>
       </article>
 
@@ -4702,7 +4702,7 @@
         <section>
           <p><strong>Score matching</strong> обучает model приближать score $\nabla_x\log p(x)$ без явного вычисления normalized density.</p>
 
-          <p>В denoising score matching сеть учится по noisy sample предсказывать direction back to clean data. В diffusion models noise prediction is closely related to score prediction by scale factor.</p>
+          <p>В denoising score matching сеть учится по noisy sample предсказывать direction back to clean data. В diffusion models noise prediction тесно связано со score prediction через scale factor.</p>
         </section>
       </article>
 
@@ -4995,7 +4995,7 @@
       <article class="card" id="ref-straight-through-estimator">
         <header><h2>Straight-through estimator</h2></header>
         <section>
-          <p><strong>Straight-through estimator</strong> — approximation for backprop через недифференцируемую discrete operation.</p>
+          <p><strong>Straight-through estimator</strong> — аппроксимация для backprop через недифференцируемую discrete operation.</p>
 
           <p>Forward pass использует настоящую quantization или sampling operation, а backward pass пропускает gradient как будто operation была identity. Такой трюк часто применяют в VQ-VAE и quantized networks.</p>
         </section>
@@ -5477,9 +5477,9 @@
       <article class="card" id="ref-vision-language-model">
         <header><h2>Vision-Language Model</h2></header>
         <section>
-          <p><strong>Vision-Language Model</strong>, VLM, combines visual input and language processing.</p>
+          <p><strong>Vision-Language Model</strong>, VLM, объединяет визуальный вход и обработку языка.</p>
 
-          <p>Modern VLM often connects pretrained visual encoder to LLM through projector, enabling captioning, VQA, OCR and visual dialogue.</p>
+          <p>Современная VLM часто соединяет предобученный visual encoder с LLM через projector, что даёт captioning, VQA, OCR и visual dialogue.</p>
         </section>
       </article>
 
@@ -5488,23 +5488,23 @@
         <section>
           <p><strong>Visual Question Answering</strong>, VQA, — задача ответить текстом на вопрос по изображению.</p>
 
-          <p>Model must combine visual perception with language understanding, for example counting objects, reading signs or comparing attributes.</p>
+          <p>Модель должна сочетать visual perception с пониманием языка, например считать объекты, читать вывески или сравнивать атрибуты.</p>
         </section>
       </article>
 
       <article class="card" id="ref-visual-token">
         <header><h2>Visual token</h2></header>
         <section>
-          <p><strong>Visual token</strong> — vector representation of image patch or region, treated like token embedding by multimodal model.</p>
+          <p><strong>Visual token</strong> — векторное представление image patch или региона, которое multimodal модель обрабатывает как token embedding.</p>
 
-          <p>After projector, visual tokens can be concatenated with text tokens and processed by LLM attention.</p>
+          <p>После projector visual tokens можно конкатенировать с text tokens и обрабатывать attention LLM.</p>
         </section>
       </article>
 
       <article class="card" id="ref-visual-token-budget">
         <header><h2>Visual token budget</h2></header>
         <section>
-          <p><strong>Visual token budget</strong> — количество visual tokens, которое VLM может передать в LLM without excessive context length, memory and latency.</p>
+          <p><strong>Visual token budget</strong> — количество visual tokens, которое VLM может передать в LLM без чрезмерных context length, memory и latency.</p>
 
           <p>Для ViT-like encoder при patch size $P$ число image tokens примерно равно $\frac{H}{P}\cdot\frac{W}{P}$. Увеличение resolution быстро повышает стоимость, поэтому large-image VLM часто используют tiling, crops or multiscale processing.</p>
         </section>
@@ -5526,7 +5526,7 @@
       <article class="card" id="ref-vlm-evaluation">
         <header><h2>VLM evaluation</h2></header>
         <section>
-          <p><strong>VLM evaluation</strong> — оценка vision-language model по отдельным навыкам: perception, OCR, grounding, reasoning, instruction following and text generation.</p>
+          <p><strong>VLM evaluation</strong> — оценка vision-language model по отдельным навыкам: perception, OCR, grounding, reasoning, instruction following и text generation.</p>
 
           <p>Одна общая accuracy редко достаточна. Для VLM важно разделять, где произошла ошибка: модель не увидела объект, неверно прочитала текст, потеряла visual evidence или сгенерировала plausible but wrong answer.</p>
         </section>
@@ -5681,9 +5681,9 @@
       <article class="card" id="ref-zero-shot-classification">
         <header><h2>Zero-shot classification</h2></header>
         <section>
-          <p><strong>Zero-shot classification</strong> — classification without task-specific training examples.</p>
+          <p><strong>Zero-shot classification</strong> — classification без task-specific обучающих примеров.</p>
 
-          <p>В CLIP labels are converted to text prompts, encoded, and compared with image embedding. Class with maximum similarity becomes prediction.</p>
+          <p>В CLIP labels превращаются в text prompts, кодируются и сравниваются с image embedding. Класс с максимальным similarity становится prediction.</p>
         </section>
       </article>
 
