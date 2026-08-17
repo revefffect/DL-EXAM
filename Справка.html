@@ -15,7 +15,7 @@
       }
     };
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="assets/vendor/mathjax/tex-svg.js"></script>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -187,20 +187,122 @@
       margin: 16px 0;
     }
 
+    .mobile-nav-toggle,
+    .mobile-nav-backdrop,
+    .mobile-nav-panel {
+      display: none;
+    }
+
     @media (max-width: 860px) {
       .layout {
         display: block;
       }
 
       .toc {
-        position: static;
-        height: auto;
-        padding: 22px 20px;
+        display: none;
       }
 
       main {
-        padding: 28px 16px;
+        padding: 74px 14px 28px;
       }
+
+      .mobile-nav-toggle {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 60;
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        background: #111827;
+        color: #f8fafc;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.24);
+        font-size: 0;
+        line-height: 0;
+        cursor: pointer;
+      }
+
+      .mobile-nav-toggle::before {
+        content: "☰";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -52%);
+        font-size: 27px;
+        line-height: 1;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+      }
+
+      body.mobile-nav-open .mobile-nav-toggle::before {
+        content: "×";
+        transform: translate(-50%, -53%);
+        font-size: 34px;
+        font-weight: 500;
+      }
+
+      .mobile-nav-toggle:focus-visible {
+        outline: 3px solid rgba(11, 107, 203, 0.35);
+        outline-offset: 3px;
+      }
+
+      .mobile-nav-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        background: rgba(15, 23, 42, 0.46);
+        backdrop-filter: blur(2px);
+      }
+
+      body.mobile-nav-open .mobile-nav-backdrop {
+        display: block;
+      }
+
+      .mobile-nav-panel {
+        position: fixed;
+        top: 78px;
+        right: 14px;
+        left: 14px;
+        z-index: 70;
+        display: block;
+        max-height: min(76vh, 680px);
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.10);
+        border-radius: 14px;
+        background: #111827;
+        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.34);
+        overflow: auto;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.16s ease, transform 0.16s ease;
+      }
+
+      body.mobile-nav-open .mobile-nav-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .mobile-nav-panel h2 {
+        margin: 2px 4px 12px;
+        color: #f8fafc;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+
+      .mobile-nav-panel nav a {
+        font-size: 14px;
+      }
+
+      .mobile-nav-panel .nav-group {
+        margin-bottom: 8px;
+      }
+
 
       .card header,
       section {
@@ -210,6 +312,11 @@
   </style>
 </head>
 <body>
+  <button class="mobile-nav-toggle" type="button" aria-label="Открыть меню" aria-controls="mobile-nav-panel" aria-expanded="false">☰</button>
+  <div class="mobile-nav-backdrop" hidden></div>
+  <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
+    <h2>Справка: термины</h2>
+  </div>
   <div class="layout">
     <aside class="toc">
       <h1>Справка</h1>
@@ -5752,5 +5859,49 @@
       </article>
     </main>
   </div>
+  <script>
+    (function () {
+      var toggle = document.querySelector('.mobile-nav-toggle');
+      var panel = document.querySelector('.mobile-nav-panel');
+      var backdrop = document.querySelector('.mobile-nav-backdrop');
+      var sourceNav = document.querySelector('.toc nav');
+
+      if (!toggle || !panel || !backdrop || !sourceNav) {
+        return;
+      }
+
+      var clonedNav = sourceNav.cloneNode(true);
+      clonedNav.setAttribute('aria-label', 'Мобильное оглавление справки');
+      panel.appendChild(clonedNav);
+
+      function setOpen(isOpen) {
+        document.body.classList.toggle('mobile-nav-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+        toggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
+        panel.hidden = !isOpen;
+        backdrop.hidden = !isOpen;
+      }
+
+      toggle.addEventListener('click', function () {
+        setOpen(!document.body.classList.contains('mobile-nav-open'));
+      });
+
+      backdrop.addEventListener('click', function () {
+        setOpen(false);
+      });
+
+      panel.addEventListener('click', function (event) {
+        if (event.target.closest('a')) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          setOpen(false);
+        }
+      });
+    }());
+  </script>
 </body>
 </html>

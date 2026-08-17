@@ -15,7 +15,7 @@
       }
     };
   </script>
-  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script defer src="assets/vendor/mathjax/tex-svg.js"></script>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -1872,6 +1872,12 @@
             <p>Главная идея: каждая операция знает только свою локальную производную, а весь градиент получается композицией этих локальных правил.</p>
           </div>
 
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/backprop-computation-graph-cs231n.svg" alt="Computation graph with forward values and backward gradients from CS231n">
+            <p class="figure-caption"><strong>Figure.</strong> Вычислительный граф: forward значения идут слева направо (зелёные), upstream gradients — справа налево (красные), каждая операция умножает upstream gradient на свою локальную производную.</p>
+            <p class="diagram-source">Источник: <a href="https://cs231n.github.io/optimization-2/">CS231n: Backpropagation, Intuitions</a>.</p>
+          </figure>
+
           <div class="note">
             <p><strong>Визуальная интуиция:</strong> если нужно быстро восстановить картинку forward/backward pass, держите в голове не конкретные числа на графе, а поток: values идут слева направо, upstream gradients идут справа налево, а каждая операция умножает upstream gradient на свою local derivative. Для красивого визуального разбора лучше смотреть <a href="https://www.3blue1brown.com/lessons/backpropagation">3Blue1Brown: Backpropagation</a> и <a href="https://cs231n.github.io/optimization-2/">CS231n: Backpropagation, Intuitions</a>.</p>
           </div>
@@ -1909,6 +1915,12 @@
           $$
 
           <p>Такой пример полезен на экзамене: он показывает, что backprop не “угадывает” градиенты, а систематически умножает upstream gradient на локальную производную каждой операции.</p>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/backprop-sigmoid-cs231n.svg" alt="Backward pass through sigmoid neuron circuit from CS231n">
+            <p class="figure-caption"><strong>Figure.</strong> Backward через sigmoid-нейрон по шагам: каждый узел цепочки (умножения, сложение, exp, деление) вносит свою локальную производную; их произведение и есть градиент по входам и весам.</p>
+            <p class="diagram-source">Источник: <a href="https://cs231n.github.io/optimization-2/">CS231n: Backpropagation, Intuitions</a>.</p>
+          </figure>
         </section>
 
         <section>
@@ -6601,6 +6613,13 @@ with torch.no_grad():
           Recall = \frac{TP}{TP+FN}.
           $$
 
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/sklearn-confusion-matrix.png" alt="Confusion matrix example from scikit-learn">
+            <p class="figure-caption"><strong>Figure.</strong> Confusion matrix напоминает, откуда берутся TP/FP/FN: precision — точность найденного (столбец предсказаний), recall — полнота найденного (строка ground truth). В детекции роль «матча» играет IoU с порогом.</p>
+            <p class="diagram-source">Источник: <a href="https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html">scikit-learn documentation</a>.</p>
+          </figure>
+
           <p>Confidence threshold управляет компромиссом. Если поднять threshold, слабые detections удаляются: FP обычно становится меньше, precision может расти, но часть настоящих объектов теряется, recall падает. Если опустить threshold, модель найдёт больше объектов, recall растёт, но FP тоже растёт.</p>
 
           <div class="visual-panel">
@@ -8313,6 +8332,12 @@ with torch.no_grad():
           $$
 
           <p>Одни и те же матрицы $W_x,W_h,W_y$ применяются на всех шагах: это <a href="Справка.html#ref-parameter-sharing">parameter sharing</a>. Обучают RNN через <a href="Справка.html#ref-bptt">BPTT</a>: сеть разворачивают по времени и применяют обычный backprop к получившейся глубокой вычислительной цепочке.</p>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/bptt-unfold-wikimedia.png" alt="RNN unfolded through time for backpropagation through time">
+            <p class="figure-caption"><strong>Figure.</strong> BPTT: рекуррентная сеть разворачивается по времени в глубокую цепочку с общими весами; градиент по $W_h$ — сумма вкладов со всех шагов, и каждый вклад проходит через произведение якобианов — источник vanishing/exploding gradients.</p>
+            <p class="diagram-source">Источник: <a href="https://commons.wikimedia.org/wiki/File:Unfold_through_time.png">Wikimedia Commons</a>, RNN unfolding.</p>
+          </figure>
 
           <figure class="paper-figure">
             <img class="source-image" src="assets/diagrams/external/rnn-unrolled-colah.png" alt="Unrolled recurrent neural network from Colah blog">
@@ -13913,6 +13938,12 @@ with torch.no_grad():
               <div class="arch-node"><strong>Transcript</strong><span>при</span></div>
             </div>
           </div>
+        
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/ctc-distill-merged-alignments.svg" alt="Multiple CTC alignments merging into the same transcript from Distill">
+            <p class="figure-caption"><strong>Figure.</strong> Несколько разных frame-level paths после collapse дают один и тот же transcript — CTC loss суммирует вероятности всех таких путей, а не выбирает один.</p>
+            <p class="diagram-source">Источник: <a href="https://distill.pub/2017/ctc/">Hannun, Sequence Modeling with CTC</a>, Distill.</p>
+          </figure>
         </section>
 
         <section class="lecture-additional">
@@ -15781,6 +15812,12 @@ with torch.no_grad():
           \left(h_u^{(k-1)},m_u^{(k)}\right).
           $$
 
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/gnn-distill-node-message.png" alt="Node aggregating messages from neighbours, from Distill GNN article">
+            <p class="figure-caption"><strong>Figure.</strong> Node собирает информацию от соседей permutation-invariant агрегацией (sum/mean/max) и обновляет своё представление — один слой message passing.</p>
+            <p class="diagram-source">Источник: <a href="https://distill.pub/2021/gnn-intro/">A Gentle Introduction to Graph Neural Networks</a>, Distill.</p>
+          </figure>
+
           <div class="visual-panel flow-panel">
             <div class="flow-box">node $u$<br>$h_u^{(k-1)}$</div>
             <div class="flow-arrow">←</div>
@@ -15820,7 +15857,13 @@ with torch.no_grad():
           $$
         </section>
 
-        <section>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/gnn-distill-arch-gcn.png" alt="GCN layer schematic from Distill GNN article">
+            <p class="figure-caption"><strong>Figure.</strong> GCN-слой: сосед усредняется с degree-нормализацией $1/\sqrt{d_u d_v}$, затем применяется общая матрица весов и нелинейность.</p>
+            <p class="diagram-source">Источник: <a href="https://distill.pub/2021/gnn-intro/">A Gentle Introduction to Graph Neural Networks</a>, Distill.</p>
+          </figure>
+                <section>
           <h3>GraphSAGE: sample and aggregate</h3>
           <p><a href="Справка.html#ref-graphsage">GraphSAGE</a> был предложен для больших graphs и inductive setting, где на inference могут появляться new nodes. Вместо обработки всех neighbours он samples фиксированное число neighbours и агрегирует их, например mean/max/LSTM aggregator:</p>
 
