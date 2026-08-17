@@ -962,7 +962,7 @@
           <p>Обучение нейросети можно записать как задачу минимизации <a href="Справка.html#ref-erm">эмпирического риска</a>:</p>
 
           $$
-          \theta^\* = \arg\min_\theta \frac{1}{N} \sum_{i=1}^{N} \ell(f(x_i; \theta), y_i).
+          \theta^{*} = \arg\min_\theta \frac{1}{N} \sum_{i=1}^{N} \ell(f(x_i; \theta), y_i).
           $$
 
           <ul>
@@ -1073,7 +1073,7 @@
               <p>Параметры ранних, средних и поздних слоёв оптимизируются совместно через одну функцию потерь:</p>
 
               $$
-              \theta^\* = \arg\min_\theta \frac{1}{N} \sum_{i=1}^{N} \ell(f(x_i; \theta), y_i).
+              \theta^{*} = \arg\min_\theta \frac{1}{N} \sum_{i=1}^{N} \ell(f(x_i; \theta), y_i).
               $$
 
               <p>Поэтому признаки не выбираются отдельно человеком, а подстраиваются так, чтобы быть полезными для конечной задачи. Например, CNN для классификации изображений обучает фильтры, которые уменьшают loss классификации, а не просто извлекают заранее заданные признаки.</p>
@@ -1458,7 +1458,7 @@
           <p>Обучение нейронной сети — это подбор параметров $\theta$, при которых модель $f(x;\theta)$ хорошо предсказывает целевую переменную $y$ на новых данных. Формально обучение обычно записывают как минимизацию <a href="Справка.html#ref-erm">эмпирического риска</a>:</p>
 
           $$
-          \theta^\* = \arg\min_{\theta}
+          \theta^{*} = \arg\min_{\theta}
           \frac{1}{N}\sum_{i=1}^{N}
           \ell(f(x_i;\theta), y_i).
           $$
@@ -1597,6 +1597,7 @@
             <li>Почему нельзя подбирать гиперпараметры по test set?</li>
             <li>Что такое <a href="Справка.html#ref-epoch">epoch</a>, <a href="Справка.html#ref-batch-size">batch size</a> и iteration?</li>
             <li>Как понять по train/validation loss, что модель переобучается?</li>
+            <li>Почему <a href="Справка.html#ref-mini-batch">mini-batch</a> обучение удобно для GPU?</li>
           </ol>
         </section>
 
@@ -1637,15 +1638,13 @@
             </div>
 
             <div class="qa-item">
-              <h4>3. Зачем нужен validation set?</h4>
-              <p>Validation set нужен для решений, которые не являются прямым обучением параметров: выбор learning rate, <a href="Справка.html#ref-batch-size">batch size</a>, архитектуры, регуляризации, числа <a href="Справка.html#ref-epoch">эпох</a>, early stopping.</p>
-
-              <p>Если использовать test set для этих решений, финальная оценка перестанет быть честной, потому что модель и гиперпараметры уже будут подстроены под test.</p>
+              <h4>3. Зачем нужен validation set, если уже есть train и test?</h4>
+              <p>Validation set нужен для решений, которые не являются прямым обучением параметров: выбор learning rate, <a href="Справка.html#ref-batch-size">batch size</a>, архитектуры, регуляризации, числа <a href="Справка.html#ref-epoch">эпох</a>, early stopping. Test set при этом остаётся нетронутым до самой финальной оценки.</p>
             </div>
 
             <div class="qa-item">
-              <h4>4. Как увидеть переобучение?</h4>
-              <p>Типичный сигнал: train loss продолжает падать, а validation loss перестаёт улучшаться или начинает расти. Значит, модель всё лучше подгоняет train set, но хуже переносит закономерность на новые данные.</p>
+              <h4>4. Почему нельзя подбирать гиперпараметры по test set?</h4>
+              <p>Если использовать test set для выбора гиперпараметров, финальная оценка перестанет быть честной: модель и гиперпараметры уже будут подстроены под test, и оценка качества окажется оптимистично смещённой. Это форма information leakage — многократный выбор по test set постепенно «переобучает» пайплайн на него.</p>
             </div>
 
             <div class="qa-item">
@@ -1654,8 +1653,13 @@
             </div>
 
             <div class="qa-item">
-              <h4>6. Почему mini-batch удобен для GPU?</h4>
-              <p>GPU эффективно считает tensor operations параллельно. Один объект плохо загружает устройство, а весь dataset может не помещаться в память. Mini-batch даёт баланс: достаточно параллелизма, умеренная память and noisy gradient, полезный для оптимизации.</p>
+              <h4>6. Как увидеть переобучение?</h4>
+              <p>Типичный сигнал: train loss продолжает падать, а validation loss перестаёт улучшаться или начинает расти. Значит, модель всё лучше подгоняет train set, но хуже переносит закономерность на новые данные.</p>
+            </div>
+
+            <div class="qa-item">
+              <h4>7. Почему mini-batch удобен для GPU?</h4>
+              <p>GPU эффективно считает tensor operations параллельно. Один объект плохо загружает устройство, а весь dataset может не помещаться в память. Mini-batch даёт баланс: достаточно параллелизма, умеренная память и шумный градиент, полезный для оптимизации.</p>
             </div>
           </div>
         </section>
@@ -2244,7 +2248,12 @@
           <h3>Ответы на дополнительные вопросы</h3>
           <div class="qa">
             <div class="qa-item">
-              <h4>1. Почему двигаются по антиградиенту?</h4>
+              <h4>1. Почему градиент указывает направление наибольшего локального роста?</h4>
+              <p>Из линейного приближения $\mathcal{L}(\theta+\delta)\approx \mathcal{L}(\theta)+\langle\nabla\mathcal{L},\delta\rangle$ видно, что при фиксированной длине шага $\|\delta\|$ прирост $\langle\nabla\mathcal{L},\delta\rangle$ максимален, когда $\delta$ сонаправлен с $\nabla\mathcal{L}$ — это неравенство Коши–Буняковского–Шварца, равенство достигается при коллинеарности. Поэтому градиент — направление наискорейшего роста, а антиградиент — наискорейшего убывания в локальном линейном приближении.</p>
+            </div>
+
+            <div class="qa-item">
+              <h4>2. Почему двигаются по антиградиенту?</h4>
               <p>Градиент $\nabla_\theta \mathcal{L}$ указывает направление наибольшего локального роста функции. Чтобы уменьшить loss, нужно двигаться в противоположную сторону:</p>
 
               $$
@@ -2255,19 +2264,19 @@
             </div>
 
             <div class="qa-item">
-              <h4>2. Чем <a href="Справка.html#ref-sgd">SGD</a> отличается от full-batch <a href="Справка.html#ref-gradient-descent">gradient descent</a>?</h4>
+              <h4>3. Чем <a href="Справка.html#ref-sgd">SGD</a> отличается от full-batch <a href="Справка.html#ref-gradient-descent">gradient descent</a>?</h4>
               <p>Full-batch gradient descent считает градиент по всей train выборке. SGD или mini-batch SGD считает градиент по случайному объекту или батчу. Такой шаг дешевле, но шумнее.</p>
 
               <p>При случайном выборе батча mini-batch gradient является несмещённой оценкой полного градиента, но имеет дисперсию.</p>
             </div>
 
             <div class="qa-item">
-              <h4>3. Как <a href="Справка.html#ref-momentum">momentum</a> помогает?</h4>
+              <h4>4. Как <a href="Справка.html#ref-momentum">momentum</a> помогает?</h4>
               <p><a href="Справка.html#ref-momentum">Momentum</a> накапливает сглаженное направление движения. В направлениях, где градиент стабильно указывает одинаково, скорость растёт. В направлениях, где градиент колеблется, колебания частично взаимно гасятся.</p>
             </div>
 
             <div class="qa-item">
-              <h4>4. Зачем <a href="Справка.html#ref-adam">Adam</a> делает bias correction?</h4>
+              <h4>5. Зачем <a href="Справка.html#ref-adam">Adam</a> делает bias correction?</h4>
               <p>В начале обучения $m_0=0$ и $v_0=0$, поэтому экспоненциальные средние первых шагов смещены к нулю. Поправки:</p>
 
               $$
@@ -2280,7 +2289,7 @@
             </div>
 
             <div class="qa-item">
-              <h4>5. Почему AdamW отличается от Adam + L2?</h4>
+              <h4>6. Почему AdamW отличается от Adam + L2?</h4>
               <p>В Adam с L2-регуляризацией член $\lambda\theta$ добавляется к градиенту, а затем проходит через адаптивную нормировку:</p>
 
               $$
@@ -2297,8 +2306,13 @@
             </div>
 
             <div class="qa-item">
-              <h4>6. Что происходит при неправильном learning rate?</h4>
+              <h4>7. Что происходит при неправильном learning rate?</h4>
               <p>Слишком большой learning rate может перескакивать через хорошие области, вызывать осцилляции, divergence или NaN. Слишком маленький learning rate делает обучение медленным, может создать иллюзию плато и не дать модели дойти до хорошей области параметров за разумное число шагов.</p>
+            </div>
+
+            <div class="qa-item">
+              <h4>8. Почему adaptive methods не всегда дают лучшую generalization?</h4>
+              <p>Адаптивный шаг меняет геометрию оптимизации: каждая координата масштабируется своим $1/\sqrt{\hat v_t}$, поэтому Adam оптимизирует как бы в другой метрике, чем SGD. Из-за этого меняется неявная регуляризация траектории: эмпирически (Wilson et al., 2017) на ряде задач CV Adam быстрее сходится по train loss, но находит решения с худшим test-качеством, чем SGD с momentum; связывают это в том числе с тем, что SGD чаще останавливается в более «плоских» минимумах, устойчивых к сдвигу распределения. Практический вывод: для CNN на изображениях SGD+momentum часто остаётся сильным baseline, а для трансформеров стандартом является AdamW — противоречия нет, выбор оптимизатора зависит от архитектуры и задачи.</p>
             </div>
           </div>
         </section>
@@ -8627,7 +8641,7 @@ with torch.no_grad():
 
           <p>Word-level токенизация даёт короткие последовательности, но огромный словарь и проблему unknown words. <a href="Справка.html#ref-char-level-tokenization">Char-level</a> почти убирает неизвестные токены, но делает последовательности длинными. <a href="Справка.html#ref-subword-tokenization">Subword</a> — компромисс: частые слова могут быть одним токеном, редкие собираются из частей.</p>
 
-          <p><a href="Справка.html#ref-unicode">Unicode</a> задаёт code points символов, а <a href="Справка.html#ref-utf-8">UTF-8</a> кодирует их байтами. <a href="Справка.html#ref-bpe">BPE</a> обучает частые merge-и соседних единиц, <a href="Справка.html#ref-wordpiece">WordPiece</a> выбирает pieces по улучшению вероятностной модели, а <a href="Справка.html#ref-byte-level-bpe">byte-level BPE</a> стартует с байтов UTF-8 и поэтому может обработать любой текст без `<UNK>`.</p>
+          <p><a href="Справка.html#ref-unicode">Unicode</a> задаёт code points символов, а <a href="Справка.html#ref-utf-8">UTF-8</a> кодирует их байтами. <a href="Справка.html#ref-bpe">BPE</a> обучает частые merge-и соседних единиц, <a href="Справка.html#ref-wordpiece">WordPiece</a> выбирает pieces по улучшению вероятностной модели, а <a href="Справка.html#ref-byte-level-bpe">byte-level BPE</a> стартует с байтов UTF-8 и поэтому может обработать любой текст без <code>&lt;UNK&gt;</code>.</p>
 
           <div class="visual-panel">
             <p class="visual-title">Где токенизация находится в NLP pipeline</p>
@@ -8648,7 +8662,7 @@ with torch.no_grad():
           <p>Пусть словарь токенизатора имеет размер $V$, а длина последовательности после токенизации равна $T$. Выбор токенизации почти всегда trade-off между $V$ и $T$.</p>
 
           <ul>
-            <li><strong>Word-level.</strong> Токенами являются слова и знаки препинания. Плюсы: короткие последовательности и понятная интерпретация. Минусы: большой $V$, редкие формы, `<UNK>` для неизвестных слов.</li>
+            <li><strong>Word-level.</strong> Токенами являются слова и знаки препинания. Плюсы: короткие последовательности и понятная интерпретация. Минусы: большой $V$, редкие формы, <code>&lt;UNK&gt;</code> для неизвестных слов.</li>
             <li><strong>Char-level.</strong> Токенами являются символы. Плюсы: маленький словарь, можно собрать почти любое слово. Минусы: большой $T$, модели сложнее выучить морфологию и смысловые units.</li>
             <li><strong>Subword.</strong> Токенами являются частые куски слов. Плюсы: умеренный словарь, редкие слова собираются из известных fragments, меньше OOV.</li>
           </ul>
@@ -8733,7 +8747,7 @@ with torch.no_grad():
           <h3>WordPiece</h3>
           <p><a href="Справка.html#ref-wordpiece">WordPiece</a> похож на BPE тем, что строит subword vocabulary, но критерий выбора pieces связан не просто с частотой пары, а с улучшением likelihood языковой модели корпуса.</p>
 
-          <p>В BERT-style tokenizers внутренние части слова часто обозначаются префиксом `##`: например, `playing` может стать `play` + `##ing`. Префикс показывает, что piece продолжает предыдущее слово, а не начинается как отдельное слово.</p>
+          <p>В BERT-style tokenizers внутренние части слова часто обозначаются префиксом <code>##</code>: например, <code>playing</code> может стать <code>play</code> + <code>##ing</code>. Префикс показывает, что piece продолжает предыдущее слово, а не начинается как отдельное слово.</p>
 
           <p>Упрощённо: BPE спрашивает “какая соседняя пара чаще всего встречается?”, WordPiece спрашивает “какое объединение лучше объясняет корпус с точки зрения вероятностной модели?”.</p>
         </section>
@@ -8750,7 +8764,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
-            <p>Сильный ответ: токенизация — не embedding, а дискретизация текста перед embedding lookup. Word-level даёт короткие sequences, но большой словарь и OOV; char-level даёт маленький словарь, но длинные sequences; subword балансирует эти крайности. Unicode/UTF-8 важны как нижний уровень представления: символ, code point, byte и token не совпадают. BPE обучает merge rules по частым соседним парам, WordPiece выбирает pieces по улучшению вероятностного критерия, byte-level BPE начинает с UTF-8 bytes и поэтому может кодировать любой текст без `<UNK>`. Выбор tokenizer влияет на длину контекста, стоимость attention, качество на редких словах и мультиязычность.</p>
+            <p>Сильный ответ: токенизация — не embedding, а дискретизация текста перед embedding lookup. Word-level даёт короткие sequences, но большой словарь и OOV; char-level даёт маленький словарь, но длинные sequences; subword балансирует эти крайности. Unicode/UTF-8 важны как нижний уровень представления: символ, code point, byte и token не совпадают. BPE обучает merge rules по частым соседним парам, WordPiece выбирает pieces по улучшению вероятностного критерия, byte-level BPE начинает с UTF-8 bytes и поэтому может кодировать любой текст без <code>&lt;UNK&gt;</code>. Выбор tokenizer влияет на длину контекста, стоимость attention, качество на редких словах и мультиязычность.</p>
           </div>
         </section>
 
@@ -8764,7 +8778,7 @@ with torch.no_grad():
             <li>Чем Unicode отличается от UTF-8?</li>
             <li>Как обучается BPE?</li>
             <li>Чем WordPiece отличается от BPE?</li>
-            <li>Почему byte-level BPE почти не нуждается в `<UNK>`?</li>
+            <li>Почему byte-level BPE почти не нуждается в <code>&lt;UNK&gt;</code>?</li>
           </ol>
         </section>
 
@@ -8778,7 +8792,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>2. Редкие слова?</h4>
-              <p>Word-level требует отдельный token для каждой формы слова. Редкие и новые формы быстро раздувают словарь или заменяются на `<UNK>`, теряя информацию.</p>
+              <p>Word-level требует отдельный token для каждой формы слова. Редкие и новые формы быстро раздувают словарь или заменяются на <code>&lt;UNK&gt;</code>, теряя информацию.</p>
             </div>
 
             <div class="qa-item">
@@ -9169,7 +9183,7 @@ with torch.no_grad():
           PE_{pos,2i+1}=\cos\left(\frac{pos}{10000^{2i/d}}\right).
           $$
 
-          <p>Современные модели часто используют learned positional embeddings, relative position biases, RoPE или ALiBI.</p>
+          <p>Современные модели часто используют learned positional embeddings, relative position biases, RoPE или ALiBi.</p>
         </section>
 
         <section>
@@ -9274,7 +9288,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
-            <p>Сильный ответ: Transformer block состоит из attention-подблока и position-wise FFN, вокруг которых стоят residual connections и LayerNorm. Attention смешивает информацию между токенами, FFN нелинейно перерабатывает признаки внутри каждого токена. Encoder использует bidirectional self-attention, decoder-only — causal masked self-attention, encoder-decoder decoder добавляет cross-attention к encoder outputs. Поскольку attention не задаёт порядок сам по себе, нужны positional encodings: sinusoidal, learned, relative, RoPE или ALiBI. Residual paths и LayerNorm делают обучение глубокого стека стабильным, а параллельность attention на train отличает Transformer от RNN.</p>
+            <p>Сильный ответ: Transformer block состоит из attention-подблока и position-wise FFN, вокруг которых стоят residual connections и LayerNorm. Attention смешивает информацию между токенами, FFN нелинейно перерабатывает признаки внутри каждого токена. Encoder использует bidirectional self-attention, decoder-only — causal masked self-attention, encoder-decoder decoder добавляет cross-attention к encoder outputs. Поскольку attention не задаёт порядок сам по себе, нужны positional encodings: sinusoidal, learned, relative, RoPE или ALiBi. Residual paths и LayerNorm делают обучение глубокого стека стабильным, а параллельность attention на train отличает Transformer от RNN.</p>
           </div>
         </section>
 
@@ -10826,6 +10840,45 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>DPO: preference tuning без RL-цикла</h3>
+          <p>Современная альтернатива классическому RLHF — <strong>Direct Preference Optimization (DPO)</strong>: оптимизировать предпочтения напрямую, без отдельной reward model и без RL-цикла. Используются те же пары $(y^+, y^-)$ и frozen reference model $\pi_{\text{ref}}$, а objective напрямую повышает вероятность chosen-ответа относительно rejected:</p>
+          $$
+          \mathcal{L}_{\text{DPO}}
+          = -\,\mathbb{E}_{(x,y^+,y^-)}\left[
+          \log\sigma\!\left(
+          \beta\log\frac{\pi_\theta(y^+\mid x)}{\pi_{\text{ref}}(y^+\mid x)}
+          - \beta\log\frac{\pi_\theta(y^-\mid x)}{\pi_{\text{ref}}(y^-\mid x)}
+          \right)\right].
+          $$
+          <p>Ключ к выводу: у RLHF-задачи с KL-регуляризацией есть решение в замкнутой форме $\pi^{*}(y\mid x)\propto \pi_{\text{ref}}(y\mid x)\exp\big(r(x,y)/\beta\big)$. Обратив эту связь, reward выражают через policy: $r(x,y)=\beta\log\frac{\pi(y\mid x)}{\pi_{\text{ref}}(y\mid x)}+\beta\log Z(x)$, и подставляют в pairwise Bradley–Terry loss — нормировка $Z(x)$ при этом сокращается. Поэтому говорят, что policy в DPO — это <em>implicit reward model</em>. Идея KL-ограничения не исчезает: коэффициент $\beta$ играет ту же роль «не уходить далеко от reference», но зашит прямо в supervised loss.</p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Подход</th>
+                <th>Нужна reward model</th>
+                <th>Нужен RL-цикл</th>
+                <th>Главная идея</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>RLHF</td>
+                <td>Да</td>
+                <td>Да</td>
+                <td>Обучить reward, затем оптимизировать policy под reward + KL</td>
+              </tr>
+              <tr>
+                <td>DPO</td>
+                <td>Нет отдельной</td>
+                <td>Нет</td>
+                <td>Напрямую оптимизировать likelihood ratio chosen против rejected</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ: SFT обучает модель имитировать размеченные ответы через token-level likelihood, а preference tuning обучает её выбирать поведение, которое люди предпочитают. В RLHF сначала получают SFT policy, затем собирают пары chosen/rejected answers, обучают reward model через pairwise loss вида $-\log\sigma(r(x,y^+)-r(x,y^-))$, после чего оптимизируют policy на высокий reward. KL-регуляризация к reference/SFT model нужна, чтобы policy не ушла слишком далеко от нормального языкового поведения и не начала reward hacking. Поэтому RLHF — не просто “ещё один fine-tuning”, а оптимизация поведения по предпочтениям с ограничением близости к исходной модели.</p>
@@ -10886,7 +10939,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>8. Без RLHF?</h4>
-              <p>Да. Существуют методы direct preference optimization и другие preference objectives, которые используют preferences без явного RL-цикла, но идея предпочтений остаётся центральной.</p>
+              <p>Да. DPO и родственные методы (IPO, KTO, ORPO) используют preferences без явного RL-цикла: DPO оптимизирует $-\log\sigma\big(\beta\log\tfrac{\pi_\theta(y^+|x)}{\pi_{\text{ref}}(y^+|x)}-\beta\log\tfrac{\pi_\theta(y^-|x)}{\pi_{\text{ref}}(y^-|x)}\big)$, где policy играет роль implicit reward model. Идея предпочтений и KL-якоря остаётся центральной.</p>
             </div>
           </div>
         </section>
@@ -14516,38 +14569,6 @@ with torch.no_grad():
         </section>
 
         <section>
-          <h3>DPO-style взгляд</h3>
-          <p>Современная альтернатива классическому RLHF — directly optimize preferences without explicit reward model and RL loop. В DPO-like подходах используют пары $(y^+,y^-)$ и reference model, а objective напрямую повышает относительную вероятность chosen answer относительно rejected answer.</p>
-
-          <p>Интуитивно модель учат так: chosen response должен стать вероятнее rejected response, но с учётом того, насколько эти ответы уже предпочитала reference model. Поэтому сохраняется идея KL-ограничения, но она “зашита” в supervised preference loss.</p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Подход</th>
-                <th>Нужен reward model</th>
-                <th>Нужен RL loop</th>
-                <th>Главная идея</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>RLHF</td>
-                <td>Да</td>
-                <td>Да</td>
-                <td>Обучить reward, затем оптимизировать policy под reward + KL</td>
-              </tr>
-              <tr>
-                <td>DPO-like</td>
-                <td>Нет отдельного</td>
-                <td>Нет</td>
-                <td>Напрямую оптимизировать chosen vs rejected likelihood ratio</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ: варианты GAN делятся на архитектурные и objective-level улучшения. Mode collapse означает, что generator покрывает только часть modes data distribution, выдавая реалистичные, но однообразные samples. DCGAN переносит GAN на images через convolutional generator/discriminator. Conditional GAN моделирует $p(x|y)$, подавая condition и generator, и discriminator. pix2pix — paired image-to-image cGAN с U-Net generator, PatchGAN discriminator и $L_1$ reconstruction loss. CycleGAN решает unpaired translation двумя generators $G:X\to Y$, $F:Y\to X$ и cycle-consistency loss $\|F(G(x))-x\|_1+\|G(F(y))-y\|_1$. WGAN заменяет JSD-like objective на Wasserstein distance через critic с 1-Lipschitz constraint; WGAN-GP enforce-ит это constraint мягким gradient penalty, что обычно стабильнее weight clipping.</p>
@@ -17134,74 +17155,6 @@ with torch.no_grad():
         </section>
 
         <section>
-          <h3>Какие билеты были усилены</h3>
-          <p>После ревизии конспекта точечно усилены ранние билеты, практические темы и несколько современных разделов, где на экзамене легко уйти в математику, ограничения или real-world failure modes. Блок ниже можно использовать как карту повторения: по нему видно, какие темы стали опорными для доп вопросов.</p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Приоритет</th>
-                <th>Билеты</th>
-                <th>Что добавлено</th>
-                <th>Почему важно</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Срочно</td>
-                <td>4, 7, 8, 10</td>
-                <td>Backprop graph, PyTorch loop, diagnostics curves, convolution geometry</td>
-                <td>Базовые темы; по ним удобно задавать точные доп вопросы с кодом, shapes and formulas.</td>
-              </tr>
-              <tr>
-                <td>Высокий</td>
-                <td>1, 3, 6, 9, 11, 12</td>
-                <td>Visual schemes, more complete Q&A, method comparisons and practical pitfalls</td>
-                <td>Ранние билеты содержательно нормальные, но уступают поздним по навигации и плотности объяснения.</td>
-              </tr>
-              <tr>
-                <td>Высокий</td>
-                <td>40, 45</td>
-                <td>Self-consistency, ReAct failure modes, prompt injection and tool safety</td>
-                <td>Современные темы часто спрашивают не по формуле, а по ограничениям и реальным сценариям.</td>
-              </tr>
-              <tr>
-                <td>Средний</td>
-                <td>31, 37, 38, 39</td>
-                <td>Tokenization worked example, scaling law intuition, LoRA parameter count, DPO-style preference view</td>
-                <td>NLP/LLM блок сильный, но часть ответов выиграет от более явных мини-выводов.</td>
-              </tr>
-              <tr>
-                <td>Средний</td>
-                <td>50, 57, 59</td>
-                <td>RNN-T lattice, GNN failure geometry, DDPM/DDIM/solver comparison</td>
-                <td>Темы уже хорошие, но для “отлично” полезны дополнительные схемы and deeper intuition.</td>
-              </tr>
-              <tr>
-                <td>Низкий</td>
-                <td>13–23, 52–56, 58, 60–62</td>
-                <td>Точечные правки и повторение, без срочного переписывания</td>
-                <td>Эти ответы уже достаточно насыщены: есть визуалы, математика, доп вопросы и ограничения.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-
-        <section>
-          <h3>Порядок выполненного усиления</h3>
-          <ol>
-            <li><strong>Билет 7.</strong> Добавлены PyTorch pipeline, validation loop, common bugs: device mismatch, forgotten zero_grad, train/eval, no_grad, detach, state_dict.</li>
-            <li><strong>Билет 8.</strong> Добавлены train/validation curves, decision tree диагностики and ручные проверки данных/градиентов.</li>
-            <li><strong>Билет 4.</strong> Добавлены вычислительный граф на простом нейроне, local backward, reverse-mode vs forward-mode, JVP/VJP and checkpointing.</li>
-            <li><strong>Билет 10.</strong> Добавлены visual explanation convolution, padding/stride/dilation table, receptive field growth and cross-correlation note.</li>
-            <li><strong>Билет 6.</strong> Разведены stabilization and regularization, добавлены BatchNorm/weight decay/early stopping details.</li>
-            <li><strong>Билет 40.</strong> Добавлены self-consistency, граница prompting vs tools/retrieval and reasoning failure caveat.</li>
-            <li><strong>Билет 57.</strong> Добавлена быстрая диагностика oversmoothing/oversquashing/heterophily.</li>
-            <li><strong>Билет 59.</strong> Добавлено сравнение DDPM, DDIM, solvers and distillation.</li>
-          </ol>
-        </section>
-
-        <section>
           <h3>Как отвечать на билет</h3>
           <div class="visual-panel">
             <div class="visual-title">Шаблон сильного устного ответа</div>
@@ -17540,7 +17493,7 @@ with torch.no_grad():
             <div class="qa-item">
               <h4>6. Практический pipeline и диагностика</h4>
               <p><strong>Tensor</strong> — объект с данными, dtype, shape и device. <strong>nn.Module</strong> — базовый контейнер PyTorch для слоёв и параметров; внутри задают forward. <strong>Dataset</strong> описывает, как получить один пример, <strong>DataLoader</strong> собирает batch, shuffle, parallel loading и collate.</p>
-              <p><strong>Train/eval mode</strong> переключает поведение слоёв. Dropout работает только в train, BatchNorm в train обновляет статистики, а в eval использует накопленные running statistics. Если забыть `model.eval()` на validation, качество может быть шумным и некорректным.</p>
+              <p><strong>Train/eval mode</strong> переключает поведение слоёв. Dropout работает только в train, BatchNorm в train обновляет статистики, а в eval использует накопленные running statistics. Если забыть <code>model.eval()</code> на validation, качество может быть шумным и некорректным.</p>
               <p><strong>Train/validation curves</strong> показывают динамику обучения. Train и validation падают вместе — обучение здоровое; train падает, validation растёт — overfitting; обе кривые высокие — underfitting или bug. <strong>Tiny-overfit test</strong> проверяет, может ли модель переобучиться на маленьком batch. Если не может, вероятны ошибки в labels, loss, optimizer, gradients или data pipeline.</p>
               <p><strong>Подбор гиперпараметров</strong> включает learning rate, batch size, optimizer, weight decay, augmentations, architecture size, scheduler. Важно менять гиперпараметры по validation, а не по test.</p>
             </div>
