@@ -1302,6 +1302,13 @@
         </section>
 
         <section>
+          <h3>Universal Approximation и зачем глубина</h3>
+          <p><strong>Universal approximation theorem</strong> (Цыбенко, 1989; Хорник, 1991): нейросеть с одним скрытым слоем и непостоянной ограниченной нелинейностью может приблизить любую непрерывную функцию на компакте с любой точностью — при достаточной ширине слоя.</p>
+
+          <p>Почему тогда нужна глубина? Теорема говорит о существовании, но не о размере и обучаемости: для сложных функций требуемая ширина может расти экспоненциально. Глубокие сети выражают композиционные функции эффективнее по числу параметров: каждый слой переиспользует признаки предыдущего. Кроме того, теорема ничего не говорит о том, что такой аппроксиматор можно найти градиентным спуском по конечной выборке — это отдельные вопросы оптимизации и генерализации.</p>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ связывает архитектуру с геометрией. Один <a href="Справка.html#ref-linear-layer">линейный слой</a> строит аффинные <a href="Справка.html#ref-hyperplane">гиперплоскости</a> в пространстве признаков. <a href="Справка.html#ref-nonlinearity">Нелинейные</a> <a href="Справка.html#ref-activation">активации</a> позволяют склеивать такие простые преобразования в кусочно-линейную или более сложную функцию. Глубина даёт последовательность представлений, где каждый следующий слой работает не с исходными признаками, а с уже преобразованным пространством.</p>
@@ -1533,6 +1540,26 @@
           <div class="note">
             <p><a href="Справка.html#ref-mini-batch">Mini-batch</a> градиент — стохастическая оценка полного градиента. Он шумнее, но дешевле по вычислениям и часто помогает оптимизации не застревать в плохих областях.</p>
           </div>
+        </section>
+
+        <section>
+          <h3>Вероятностный взгляд: loss как минус log-likelihood</h3>
+          <p>Большинство стандартных loss-функций — это не произвольные формулы, а минус логарифм правдоподобия вероятностной модели $p(y\mid x;\theta)$. Метод максимального правдоподобия:</p>
+
+          $$
+          \theta^{*}
+          = \arg\max_\theta \sum_{i=1}^{N} \log p(y_i\mid x_i;\theta)
+          = \arg\min_\theta\; \underbrace{-\sum_{i=1}^{N} \log p(y_i\mid x_i;\theta)}_{\text{negative log-likelihood}}.
+          $$
+
+          <ul>
+            <li><strong>Классификация.</strong> Если $p(y\mid x)$ — категориальное распределение с вероятностями softmax, то NLL — это ровно <a href="Справка.html#ref-cross-entropy">cross-entropy</a>: $-\log p_y$.</li>
+            <li><strong>Регрессия с MSE.</strong> Если $p(y\mid x)=\mathcal{N}(f(x;\theta),\sigma^2)$ с фиксированной $\sigma$, то NLL с точностью до констант равна $\frac{1}{2\sigma^2}(y-f(x))^2$ — то есть MSE.</li>
+            <li><strong>MAE.</strong> Соответствует лапласовскому шуму: $p(y\mid x)\propto\exp(-|y-f(x)|/b)$.</li>
+            <li><strong>L2-регуляризация.</strong> Это MAP-оценка с гауссовым prior $p(\theta)=\mathcal{N}(0,\tau^2 I)$: $-\log p(\theta)\propto\|\theta\|^2$.</li>
+          </ul>
+
+          <p>На экзамене это позволяет отвечать на вопрос «какие распределения входят в выражение»: выбор loss — это выбор модели шума или распределения ответа, а минимизация эмпирического риска с NLL — это maximum likelihood по обучающей выборке.</p>
         </section>
 
         <section>
@@ -1813,6 +1840,54 @@
           $$
 
           <p>Такой пример полезен на экзамене: он показывает, что backprop не “угадывает” градиенты, а систематически умножает upstream gradient на локальную производную каждой операции.</p>
+        </section>
+
+        <section>
+          <h3>Главный вывод на доске: softmax + cross-entropy</h3>
+          <p>Самый частый экзаменационный вывод. Пусть $z\in\mathbb{R}^{C}$ — логиты, $p=\operatorname{softmax}(z)$, $y$ — one-hot правильного класса, $\mathcal{L}=-\sum_k y_k\log p_k$.</p>
+
+          <p>Шаг 1 — производная softmax ($\delta_{kj}$ — символ Кронекера):</p>
+
+          $$
+          \frac{\partial p_k}{\partial z_j}
+          = p_k(\delta_{kj} - p_j).
+          $$
+
+          <p>Шаг 2 — chain rule для loss:</p>
+
+          $$
+          \frac{\partial \mathcal{L}}{\partial z_j}
+          = -\sum_k \frac{y_k}{p_k}\, p_k(\delta_{kj}-p_j)
+          = -y_j + p_j\sum_k y_k
+          = p_j - y_j.
+          $$
+
+          <p>Итог в векторной форме:</p>
+
+          $$
+          \frac{\partial \mathcal{L}}{\partial z} = p - y.
+          $$
+
+          <p>Интерпретация: градиент по логитам — буквально «предсказание минус истина». Он ограничен по модулю и не насыщается на уверенно-неправильных ответах (в отличие от пары sigmoid+MSE, где множитель $\sigma'(z)$ гасит градиент), поэтому softmax+CE — стандартная пара для классификации. Численно всегда считают через log-softmax, а не через отдельный softmax и логарифм.</p>
+        </section>
+
+        <section>
+          <h3>Матричный backward линейного слоя</h3>
+          <p>Второй обязательный вывод. Пусть линейный слой обрабатывает batch: $Y = XW + \mathbf{1}b^\top$, где $X\in\mathbb{R}^{B\times n}$, $W\in\mathbb{R}^{n\times m}$, $b\in\mathbb{R}^{m}$. Пусть upstream gradient $\Delta = \frac{\partial\mathcal{L}}{\partial Y}\in\mathbb{R}^{B\times m}$ уже известен. Тогда:</p>
+
+          $$
+          \frac{\partial\mathcal{L}}{\partial W} = X^\top \Delta \in\mathbb{R}^{n\times m},
+          \qquad
+          \frac{\partial\mathcal{L}}{\partial X} = \Delta W^\top \in\mathbb{R}^{B\times n},
+          \qquad
+          \frac{\partial\mathcal{L}}{\partial b} = \sum_{i=1}^{B}\Delta_{i,:} \in\mathbb{R}^{m}.
+          $$
+
+          <p>Как это запомнить и проверить на доске: размерности должны сойтись, и это единственный корректный способ перемножить соответствующие матрицы. Градиент по $b$ суммируется по batch, потому что один и тот же $b$ участвует в каждом объекте.</p>
+
+          <div class="note warning">
+            <p><strong>Cheap gradient principle.</strong> Backward линейного слоя — два matmul против одного в forward, поэтому полный backward стоит примерно 2× forward по FLOPs. Память reverse-mode растёт с глубиной: активации всех слоёв хранятся до backward — отсюда gradient checkpointing, который пересчитывает активации вместо хранения.</p>
+          </div>
         </section>
 
         <section>
@@ -2098,8 +2173,9 @@
           v_t
           =
           (1-\beta)
-          \sum_{k=0}^{t}
-          \beta^k g_{t-k}.
+          \sum_{k=0}^{t-1}
+          \beta^k g_{t-k}
+          \qquad (v_0 = 0).
           $$
 
           <p>То есть momentum — экспоненциальное среднее прошлых градиентов. В узких “оврагах” <a href="Справка.html#ref-loss-landscape">loss landscape</a> градиент может сильно колебаться поперёк оврага и устойчиво указывать вдоль него. Momentum гасит поперечные колебания и ускоряет движение вдоль устойчивого направления.</p>
@@ -2113,7 +2189,15 @@
           v_t = \beta v_{t-1} + g_t.
           $$
 
+          $$
+          \theta_{t+1} = \theta_t - \eta v_t.
+          $$
+
           <p>Интуиция: Nesterov заранее корректирует слишком сильный разгон, потому что измеряет градиент там, куда уже “несёт” momentum.</p>
+
+          <div class="note warning">
+            <p><strong>Две конвенции записи momentum.</strong> EMA-форма $v_t=\beta v_{t-1}+(1-\beta)g_t$ и heavy-ball форма $v_t=\beta v_{t-1}+g_t$ эквивалентны с точностью до масштаба шага: во второй скорость больше в $\tfrac{1}{1-\beta}$ раз, что компенсируется выбором $\eta$. В <code>torch.optim.SGD(momentum=β)</code> реализована heavy-ball форма без $(1-\beta)$, а флаг <code>nesterov=True</code> включает упрощённый вариант Nesterov без честного lookahead-градиента. На экзамене полезно оговорить, какую конвенцию вы используете.</p>
+          </div>
         </section>
 
         <section>
@@ -2285,7 +2369,7 @@
               \hat{v}_t = \frac{v_t}{1-\beta_2^t}
               $$
 
-              <p>компенсируют это начальное смещение.</p>
+              <p>компенсируют это начальное смещение. Откуда множитель: если $g_t$ примерно стационарен, то $\mathbb{E}[v_t]=(1-\beta_2)\sum_{k=0}^{t-1}\beta_2^k\,\mathbb{E}[g^2]=(1-\beta_2^{t})\,\mathbb{E}[g^2]$, поэтому деление на $1-\beta_2^{t}$ делает оценку несмещённой. Практическое следствие: без коррекции $\sqrt{v_t}$ в начале занижен, эффективный шаг $\eta\,\hat m/\sqrt{\hat v}$ раздут, и старт нестабилен — отсюда же привычка использовать warmup для Adam.</p>
             </div>
 
             <div class="qa-item">
@@ -2402,6 +2486,24 @@
         </section>
 
         <section>
+          <h3>Инициализация: Xavier и He с выводом</h3>
+          <p>Цель инициализации — сохранить масштаб сигнала при проходе через слои. Для $z=\sum_{i=1}^{n_{in}} w_i x_i$ с независимыми $w_i$ (нулевое среднее) и $x_i$:</p>
+
+          $$
+          \operatorname{Var}(z) = n_{in}\,\operatorname{Var}(w)\,\mathbb{E}[x^2].
+          $$
+
+          <p>Чтобы дисперсия не росла и не затухала по слоям, требуем $\operatorname{Var}(z)\approx\operatorname{Var}(x)$, откуда $\operatorname{Var}(w)\sim 1/n_{in}$.</p>
+
+          <ul>
+            <li><strong>Xavier/Glorot</strong> (для tanh/sigmoid, у которых $\mathbb{E}[x^2]\approx\operatorname{Var}(x)$ около нуля): $\operatorname{Var}(w)=\frac{1}{n_{in}}$, а с учётом одновременно и backward-прохода — компромисс $\operatorname{Var}(w)=\frac{2}{n_{in}+n_{out}}$.</li>
+            <li><strong>He/Kaiming</strong> (для ReLU): ReLU зануляет половину симметричного входа, поэтому $\mathbb{E}[\mathrm{ReLU}(z)^2]=\tfrac{1}{2}\operatorname{Var}(z)$ — сигнал теряет половину энергии на каждом слое. Компенсация — удвоенная дисперсия весов: $\operatorname{Var}(w)=\frac{2}{n_{in}}$.</li>
+          </ul>
+
+          <p>Правило выбора: tanh/sigmoid → Xavier, ReLU-семейство → He. Для свёрток $n_{in}=C_{in}\cdot k_h\cdot k_w$. Плохая инициализация проявляется сразу: активации или градиенты по слоям затухают/взрываются ещё до первых шагов обучения.</p>
+        </section>
+
+        <section>
           <h3>Нормализация</h3>
           <p><a href="Справка.html#ref-batch-norm">BatchNorm</a> нормализует активации по mini-batch:</p>
 
@@ -2413,6 +2515,14 @@
           $$
 
           <p>Во время обучения используются batch statistics, а во время inference — накопленные running mean и running variance. Нормализация часто ускоряет и стабилизирует обучение, позволяет использовать больший learning rate и снижает чувствительность к инициализации.</p>
+
+          <p>Детали, которые спрашивают на экзамене:</p>
+          <ul>
+            <li><strong>По каким осям статистики.</strong> В CNN BatchNorm нормирует каждый канал отдельно, усредняя по осям $(N, H, W)$: на канал приходится своя пара $\mu_c, \sigma_c^2$ и свои $\gamma_c, \beta_c$. LayerNorm, наоборот, усредняет по признакам внутри одного объекта — поэтому не зависит от batch size и стандартна в трансформерах.</li>
+            <li><strong>Зачем обучаемые $\gamma$ и $\beta$.</strong> Жёсткая нормировка к $\mathcal{N}(0,1)$ ограничила бы выразительность (например, сдвинула бы вход sigmoid в линейную зону). Пара $\gamma,\beta$ возвращает слою возможность представить в том числе исходное, ненормированное преобразование.</li>
+            <li><strong>Малый batch.</strong> При batch size 1–8 оценки $\mu_B, \sigma_B^2$ шумные, и BatchNorm может ухудшать качество — поэтому в detection/segmentation используют GroupNorm или SyncBN по нескольким GPU.</li>
+            <li><strong>Inference-фолдинг.</strong> На инференсе BatchNorm — фиксированное аффинное преобразование, его «вплавляют» в предыдущую свёртку (пересчитав её веса и bias), получая ноль дополнительных вычислений. По этой же причине у conv перед BatchNorm bias избыточен: его роль выполняет $\beta$.</li>
+          </ul>
         </section>
 
         <section>
@@ -2981,6 +3091,17 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Double descent: современный взгляд на capacity</h3>
+          <p>Классическая картина U-образного bias-variance trade-off — «большая модель обязательно переобучится» — в глубоком обучении неполна. Эмпирически наблюдается <strong>double descent</strong>: при росте размера модели test error сначала падает, затем растёт около interpolation threshold (модель едва способна выучить train set), а при дальнейшем росте параметров — снова падает, часто ниже первого минимума.</p>
+
+          <p>Сверхпараметризованные сети могут идеально подгонять train set и при этом хорошо обобщать (benign overfitting): среди множества решений с нулевым train loss градиентный спуск неявно выбирает «простые» — это называют implicit regularization оптимизатора. Поэтому диагноз «переобучение» ставится не по числу параметров, а по разрыву train/validation кривых.</p>
+
+          <div class="note warning">
+            <p>На экзамене: сказать «модель с большой capacity запомнит выборку и обобщение ухудшится» — недостаточно. Сильный ответ упоминает, что при современных масштабах наблюдается double descent, и «больше параметров» само по себе не означает хуже generalization; критично, как обучали (регуляризация, данные, early stopping) и что показывает validation.</p>
+          </div>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Хорошая диагностика идёт от простого к сложному: сначала исключить ошибки данных и кода, затем проверить способность модели запоминать tiny subset, затем анализировать оптимизацию и обобщение. Нельзя сразу “лечить” всё регуляризацией или менять архитектуру, пока не понятно, что именно сломано.</p>
@@ -3403,6 +3524,19 @@ with torch.no_grad():
           R_L = 1 + 2L.
           $$
 
+          <p>Общая рекуррентная формула для любой сети (kernel $k_l$, stride $s_l$):</p>
+
+          $$
+          r_l = r_{l-1} + (k_l - 1)\prod_{i=1}^{l-1} s_i,
+          \qquad r_0 = 1.
+          $$
+
+          <p>Произведение прошлых stride показывает, сколько пикселей входа соответствует одному шагу на глубине $l$ — поэтому pooling и strided-свёртки ускоряют рост receptive field. Пример на доске для conv $3\times3$ → pool $2\times2$ (stride 2) → conv $3\times3$: $r_1 = 1 + 2 = 3$; $r_2 = 3 + 1\cdot 1 = 4$; $r_3 = 4 + 2\cdot(1\cdot 2) = 8$.</p>
+
+          <div class="note warning">
+            <p><strong>Theoretical vs effective receptive field.</strong> Формула даёт теоретическую границу. Эффективный receptive field заметно меньше и распределён примерно гауссово: вклад пикселей у края теоретического RF почти нулевой (Luo et al., 2016). Поэтому «RF покрывает весь вход» ещё не значит, что сеть реально использует глобальный контекст.</p>
+          </div>
+
           <p>Например, две свёртки $3\times3$ дают effective receptive field $5\times5$, но добавляют две нелинейности и обычно имеют меньше параметров, чем одна свёртка $5\times5$ при тех же каналах.</p>
 
           <div class="visual-panel">
@@ -3771,7 +3905,7 @@ with torch.no_grad():
           <div class="note warning">
             <ul>
               <li><strong>Эффективность операций.</strong> Разные виды свёрток вводят, когда обычная convolution слишком дорогая по параметрам или FLOPs.</li>
-              <li><strong>1x1 convolution.</strong> Работает как channel mixer: меняет число каналов и строит нелинейные комбинации признаков без spatial kernel.</li>
+              <li><strong>1x1 convolution.</strong> Работает как channel mixer: меняет число каналов, строя линейные комбинации каналов в каждой позиции (нелинейность добавляет последующая активация).</li>
               <li><strong>Depthwise separable convolution.</strong> Разделяет spatial filtering и channel mixing, поэтому резко снижает compute в мобильных архитектурах.</li>
             </ul>
           </div>
@@ -4737,6 +4871,10 @@ with torch.no_grad():
           </ul>
 
           <p>Частичная заморозка отражает иерархию признаков: ранние слои универсальнее, поздние слои специфичнее. Поэтому часто замораживают ранние blocks и размораживают верхние.</p>
+
+          <div class="note danger">
+            <p><strong>Ловушка BatchNorm при заморозке.</strong> <code>requires_grad=False</code> останавливает обучение весов, но НЕ останавливает BatchNorm: в режиме <code>model.train()</code> BN-слои продолжают использовать batch-статистики и обновлять running mean/var — «замороженный» backbone незаметно плывёт под новое распределение данных. Правильно: перевести BN-слои замороженной части в <code>eval()</code> (или использовать <code>track_running_stats</code> осознанно). Это стандартный вопрос практической части: чем отличается заморозка параметров от режима eval — это два независимых механизма.</p>
+          </div>
         </section>
 
         <section>
@@ -5438,7 +5576,7 @@ with torch.no_grad():
 
           <p>где $c_m$ — class label, $b_m$ — bounding box, $M_m$ — binary mask конкретного экземпляра, $s_m$ — confidence. В отличие от semantic segmentation, выход не обязан быть одной общей class map: модель может выдавать несколько масок одного класса.</p>
 
-          <p>Классическая идея — сначала найти объекты, затем построить маску для каждого. <a href="Справка.html#ref-mask-rcnn">Mask R-CNN</a> расширяет Faster R-CNN: помимо classification и box regression появляется mask branch, которая внутри каждой region proposal предсказывает бинарную маску объекта.</p>
+          <p>Классическая идея — сначала найти объекты, затем построить маску для каждого. <a href="Справка.html#ref-mask-rcnn">Mask R-CNN</a> расширяет Faster R-CNN двумя вещами: помимо classification и box regression появляется mask branch, предсказывающая бинарную маску внутри каждого proposal, а RoI pooling заменяется на <strong>RoI Align</strong> — без целочисленных округлений координат, с билинейной интерполяцией значений. Без RoI Align пиксельно-точные маски не работают: квантование сдвигает признаки относительно объекта.</p>
 
           <div class="visual-panel">
             <p class="visual-title">Instance segmentation: detection + mask branch</p>
@@ -5581,6 +5719,35 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Метрики: mask AP, PQ, OKS</h3>
+          <p>У каждой из трёх задач своя метрика — это частый дополнительный вопрос.</p>
+
+          <ul>
+            <li><strong>Instance segmentation: mask AP.</strong> Тот же AP, что в детекции, но IoU считается между масками, а не боксами (COCO: усреднение по порогам IoU 0.5–0.95).</li>
+            <li><strong>Panoptic segmentation: PQ.</strong> Предсказанные и GT-сегменты матчатся при IoU больше 0.5 (порог гарантирует единственность матчинга), затем:</li>
+          </ul>
+
+          $$
+          \mathrm{PQ}
+          = \frac{\sum_{(p,g)\in TP}\mathrm{IoU}(p,g)}{|TP| + \tfrac{1}{2}|FP| + \tfrac{1}{2}|FN|}
+          = \underbrace{\frac{\sum_{(p,g)\in TP}\mathrm{IoU}(p,g)}{|TP|}}_{\text{SQ, segmentation quality}}
+          \times
+          \underbrace{\frac{|TP|}{|TP| + \tfrac{1}{2}|FP| + \tfrac{1}{2}|FN|}}_{\text{RQ, recognition quality}}.
+          $$
+
+          <ul>
+            <li><strong>Pose estimation: OKS</strong> — аналог IoU для keypoints. Для каждой точки ошибка $d_i$ нормируется на масштаб объекта $s$ и константу точки $k_i$ (глаз локализуется точнее, чем бедро):</li>
+          </ul>
+
+          $$
+          \mathrm{OKS} =
+          \frac{\sum_i \exp\!\big(-d_i^2/(2 s^2 k_i^2)\big)\,\mathbb{1}[v_i > 0]}{\sum_i \mathbb{1}[v_i > 0]},
+          $$
+
+          <p>где $v_i$ — видимость keypoint. AP для поз считается по порогам OKS так же, как AP детекции по порогам IoU. Для bottom-up подходов ключевая проблема — группировка keypoints по людям: её решают Part Affinity Fields (OpenPose) или associative embeddings.</p>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ строится вокруг типа выхода. Semantic segmentation даёт class map, но не instance id. Instance segmentation добавляет отдельную маску на объект, часто через detection + mask head. Panoptic segmentation объединяет instance для things и semantic для stuff в одну непротиворечивую pixel map. Human pose estimation вообще уходит от областей к keypoints: модель строит heatmaps суставов и затем собирает скелет, а для нескольких людей решает grouping через top-down или bottom-up подход.</p>
@@ -5611,7 +5778,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>2. Как Mask R-CNN даёт instance masks?</h4>
-              <p>Модель сначала получает region proposals и уточняет bounding boxes, а затем для каждого ROI отдельная mask branch предсказывает бинарную маску объекта. Разные ROI дают разные экземпляры.</p>
+              <p>Модель сначала получает region proposals и уточняет bounding boxes, а затем для каждого RoI отдельная mask branch предсказывает бинарную маску объекта. Разные RoI дают разные экземпляры. Ключевая деталь — RoI Align вместо RoI pooling: без устранения квантования координат маски получаются смещёнными.</p>
             </div>
 
             <div class="qa-item">
@@ -5849,7 +6016,7 @@ with torch.no_grad():
             <li><strong>Границы объектов.</strong> Ошибки по boundary особенно сильно портят score для маленьких объектов.</li>
             <li><strong>Absent classes.</strong> Если класса нет на изображении или в датасете, нужно явно определить, как учитывать его IoU, иначе можно получить некорректное среднее.</li>
             <li><strong>Threshold.</strong> Для binary segmentation выбор threshold влияет на precision, recall, Dice и IoU.</li>
-            <li><strong>Instance/panoptic задачи.</strong> Там важен не только overlap, но и правильное разделение объектов; поэтому метрики сложнее, чем в semantic segmentation.</li>
+            <li><strong>Instance/panoptic задачи.</strong> Там важен не только overlap, но и правильное разделение объектов, поэтому метрики другие: mask AP для instance, $\mathrm{PQ}=\mathrm{SQ}\times\mathrm{RQ}$ для panoptic, OKS для поз — формулы разобраны в билете 18.</li>
           </ul>
         </section>
 
@@ -6564,18 +6731,31 @@ with torch.no_grad():
           $$
 
           <p>Fast R-CNN резко ускоряет вычисления, потому что expensive convolutional feature extraction делается один раз на изображение. Но предложения областей всё ещё генерируются внешним алгоритмом, например Selective Search, который остаётся bottleneck.</p>
+
+          <div class="note warning">
+            <p><strong>RoI Pooling vs RoI Align.</strong> RoI pooling дважды округляет координаты до целочисленной сетки (проекция proposal на feature map и разбиение на ячейки) — этот quantization сдвигает признаки на доли клетки. Для классификации терпимо, но для пиксельно-точных масок фатально. <strong>RoI Align</strong> (Mask R-CNN) убирает округления: в каждой ячейке берутся точные дробные точки, значения в них вычисляются билинейной интерполяцией соседних пикселей feature map. Это стандартный дополнительный вопрос к two-stage детекции.</p>
+          </div>
         </section>
 
         <section>
           <h3>Faster R-CNN и RPN</h3>
           <p><a href="Справка.html#ref-faster-rcnn">Faster R-CNN</a> заменяет внешний generator proposals на <a href="Справка.html#ref-rpn">Region Proposal Network</a>. RPN — маленькая сеть, которая работает на общей CNN feature map и предсказывает objectness score и box regression offsets для набора <a href="Справка.html#ref-anchor-box">anchor boxes</a>.</p>
 
-          <p>Для каждого anchor RPN предсказывает:</p>
+          <p>Для каждого anchor RPN предсказывает objectness и смещения box. Регрессия параметризуется относительно anchor ($x_a, y_a, w_a, h_a$ — его центр и размеры), чтобы target был инвариантен к масштабу:</p>
+
+          $$
+          t_x = \frac{x - x_a}{w_a},\quad
+          t_y = \frac{y - y_a}{h_a},\quad
+          t_w = \log\frac{w}{w_a},\quad
+          t_h = \log\frac{h}{h_a}.
+          $$
+
+          <p>Разметка anchors при обучении RPN: positive — IoU с ground truth больше 0.7 (или лучший anchor для данного GT), negative — IoU меньше 0.3, промежуточные игнорируются. Итого предсказывается:</p>
 
           $$
           p_{\text{object}}
           \quad\text{и}\quad
-          \Delta b=(\Delta x,\Delta y,\Delta w,\Delta h).
+          \Delta b=(t_x,t_y,t_w,t_h).
           $$
 
           <p>Objectness отвечает, есть ли в регионе объект вообще, без конкретного класса. Box offsets уточняют anchor, чтобы proposal лучше совпал с объектом.</p>
@@ -7159,7 +7339,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>6. Зачем $T^2$?</h4>
-              <p>Temperature меняет масштаб градиентов softmax/KL. Множитель $T^2$ часто добавляют, чтобы distillation term имел сопоставимый вклад при разных $T$.</p>
+              <p>При softmax с температурой градиенты soft-таргетного члена масштабируются примерно как $1/T^2$: каждый из двух softmax (teacher и student) вносит множитель $1/T$. Умножение distillation term на $T^2$ компенсирует это, чтобы баланс $\alpha$ между CE по hard labels и KL по soft labels не «плыл» при подборе $T$ (Hinton et al., 2015).</p>
             </div>
 
             <div class="qa-item">
