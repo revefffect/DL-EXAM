@@ -8548,7 +8548,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>3. Cell state?</h4>
-              <p>Cell state в LSTM — отдельная дорожка памяти. Обновление $C_t=f_tC_{t-1}+i_t\tilde C_t$ позволяет почти линейно переносить информацию через много шагов, если gates это разрешают.</p>
+              <p>Cell state в LSTM — отдельная дорожка памяти. Обновление $C_t=f_tC_{t-1}+i_t\tilde C_t$ позволяет почти линейно переносить информацию через много шагов, если gates это разрешают. Это и есть «constant error carousel»: $\partial C_t/\partial C_{t-1}=f_t$, и при $f_t\approx 1$, $i_t\approx 0$ градиент течёт назад по цепочке cell state без умножения на матрицу весов и производную нелинейности — ровно тот множитель, который в vanilla RNN вызывает vanishing gradient.</p>
             </div>
 
             <div class="qa-item">
@@ -8930,6 +8930,17 @@ with torch.no_grad():
           <p>В BERT-style tokenizers внутренние части слова часто обозначаются префиксом <code>##</code>: например, <code>playing</code> может стать <code>play</code> + <code>##ing</code>. Префикс показывает, что piece продолжает предыдущее слово, а не начинается как отдельное слово.</p>
 
           <p>Упрощённо: BPE спрашивает “какая соседняя пара чаще всего встречается?”, WordPiece спрашивает “какое объединение лучше объясняет корпус с точки зрения вероятностной модели?”.</p>
+        </section>
+
+        <section>
+          <h3>Unigram LM и SentencePiece</h3>
+          <p>Третий стандартный алгоритм — <strong>Unigram LM</strong> (Kudo, 2018). Он идёт не снизу вверх, как BPE (постепенное слияние пар), а сверху вниз: начинает с избыточно большого словаря кандидатов, задаёт вероятностную модель $P(x)=\prod_i p(t_i)$ по разбиению на pieces и итеративно выбрасывает те pieces, удаление которых меньше всего ухудшает likelihood корпуса (EM-оценка вероятностей + прунинг), пока словарь не сожмётся до нужного размера.</p>
+
+          <ul>
+            <li>Одно слово имеет несколько допустимых сегментаций; выбирается наиболее вероятная (алгоритм Витерби), а на обучении можно сэмплировать альтернативные разбиения — это работает как регуляризация (subword regularization).</li>
+            <li><strong>SentencePiece</strong> — популярная реализация BPE и Unigram, которая работает прямо с сырой строкой, кодируя пробел специальным символом (▁), поэтому не требует предварительной токенизации по словам и подходит языкам без пробелов.</li>
+            <li>Unigram/SentencePiece используют T5, LLaMA-семейство, mT5, XLNet и другие модели, поэтому знать его нужно наравне с BPE и WordPiece.</li>
+          </ul>
         </section>
 
         <section>
@@ -9363,7 +9374,14 @@ with torch.no_grad():
           PE_{pos,2i+1}=\cos\left(\frac{pos}{10000^{2i/d}}\right).
           $$
 
-          <p>Современные модели часто используют learned positional embeddings, relative position biases, RoPE или ALiBi.</p>
+          <p>Современные модели часто используют learned positional embeddings, relative position biases, RoPE или ALiBi. Как устроены два самых популярных относительных механизма:</p>
+
+          <ul>
+            <li><strong>RoPE (Rotary Position Embedding).</strong> Каждая пара координат query/key поворачивается на угол, пропорциональный позиции: $q_m \mapsto R(m\theta)\,q_m$, где $R$ — матрица поворота 2×2, а частота $\theta$ своя для каждой пары размерностей. Тогда скалярное произведение $\langle R(m\theta)q, R(n\theta)k\rangle$ зависит только от разности позиций $m-n$ — абсолютная позиция «сокращается», и модель получает относительное кодирование без отдельных bias-таблиц. Используется в LLaMA-семействе и большинстве современных LLM.</li>
+            <li><strong>ALiBi (Attention with Linear Biases).</strong> К attention score просто добавляется линейный штраф за расстояние: $s_{ij} \mathrel{+}= -m_h\,|i-j|$, где наклон $m_h$ свой у каждой head (геометрическая прогрессия). Токены не получают позиционных векторов вообще.</li>
+          </ul>
+
+          <p>Почему относительные кодирования лучше экстраполируют на длины больше обучающих: смысл зависимости «на 5 токенов назад» не привязан к абсолютному номеру позиции, поэтому механизм, выражающий только относительные сдвиги, деградирует на длинном контексте мягче, чем learned absolute embeddings, у которых для новых позиций просто нет обученных векторов.</p>
         </section>
 
         <section>
@@ -9803,6 +9821,8 @@ with torch.no_grad():
           -\sum_{i\in M}\log p_\theta(x_i\mid x_{\setminus M}).
           $$
 
+          <p>В оригинальном BERT маскируется 15% позиций, причём по правилу <strong>80/10/10</strong>: в 80% случаев токен заменяется на [MASK], в 10% — на случайный токен, в 10% — остаётся как есть (но всё равно предсказывается). Зачем: токен [MASK] существует только на pretraining и никогда не встречается на downstream-задачах — это train/inference mismatch. Случайные и нетронутые токены заставляют модель строить содержательные представления для всех позиций, а не только «реагировать на [MASK]».</p>
+
           <p>В оригинальном BERT также использовался <a href="Справка.html#ref-next-sentence-prediction">Next Sentence Prediction</a>: по representation токена $[CLS]$ модель решала, является ли второй сегмент настоящим продолжением первого.</p>
 
           $$
@@ -9992,7 +10012,7 @@ with torch.no_grad():
 
             <div class="qa-item">
               <h4>4. NSP?</h4>
-              <p>NSP обучает модель различать настоящую пару последовательных сегментов и случайную пару. Поздние BERT-варианты часто убирали NSP или заменяли его другими objectives, потому что MLM даёт основной сигнал.</p>
+              <p>NSP обучает модель различать настоящую пару последовательных сегментов и случайную пару. RoBERTa показала, что NSP можно убрать без потери качества: задача слишком лёгкая — случайный второй сегмент обычно просто с другой темы, и модель решает её поверхностным topic prediction, не учась связности. ALBERT заменил NSP на Sentence Order Prediction (два последовательных сегмента в правильном или переставленном порядке) — она заставляет модель смотреть именно на дискурсивную связность, а не тему.</p>
             </div>
 
             <div class="qa-item">
@@ -10278,8 +10298,10 @@ with torch.no_grad():
           <p>Для плотного Transformer compute pretraining грубо пропорционален произведению model size и числа токенов:</p>
 
           $$
-          C \approx kND.
+          C \approx 6ND,
           $$
+
+          <p>откуда множитель 6: на каждый параметр и каждый токен forward стоит примерно 2 FLOPs (умножение и сложение), а backward — ещё примерно вдвое дороже forward, итого $\approx 6$ FLOPs на параметр на токен.</p>
 
           <p><a href="Справка.html#ref-moe">Mixture of Experts</a>, MoE, масштабирует число параметров иначе: вместо одного dense FFN используется набор <a href="Справка.html#ref-sparse-experts">experts</a>, а <a href="Справка.html#ref-router-moe">router</a> выбирает 1–2 experts для каждого token. Поэтому total parameters могут быть огромными, но active parameters на один token остаются умеренными.</p>
 
@@ -10350,7 +10372,7 @@ with torch.no_grad():
           C \propto N\cdot D.
           $$ 
 
-          <p>Ранние scaling laws часто подталкивали сильнее увеличивать model size. Позднее compute-optimal подходы, включая Chinchilla-style вывод, подчеркнули, что многие большие модели были обучены на слишком малом числе токенов относительно размера. Для экзамена достаточно идеи: сильная LLM — не просто “много параметров”, а сбалансированная тройка parameters-data-compute.</p>
+          <p>Ранние scaling laws (Kaplan et al., 2020) подталкивали сильнее увеличивать model size. Compute-optimal анализ Chinchilla (Hoffmann et al., 2022) показал, что при фиксированном compute $N$ и $D$ надо растить примерно пропорционально: эмпирическое правило — порядка 20 обучающих токенов на параметр. Многие большие модели того времени (включая GPT-3: 175B параметров, ~300B токенов) были сильно недообучены по данным. Для экзамена: сильная LLM — не просто “много параметров”, а сбалансированная тройка parameters-data-compute; современные открытые модели часто обучают и сильно за compute-optimal точку (over-training), потому что маленькая модель дешевле на inference.</p>
 
           <div class="note">
             <p>Интуиция: если дать маленькой модели бесконечно много текста, она упрётся в capacity. Если дать огромной модели мало текста, она не раскроет capacity. Scaling laws помогают заранее оценить, куда выгоднее потратить compute.</p>
@@ -10683,7 +10705,7 @@ with torch.no_grad():
           r\ll \min(d,k).
           $$
 
-          <p>Обучаются только $A$ и $B$. Число trainable parameters намного меньше, чем у полной матрицы $W_0$.</p>
+          <p>Обучаются только $A$ и $B$. Число trainable parameters намного меньше, чем у полной матрицы $W_0$. Две детали, которые спрашивают: во-первых, обновление масштабируется коэффициентом $\tfrac{\alpha}{r}$ (итоговый слой считает $W_0 x + \tfrac{\alpha}{r}BAx$), чтобы при смене ранга $r$ не приходилось перенастраивать learning rate. Во-вторых, инициализация: $A\sim\mathcal{N}(0,\sigma^2)$, а $B=0$ — поэтому в момент старта $\Delta W = BA = 0$ и LoRA-модель точно совпадает с базовой, обучение начинается с pretrained-поведения без скачка.</p>
 
           <p>Если $W_0\in\mathbb{R}^{k\times d}$, full fine-tuning обучает $kd$ параметров. LoRA обучает:</p>
 
@@ -10972,20 +10994,17 @@ with torch.no_grad():
           <p>Упрощённая objective:</p>
 
           $$
-          \max_\theta
+          \max_\theta\;
           \mathbb{E}_{y\sim \pi_\theta(\cdot\mid x)}
           \left[
           r_\phi(x,y)
           -
           \beta
-          D_{KL}
-          \left(
-          \pi_\theta(\cdot\mid x)
-          \,\|\, 
-          \pi_{ref}(\cdot\mid x)
-          \right)
+          \log\frac{\pi_\theta(y\mid x)}{\pi_{ref}(y\mid x)}
           \right].
           $$
+
+          <p>Здесь случайная величина — сгенерированный ответ $y$; матожидание второго члена по $y\sim\pi_\theta$ — это в точности $\beta\,D_{KL}\big(\pi_\theta(\cdot\mid x)\,\|\,\pi_{ref}(\cdot\mid x)\big)$, поэтому запись эквивалентна «reward минус KL-штраф». На практике log-ratio считается по токенам и работает как per-token поправка к reward. Оптимизируют это RL-алгоритмом — стандартно PPO с clipped surrogate objective и value-моделью для оценки advantage.</p>
 
           <p><a href="Справка.html#ref-kl-regularization">KL-регуляризация</a> удерживает новую policy рядом с reference model. Без неё модель может reward hack-ать: находить странные ответы, которые получают высокий score reward model, но становятся хуже для пользователя.</p>
 
@@ -11632,7 +11651,7 @@ with torch.no_grad():
           <h3>Короткий ответ</h3>
           <p>LLM работает в двух разных режимах. На training модель видит готовый текст и через <a href="Справка.html#ref-teacher-forcing">teacher forcing</a> параллельно предсказывает следующие tokens для многих позиций. На inference правильного ответа нет: <a href="Справка.html#ref-autoregressive-decoding">autoregressive generation</a> строит текст по одному token, каждый новый token добавляется в context и становится условием для следующего.</p>
 
-          <p>Инференс делится на <a href="Справка.html#ref-prefill-phase">prefill</a> и <a href="Справка.html#ref-decode-phase">decode</a>. Prefill обрабатывает prompt целиком и задаёт время до первого token. Decode генерирует output tokens последовательно и задаёт скорость ответа. <a href="Справка.html#ref-kv-cache">KV-cache</a> хранит keys и values прошлых tokens, чтобы не пересчитывать их на каждом шаге. Он превращает наивную квадратичную генерацию в линейную, но требует много памяти. Поэтому LLM-инференс часто <a href="Справка.html#ref-memory-bound">memory-bound</a>: узкое место — чтение весов и KV-cache, а не только матричные умножения.</p>
+          <p>Инференс делится на <a href="Справка.html#ref-prefill-phase">prefill</a> и <a href="Справка.html#ref-decode-phase">decode</a>. Prefill обрабатывает prompt целиком и задаёт время до первого token. Decode генерирует output tokens последовательно и задаёт скорость ответа. <a href="Справка.html#ref-kv-cache">KV-cache</a> хранит keys и values прошлых tokens, чтобы не пересчитывать их на каждом шаге. Он убирает повторный пересчёт прошлых $K,V$ и FFN: без cache наивная генерация $n$ токенов стоит $O(n^2)$ token-forward проходов, с cache — $O(n)$. Важно: attention на шаге $t$ всё равно смотрит на все $t$ прошлых позиций, так что суммарные FLOPs самого attention остаются квадратичными по длине — линейным становится число пересчётов, а не внимание. Платим за это памятью. Поэтому LLM-инференс часто <a href="Справка.html#ref-memory-bound">memory-bound</a>: узкое место — чтение весов и KV-cache, а не только матричные умножения.</p>
 
           <div class="visual-panel">
             <p class="visual-title">Autoregressive inference loop</p>
@@ -11735,7 +11754,7 @@ with torch.no_grad():
           V_{\le t}.
           $$
 
-          <p>Временная сложность decode по числу generated tokens становится линейной по длине ответа, но cache растёт с длиной context. Упрощённо память KV-cache масштабируется как:</p>
+          <p>Число token-forward проходов при decode линейно по длине ответа (каждый новый токен обрабатывается один раз), но стоимость шага $t$ растёт как $O(t)$ из-за attention к прошлым позициям, а cache растёт с длиной context. Упрощённо память KV-cache масштабируется как:</p>
 
           $$
           O(B\cdot L\cdot T\cdot H\cdot d_{head}),
@@ -11770,7 +11789,7 @@ with torch.no_grad():
         <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
-            <p>Сильный ответ: на training decoder-only LM использует teacher forcing и causal mask, поэтому все позиции sequence считаются параллельно в одном forward pass. На inference модель не знает будущие tokens и генерирует autoregressively: выбрать token $t+1$ можно только после выбора token $t$. Prefill обрабатывает prompt и строит KV-cache, влияя на TTFT; decode последовательно добавляет tokens, влияя на TPOT. Без KV-cache каждый шаг пересчитывал бы $K,V$ всех прошлых tokens, давая $O(n^2)$ повторной работы. KV-cache делает decode линейным по числу generated tokens, но память растёт с batch, layers, heads и context length. Главная дороговизна LLM-инференса — последовательность decode, чтение больших весов и KV-cache, поэтому на практике оптимизируют batching, cache management, memory bandwidth и model compression.</p>
+            <p>Сильный ответ: на training decoder-only LM использует teacher forcing и causal mask, поэтому все позиции sequence считаются параллельно в одном forward pass. На inference модель не знает будущие tokens и генерирует autoregressively: выбрать token $t+1$ можно только после выбора token $t$. Prefill обрабатывает prompt и строит KV-cache, влияя на TTFT; decode последовательно добавляет tokens, влияя на TPOT. Без KV-cache каждый шаг пересчитывал бы $K,V$ и FFN всех прошлых tokens — $O(n^2)$ token-forward проходов и $O(n^3)$ суммарной работы attention. KV-cache сводит это к одному forward на новый токен; при этом сам attention шага $t$ по-прежнему стоит $O(t)$, поэтому суммарно attention остаётся $O(n^2)$ — «линейность» относится к числу пересчётов, и это стоит проговорить точно. Память cache растёт с batch, layers, heads и context length. Главная дороговизна LLM-инференса — последовательность decode, чтение больших весов и KV-cache, поэтому на практике оптимизируют batching, cache management, memory bandwidth и model compression.</p>
           </div>
         </section>
 
@@ -11915,6 +11934,13 @@ with torch.no_grad():
           </table>
 
           <p>Почему INT4 вообще может работать: распределение весов не равномерное, многие значения малы и терпят грубое округление, а редкие outliers нужно обрабатывать аккуратнее. Поэтому современные схемы используют group-wise scales, outlier handling, calibration data и иногда mixed precision.</p>
+
+          <p>Классификация, которую полезно проговорить:</p>
+          <ul>
+            <li><strong>PTQ vs QAT.</strong> Post-training quantization квантует готовую модель (быстро, по небольшому калибровочному набору) — стандарт для LLM. Quantization-aware training имитирует квантование уже во время обучения (straight-through estimator для градиента через округление) — дороже, но точнее на низких битностях.</li>
+            <li><strong>Weight-only vs weights+activations.</strong> W4A16/W8A16 квантуют только веса — активации остаются в FP16, вычисление требует dequantize на лету, выигрыш в памяти и bandwidth (главное узкое место memory-bound decode). W8A8 квантует и активации, позволяя использовать целочисленные matmul-ядра — быстрее по compute, но активации LLM содержат emergent outlier-каналы с аномально большими значениями, из-за которых наивный W8A8 ломается.</li>
+            <li><strong>Известные методы.</strong> GPTQ — послойная PTQ с приближённой компенсацией ошибки (через Гессиан); AWQ — находит небольшую долю важных (salient) каналов весов по статистике активаций и защищает их масштабированием перед квантованием; LLM.int8() — выносит outlier-каналы в FP16, остальное считает в INT8.</li>
+          </ul>
         </section>
 
         <section>
@@ -12037,7 +12063,7 @@ with torch.no_grad():
               <tr>
                 <td>FlashAttention</td>
                 <td>Память и скорость attention</td>
-                <td>Почти без потери качества</td>
+                <td>Ничем: алгоритм точный, математика не меняется</td>
               </tr>
               <tr>
                 <td>Sliding / sparse attention</td>
@@ -12902,8 +12928,10 @@ with torch.no_grad():
           <p>16-bit PCM даёт $2^{16}=65536$ уровней. Ошибка округления создаёт <a href="Справка.html#ref-quantization-noise">quantization noise</a>. Для равномерной квантизации грубая оценка signal-to-noise ratio:</p>
 
           $$
-          SNR \approx 6.02b\ \text{dB}.
+          SNR \approx 6.02\,b + 1.76\ \text{dB}
           $$
+
+          <p>для синусоиды полной шкалы (каждый бит добавляет $\approx 6$ дБ динамического диапазона; константа $1.76 = 10\log_{10}(3/2)$ отражает соотношение мощности синуса и равномерного шума квантования).</p>
 
           <p>Поэтому увеличение bit depth улучшает dynamic range и снижает шум, но увеличивает размер audio stream.</p>
         </section>
@@ -12935,8 +12963,10 @@ with torch.no_grad():
           <p>Если signal band-limited и не содержит frequencies выше $f_{\max}$, то для точного восстановления достаточно:</p>
 
           $$
-          f_s \ge 2f_{\max}.
+          f_s > 2f_{\max}.
           $$
+
+          <p>Неравенство строгое — это любимая ловушка: компоненту ровно на границе $f_{\max}=f_s/2$ восстановить нельзя (синус с частотой $f_s/2$, попавший отсчётами в свои нули, неотличим от тишины). Практически всегда оставляют запас и ставят anti-aliasing фильтр до дискретизации.</p>
 
           <p>Половина sampling rate называется Nyquist frequency:</p>
 
@@ -13745,6 +13775,18 @@ with torch.no_grad():
           </div>
 
           <p>Явно перебрать paths невозможно: их число растёт экспоненциально по $T$. На практике сумму считают dynamic programming по расширенной target sequence с blanks, используя монотонность alignment.</p>
+
+          <p><strong>Forward-алгоритм, который могут попросить выписать.</strong> Target $l$ длины $U$ расширяют blank-ами: $l' = (\varnothing, l_1, \varnothing, l_2, \dots, l_U, \varnothing)$ длины $2U+1$. Пусть $\alpha_t(s)$ — суммарная вероятность всех префиксов путей, которые к моменту $t$ находятся в позиции $s$ последовательности $l'$. Инициализация: $\alpha_1(1)=y^1_{\varnothing}$, $\alpha_1(2)=y^1_{l_1}$, остальные нули. Переходы (остаться, шагнуть на 1, перескочить через blank на 2):</p>
+
+          $$
+          \alpha_t(s) = \Big(\alpha_{t-1}(s) + \alpha_{t-1}(s{-}1) + \alpha_{t-1}(s{-}2)\,\mathbb{1}[l'_s \ne \varnothing,\; l'_s \ne l'_{s-2}]\Big)\cdot y^t_{l'_s},
+          $$
+
+          <p>где $y^t_{c}$ — вероятность символа $c$ на шаге $t$. Условие в индикаторе запрещает перескок, когда он склеил бы два одинаковых соседних символа (между ними обязан быть blank). Итог: $P(l\mid x) = \alpha_T(2U{+}1) + \alpha_T(2U)$ — путь может закончиться blank-ом или последним символом. Стоимость $O(T\cdot U)$; градиенты для обучения получаются из тех же $\alpha$ и симметричных backward-величин $\beta$.</p>
+
+          <div class="note warning">
+            <p><strong>Peaky behavior.</strong> Обученные CTC-модели склонны выдавать blank почти везде и «выстреливать» символ одним узким пиком. Для распознавания это не мешает, но временные границы символов из CTC-выравнивания получаются ненадёжными.</p>
+          </div>
         </section>
 
         <section>
@@ -14713,6 +14755,17 @@ with torch.no_grad():
           <h3>WGAN и WGAN-GP</h3>
           <p>Классический GAN при optimal discriminator связан с JSD. Когда supports real и fake distributions почти не пересекаются, JSD может saturate, и gradient generator становится слабым. WGAN заменяет criterion на Wasserstein distance, которая чувствует “расстояние” между distributions даже без overlap.</p>
 
+          <p>Формально $W_1$ определяется через оптимальный транспорт: перебираются все совместные распределения (couplings) $\gamma$ с маргиналами $p_{data}$ и $p_g$, и ищется минимальная средняя стоимость «переноса массы»:</p>
+
+          $$
+          W_1(p_{data}, p_g)
+          =
+          \inf_{\gamma\in\Pi(p_{data},\,p_g)}
+          \mathbb{E}_{(x,y)\sim\gamma}\big[\|x-y\|\big].
+          $$
+
+          <p>Считать infimum по couplings напрямую нельзя, но по <strong>двойственности Канторовича–Рубинштейна</strong> та же величина равна супремуму по 1-Липшицевым функциям — и вот его уже можно аппроксимировать нейросетью-критиком. Ограничение Липшица здесь не техническая деталь: без него супремум просто бесконечен (умножая $f$ на константу, можно раздуть разность матожиданий неограниченно).</p>
+
           <p>WGAN использует critic $f_\phi(x)$, а не discriminator probability:</p>
 
           $$
@@ -14722,7 +14775,9 @@ with torch.no_grad():
           \mathbb{E}_{z\sim p_z}f(G(z)).
           $$
 
-          <p>Ограничение <a href="Справка.html#ref-lipschitz-constraint">1-Lipschitz</a> критично. В original WGAN его enforce через weight clipping, но это грубо и может портить critic. WGAN-GP заменяет clipping на penalty:</p>
+          <p>Канонический пример, почему $W_1$ лучше JSD (Arjovsky et al., 2017): два распределения на параллельных вертикальных прямых $P_0=(0, Z)$ и $P_\theta=(\theta, Z)$. При любом $\theta\ne 0$ их носители не пересекаются, поэтому $JSD = \log 2$ — константа, градиент по $\theta$ нулевой, generator не учится. А $W_1 = |\theta|$ даёт гладкий информативный градиент к $\theta=0$. Именно это происходит в начале обучения GAN, когда fake и real distributions лежат на разных низкоразмерных многообразиях.</p>
+
+          <p>Ограничение <a href="Справка.html#ref-lipschitz-constraint">1-Lipschitz</a> критично. В original WGAN его enforce через weight clipping, но это грубо и может портить critic. WGAN-GP заменяет clipping на penalty (более поздняя альтернатива — spectral normalization весов критика):</p>
 
           $$
           \mathcal{L}_{GP}
@@ -14963,7 +15018,7 @@ with torch.no_grad():
           \left(1+\log\sigma_j^2-\mu_j^2-\sigma_j^2\right).
           $$
 
-          <p>KL term штрафует mean, уходящие далеко от zero, и variances, сильно отличающиеся от one. Поэтому posterior clouds не разбегаются произвольно по latent space.</p>
+          <p>Почему тут есть замкнутая форма: KL двух гауссиан — аналитический интеграл (логарифм отношения гауссовых плотностей — квадратичная функция, её матожидание по гауссиане считается явно), а диагональная ковариация факторизует многомерный KL в сумму одномерных. Именно поэтому в VAE выбирают гауссов prior и гауссов approximate posterior — стохастическая оценка нужна только для reconstruction-члена. Сам KL term штрафует mean, уходящие далеко от zero, и variances, сильно отличающиеся от one, поэтому posterior clouds не разбегаются произвольно по latent space.</p>
         </section>
 
         <section>
@@ -14983,6 +15038,23 @@ with torch.no_grad():
             <p class="figure-caption"><strong>Figure.</strong> Reparameterization trick переносит randomness в $\varepsilon$: encoder predicts $\mu,\sigma$, sample строится как differentiable transformation $z=\mu+\sigma\odot\varepsilon$, и gradient проходит через encoder.</p>
             <p class="diagram-source">Источник: Lilian Weng, <a href="https://lilianweng.github.io/posts/2018-08-12-vae/">From Autoencoder to Beta-VAE</a>, reparameterization trick.</p>
           </figure>
+        </section>
+
+        <section>
+          <h3>Posterior collapse, β-VAE и blurriness</h3>
+          <p><strong>Posterior collapse</strong> — режим, в котором KL-член уходит в ноль: $q_\phi(z\mid x)\approx p(z)$ для всех $x$, latent code перестаёт нести информацию, а decoder реконструирует «в среднем», игнорируя $z$. Типичная причина — слишком мощный decoder (например, авторегрессионный), которому проще смоделировать данные без latent, чем платить KL-штраф за информативный код.</p>
+
+          <ul>
+            <li><strong>KL annealing</strong> — вес KL-члена постепенно поднимают от 0 до 1 в начале обучения, давая encoder-у время выучить полезный код.</li>
+            <li><strong>Free bits</strong> — KL по каждой размерности не штрафуется ниже порога $\lambda$: $\max(\lambda, KL_j)$, чтобы «дешёвые» размерности не схлопывались в prior.</li>
+            <li><strong>Ослабление decoder</strong> — ограничение его контекста/ёмкости, чтобы информация была вынуждена идти через $z$.</li>
+          </ul>
+
+          <p><strong>β-VAE</strong> обобщает objective: $\mathcal{L} = \mathbb{E}_q[\log p_\theta(x\mid z)] - \beta\,KL(q_\phi(z\mid x)\,\|\,p(z))$. При $\beta>1$ давление на KL сильнее — латентные размерности становятся более независимыми и интерпретируемыми (disentanglement), но реконструкция хуже; при $\beta<1$ наоборот. Это ручка компромисса «качество реконструкции ↔ структура latent space».</p>
+
+          <div class="note warning">
+            <p><strong>Почему VAE даёт blurry-картинки.</strong> Гауссов likelihood decoder-а эквивалентен MSE, а MSE-оптимальное предсказание — условное среднее. Когда одному $z$ соответствует несколько правдоподобных вариантов деталей, модель предсказывает их среднее — визуально это размытие. GAN такого не делает: adversarial loss является mode-seeking, а не mean-seeking.</p>
+          </div>
         </section>
 
         <section>
@@ -16005,6 +16077,20 @@ with torch.no_grad():
           $$
 
           <p>Почему noise prediction удобно: network output имеет ту же форму, что и image, target known exactly, loss is stable MSE. В отличие от GAN, нет adversarial game; в отличие от VAE, качество samples часто выше, хотя sampling дороже.</p>
+
+          <p><strong>Откуда берётся $\mathcal{L}_{simple}$: вариационный вывод.</strong> DDPM — это иерархическая латентная модель, и честный objective — ELBO, который распадается на сумму KL-членов по шагам: $\mathcal{L}_{t-1} = D_{KL}\big(q(x_{t-1}\mid x_t, x_0)\,\|\,p_\theta(x_{t-1}\mid x_t)\big)$. Ключевой факт: при условии на $x_0$ posterior одного шага диффузии гауссов и известен в замкнутой форме:</p>
+
+          $$
+          q(x_{t-1}\mid x_t, x_0)=\mathcal{N}\big(\tilde\mu_t(x_t,x_0),\, \tilde\beta_t I\big),
+          \qquad
+          \tilde\mu_t
+          = \frac{\sqrt{\bar\alpha_{t-1}}\,\beta_t}{1-\bar\alpha_t}\,x_0
+          + \frac{\sqrt{\alpha_t}\,(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}\,x_t,
+          \qquad
+          \tilde\beta_t = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\,\beta_t.
+          $$
+
+          <p>Поэтому каждый KL — это KL двух гауссиан, то есть взвешенный MSE между средними. Если параметризовать $\mu_\theta$ через предсказание шума $\varepsilon_\theta$ (подставив $x_0 = (x_t - \sqrt{1-\bar\alpha_t}\,\varepsilon)/\sqrt{\bar\alpha_t}$), ELBO превращается во взвешенную сумму $\|\varepsilon-\varepsilon_\theta\|^2$ по шагам. Ho et al. (2020) обнаружили, что отбрасывание весов — то есть ровно $\mathcal{L}_{simple}$ — работает даже лучше. Так что «предсказываем шум MSE-лоссом» — не эвристика, а упрощённый ELBO.</p>
         </section>
 
         <section>
