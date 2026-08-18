@@ -3,6 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('dl-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    }());
+  </script>
   <title>Математическая справка по Deep Learning</title>
   <script>
     window.MathJax = {
@@ -309,6 +318,109 @@
         padding: 22px 18px;
       }
     }
+
+    /* ---------- Поиск по терминам ---------- */
+    .toc-search {
+      width: 100%;
+      margin: 0 0 10px;
+      padding: 9px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #eef3fb;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .toc-search::placeholder {
+      color: #8fa0b8;
+    }
+
+    .toc-search:focus {
+      outline: 2px solid rgba(122, 179, 255, 0.45);
+      outline-offset: 1px;
+    }
+
+    .toc-search-count {
+      margin: 0 0 12px;
+      color: #b8c2d1;
+      font-size: 12.5px;
+      min-height: 1em;
+    }
+
+    nav a.search-hidden {
+      display: none;
+    }
+
+    .card.search-hidden,
+    .letter.search-hidden {
+      display: none;
+    }
+
+    /* ---------- Переключатель темы ---------- */
+    .theme-toggle {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 19px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22);
+    }
+
+    .theme-toggle::before {
+      content: "🌙";
+    }
+
+    html[data-theme="dark"] .theme-toggle::before {
+      content: "☀️";
+    }
+
+    /* ---------- Тёмная тема ---------- */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    html[data-theme="dark"] body {
+      --bg: #0e1420;
+      --paper: #161e2d;
+      --ink: #e7ecf5;
+      --muted: #97a3b6;
+      --line: #2a3448;
+      --accent: #7ab3ff;
+      --accent-soft: #1b2b45;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    html[data-theme="dark"] .card header {
+      background: linear-gradient(180deg, #161e2d, #121826);
+    }
+
+    html[data-theme="dark"] table {
+      background: var(--paper);
+    }
+
+    html[data-theme="dark"] thead {
+      background: #1c2537;
+    }
+
+    html[data-theme="dark"] th {
+      color: #cdd8e9;
+    }
+
+    html[data-theme="dark"] code {
+      background: #232e45;
+    }
   </style>
 </head>
 <body>
@@ -317,10 +429,13 @@
   <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
     <h2>Справка: термины</h2>
   </div>
+  <button class="theme-toggle" type="button" aria-label="Переключить тему"></button>
   <div class="layout">
     <aside class="toc">
       <h1>Справка</h1>
       <p>Математические термины</p>
+      <input class="toc-search" type="search" placeholder="Поиск термина…" aria-label="Поиск по справке">
+      <p class="toc-search-count" aria-live="polite"></p>
       <nav aria-label="Оглавление справки">
         <a href="Подготовка.html">← К билетам</a>
         <a href="#ref-acoustic-model">Acoustic model</a>
@@ -5900,6 +6015,87 @@
         if (event.key === 'Escape') {
           setOpen(false);
         }
+      });
+    }());
+
+    /* ---------- Тема ---------- */
+    (function () {
+      var btn = document.querySelector('.theme-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (dark) {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        try { localStorage.setItem('dl-theme', dark ? 'light' : 'dark'); } catch (e) {}
+      });
+    }());
+
+    /* ---------- Поиск по терминам ---------- */
+    (function () {
+      var input = document.querySelector('.toc-search');
+      var countEl = document.querySelector('.toc-search-count');
+      if (!input) return;
+
+      var cards = Array.prototype.slice.call(document.querySelectorAll('article.card'));
+      var index = null;
+
+      function buildIndex() {
+        index = cards.map(function (c) {
+          var h = c.querySelector('header h2');
+          return {
+            el: c,
+            id: c.id,
+            title: h ? h.textContent.toLowerCase() : '',
+            text: c.textContent.toLowerCase()
+          };
+        });
+      }
+
+      function apply() {
+        var q = input.value.trim().toLowerCase();
+        var links = document.querySelectorAll('nav a[href^="#ref-"]');
+        if (q.length < 2) {
+          cards.forEach(function (c) { c.classList.remove('search-hidden'); });
+          Array.prototype.forEach.call(links, function (a) { a.classList.remove('search-hidden'); });
+          Array.prototype.forEach.call(document.querySelectorAll('h2.letter'), function (l) {
+            l.classList.remove('search-hidden');
+          });
+          if (countEl) countEl.textContent = '';
+          return;
+        }
+        if (!index) buildIndex();
+        var matched = {};
+        var nTitle = 0;
+        index.forEach(function (item) {
+          var okTitle = item.title.indexOf(q) !== -1;
+          var ok = okTitle || item.text.indexOf(q) !== -1;
+          item.el.classList.toggle('search-hidden', !ok);
+          if (ok) matched[item.id] = true;
+          if (okTitle) nTitle++;
+        });
+        Array.prototype.forEach.call(links, function (a) {
+          var id = a.getAttribute('href').slice(1);
+          a.classList.toggle('search-hidden', !matched[id]);
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('h2.letter'), function (l) {
+          var el = l.nextElementSibling;
+          var any = false;
+          while (el && !el.matches('h2.letter')) {
+            if (el.matches('article.card') && !el.classList.contains('search-hidden')) { any = true; break; }
+            el = el.nextElementSibling;
+          }
+          l.classList.toggle('search-hidden', !any);
+        });
+        if (countEl) countEl.textContent = 'Найдено: ' + Object.keys(matched).length + ' терминов';
+      }
+
+      var timer = null;
+      input.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(apply, 160);
       });
     }());
   </script>

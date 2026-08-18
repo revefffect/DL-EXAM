@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Подготовка к экзамену по Deep Learning</title>
   <script>
+    (function () {
+      try {
+        if (localStorage.getItem('dl-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    }());
+  </script>
+  <script>
     window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -792,6 +801,265 @@
         font-size: 14px;
       }
     }
+
+    /* ---------- Поиск и прогресс в сайдбаре ---------- */
+    .toc-search {
+      width: 100%;
+      margin: 0 0 10px;
+      padding: 9px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #eef3fb;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .toc-search::placeholder {
+      color: #8fa0b8;
+    }
+
+    .toc-search:focus {
+      outline: 2px solid rgba(122, 179, 255, 0.45);
+      outline-offset: 1px;
+    }
+
+    .toc-search-count {
+      margin: 0 0 12px;
+      color: #b8c2d1;
+      font-size: 12.5px;
+      min-height: 1em;
+    }
+
+    .toc-progress {
+      margin: 0 0 16px;
+    }
+
+    .toc-progress-label {
+      margin: 0 0 6px;
+      color: #b8c2d1;
+      font-size: 12.5px;
+    }
+
+    .toc-progress-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    .toc-progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #35c46f, #7ab3ff);
+      transition: width 0.25s ease;
+    }
+
+    nav a.ticket-learned::after {
+      content: " ✓";
+      color: #35c46f;
+      font-weight: 700;
+    }
+
+    nav a.search-hidden {
+      display: none;
+    }
+
+    /* ---------- Чекбокс «выучен» в шапке билета ---------- */
+    .ticket-header {
+      position: relative;
+    }
+
+    .ticket-done {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .ticket-done input {
+      accent-color: #2fae63;
+      width: 15px;
+      height: 15px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .ticket-done.checked {
+      border-color: rgba(47, 174, 99, 0.5);
+      color: #2fae63;
+      background: rgba(47, 174, 99, 0.08);
+    }
+
+    @media (max-width: 860px) {
+      .ticket-done {
+        position: static;
+        margin-top: 10px;
+      }
+    }
+
+    /* ---------- Переключатель темы ---------- */
+    .theme-toggle {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 19px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22);
+    }
+
+    .theme-toggle::before {
+      content: "🌙";
+    }
+
+    html[data-theme="dark"] .theme-toggle::before {
+      content: "☀️";
+    }
+
+    /* ---------- Тёмная тема ---------- */
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    html[data-theme="dark"] body {
+      --bg: #0e1420;
+      --paper: #161e2d;
+      --ink: #e7ecf5;
+      --muted: #97a3b6;
+      --line: #2a3448;
+      --accent: #7ab3ff;
+      --accent-soft: #1b2b45;
+      --warm: #2e2716;
+      --good: #172b1e;
+      --danger: #321d1d;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    html[data-theme="dark"] .ticket-header {
+      background: linear-gradient(180deg, #161e2d, #121826);
+    }
+
+    html[data-theme="dark"] table {
+      background: var(--paper);
+    }
+
+    html[data-theme="dark"] thead {
+      background: #1c2537;
+    }
+
+    html[data-theme="dark"] th {
+      color: #cdd8e9;
+    }
+
+    html[data-theme="dark"] .visual-panel {
+      background: #121a29;
+    }
+
+    html[data-theme="dark"] .visual-title,
+    html[data-theme="dark"] .figure-caption strong,
+    html[data-theme="dark"] .arch-node strong,
+    html[data-theme="dark"] .timeline-node strong {
+      color: #cdd8e9;
+    }
+
+    html[data-theme="dark"] .qa-item,
+    html[data-theme="dark"] .formula-box,
+    html[data-theme="dark"] .diagram-card {
+      background: #121a29;
+    }
+
+    html[data-theme="dark"] .arch-node,
+    html[data-theme="dark"] .timeline-node,
+    html[data-theme="dark"] .vgg-cell,
+    html[data-theme="dark"] .flow-box {
+      background: #1a2333;
+      border-color: #2e3a51;
+    }
+
+    html[data-theme="dark"] .vgg-cell.pool {
+      background: var(--warm);
+    }
+
+    html[data-theme="dark"] .diagram-card {
+      border-color: #2e3a51;
+    }
+
+    html[data-theme="dark"] code {
+      background: #232e45;
+    }
+
+    html[data-theme="dark"] .qa-controls button {
+      background: #1a2333;
+      color: #dbe4f2;
+      border-color: #2e3a51;
+    }
+
+    html[data-theme="dark"] .qa-controls button:hover {
+      background: #223047;
+    }
+
+    html[data-theme="dark"] .figure-note,
+    html[data-theme="dark"] .diagram-source,
+    html[data-theme="dark"] .flow-arrow,
+    html[data-theme="dark"] .arch-arrow {
+      color: #8fa0b8;
+    }
+
+    html[data-theme="dark"] .ticket-done {
+      background: #1a2333;
+    }
+
+    html[data-theme="dark"] .ticket-done.checked {
+      background: rgba(47, 174, 99, 0.14);
+    }
+
+    /* Белые панели с диаграммами остаются светлым «островом» с тёмным текстом */
+    html[data-theme="dark"] .paper-figure,
+    html[data-theme="dark"] .diagram-card {
+      color: #33415c;
+    }
+
+    html[data-theme="dark"] .paper-figure .figure-caption,
+    html[data-theme="dark"] .diagram-card figcaption {
+      color: #4a5872;
+    }
+
+    html[data-theme="dark"] .paper-figure .figure-caption strong,
+    html[data-theme="dark"] .diagram-card strong {
+      color: #26364d;
+    }
+
+    html[data-theme="dark"] .paper-figure .figure-note,
+    html[data-theme="dark"] .paper-figure .diagram-source,
+    html[data-theme="dark"] .diagram-card .diagram-source {
+      color: #64748b;
+    }
+
+    html[data-theme="dark"] .diagram-card {
+      background: #f7f9fd;
+    }
   </style>
 </head>
 <body>
@@ -800,10 +1068,17 @@
   <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
     <h2>Темы и билеты</h2>
   </div>
+  <button class="theme-toggle" type="button" aria-label="Переключить тему"></button>
   <div class="layout">
     <aside class="toc">
       <h1>Deep Learning</h1>
       <p>Конспект для устного экзамена</p>
+      <input class="toc-search" type="search" placeholder="Поиск по билетам…" aria-label="Поиск по конспекту">
+      <p class="toc-search-count" aria-live="polite"></p>
+      <div class="toc-progress">
+        <p class="toc-progress-label">Выучено: <span class="toc-progress-text">0 из 62</span></p>
+        <div class="toc-progress-bar"><div class="toc-progress-fill"></div></div>
+      </div>
       <nav aria-label="Оглавление">
         <details class="nav-group" open>
           <summary>Справочник</summary>
@@ -19045,6 +19320,131 @@ with torch.no_grad():
         qa.forEach(function (d) { d.open = open; });
       });
     });
+
+    /* ---------- Тема ---------- */
+    (function () {
+      var btn = document.querySelector('.theme-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (dark) {
+          document.documentElement.removeAttribute('data-theme');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        try { localStorage.setItem('dl-theme', dark ? 'light' : 'dark'); } catch (e) {}
+      });
+    }());
+
+    /* ---------- Прогресс «выучен» ---------- */
+    (function () {
+      var KEY = 'dl-progress';
+      var tickets = Array.prototype.slice.call(document.querySelectorAll('article.ticket[id^="ticket-"]'));
+      if (!tickets.length) return;
+
+      function load() {
+        try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
+      }
+      function save(ids) {
+        try { localStorage.setItem(KEY, JSON.stringify(ids)); } catch (e) {}
+      }
+
+      var learned = load();
+
+      function navLinks(id) {
+        return document.querySelectorAll('nav a[href="#' + id + '"]');
+      }
+
+      function refresh() {
+        var total = tickets.length;
+        var text = document.querySelector('.toc-progress-text');
+        var fill = document.querySelector('.toc-progress-fill');
+        if (text) text.textContent = learned.length + ' из ' + total;
+        if (fill) fill.style.width = (100 * learned.length / total) + '%';
+      }
+
+      tickets.forEach(function (t) {
+        var header = t.querySelector('.ticket-header');
+        if (!header) return;
+        var label = document.createElement('label');
+        label.className = 'ticket-done';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = learned.indexOf(t.id) !== -1;
+        if (cb.checked) label.classList.add('checked');
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode('выучен'));
+        header.appendChild(label);
+
+        function mark(on) {
+          label.classList.toggle('checked', on);
+          Array.prototype.forEach.call(navLinks(t.id), function (a) {
+            a.classList.toggle('ticket-learned', on);
+          });
+        }
+        mark(cb.checked);
+
+        cb.addEventListener('change', function () {
+          var i = learned.indexOf(t.id);
+          if (cb.checked && i === -1) learned.push(t.id);
+          if (!cb.checked && i !== -1) learned.splice(i, 1);
+          save(learned);
+          mark(cb.checked);
+          refresh();
+        });
+      });
+
+      refresh();
+    }());
+
+    /* ---------- Поиск по билетам ---------- */
+    (function () {
+      var input = document.querySelector('.toc-search');
+      var countEl = document.querySelector('.toc-search-count');
+      if (!input) return;
+
+      var index = null;
+
+      function buildIndex() {
+        index = [];
+        Array.prototype.forEach.call(document.querySelectorAll('article[id]'), function (a) {
+          index.push({ id: a.id, text: a.textContent.toLowerCase() });
+        });
+      }
+
+      function apply() {
+        var q = input.value.trim().toLowerCase();
+        var links = document.querySelectorAll('nav a[href^="#"]');
+        if (q.length < 2) {
+          Array.prototype.forEach.call(links, function (a) { a.classList.remove('search-hidden'); });
+          if (countEl) countEl.textContent = '';
+          return;
+        }
+        if (!index) buildIndex();
+        var matched = {};
+        index.forEach(function (item) {
+          if (item.text.indexOf(q) !== -1) matched[item.id] = true;
+        });
+        var visible = 0;
+        Array.prototype.forEach.call(links, function (a) {
+          var id = a.getAttribute('href').slice(1);
+          var ok = matched[id] || a.textContent.toLowerCase().indexOf(q) !== -1;
+          a.classList.toggle('search-hidden', !ok);
+          if (ok) visible++;
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('nav details.nav-group'), function (g) {
+          var any = g.querySelector('a:not(.search-hidden)');
+          if (any) g.setAttribute('open', '');
+        });
+        if (countEl) countEl.textContent = 'Совпадений: ' + Object.keys(matched).length + ' разделов';
+      }
+
+      var timer = null;
+      input.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(apply, 160);
+      });
+    }());
 </script>
 </body>
 </html>
