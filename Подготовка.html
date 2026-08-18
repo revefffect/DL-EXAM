@@ -1629,6 +1629,50 @@
         page-break-inside: avoid;
       }
     }
+
+    /* ---------- Схемы «на доску» ---------- */
+    .board-scheme {
+      margin: 14px 0 10px;
+      padding: 16px;
+      border: 1.5px dashed var(--line);
+      border-radius: 10px;
+      background: var(--paper);
+      overflow-x: auto;
+    }
+
+    .board-scheme svg {
+      display: block;
+      width: min(100%, 780px);
+      min-width: 560px;
+      height: auto;
+      margin: 0 auto;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .board-steps {
+      margin: 10px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .board-steps li {
+      margin-bottom: 3px;
+    }
+
+    .board-badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--tr-blue-soft);
+      color: var(--tr-blue);
+      font-size: 11.5px;
+      font-weight: 700;
+      vertical-align: middle;
+      letter-spacing: 0.02em;
+    }
   </style>
 </head>
 <body>
@@ -6446,6 +6490,48 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 300" role="img" aria-label="Схема U-Net">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="40" y="40" width="158" height="36" rx="6"/>
+                <rect x="110" y="115" width="120" height="36" rx="6"/>
+                <rect x="160" y="190" width="120" height="36" rx="6"/>
+                <rect x="330" y="248" width="120" height="36" rx="6" stroke="var(--tr-blue)"/>
+                <rect x="500" y="190" width="120" height="36" rx="6"/>
+                <rect x="550" y="115" width="120" height="36" rx="6"/>
+                <rect x="600" y="40" width="120" height="36" rx="6"/>
+                <line x1="140" y1="76" x2="163" y2="115" marker-end="url(#bar)"/>
+                <line x1="190" y1="151" x2="213" y2="190" marker-end="url(#bar)"/>
+                <line x1="243" y1="226" x2="330" y2="262" marker-end="url(#bar)"/>
+                <line x1="450" y1="262" x2="545" y2="226" marker-end="url(#bar)"/>
+                <line x1="583" y1="190" x2="606" y2="151" marker-end="url(#bar)"/>
+                <line x1="633" y1="115" x2="656" y2="76" marker-end="url(#bar)"/>
+                <line x1="198" y1="58" x2="600" y2="58" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+                <line x1="230" y1="133" x2="550" y2="133" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+                <line x1="280" y1="208" x2="500" y2="208" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="13">
+                <text x="119" y="63" text-anchor="middle" font-size="12">вход, полное разрешение</text>
+                <text x="170" y="138" text-anchor="middle">down ×2</text>
+                <text x="220" y="213" text-anchor="middle">down ×4</text>
+                <text x="390" y="271" text-anchor="middle">bottleneck</text>
+                <text x="560" y="213" text-anchor="middle">up ×4</text>
+                <text x="610" y="138" text-anchor="middle">up ×2</text>
+                <text x="660" y="63" text-anchor="middle">маска H×W</text>
+                <text x="390" y="48" text-anchor="middle" font-size="12" opacity="0.75">skip: concat признаков того же масштаба</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Нарисуйте букву U: слева encoder с downsampling (разрешение падает, каналы растут), справа decoder с upsampling.</li>
+            <li>Пунктиром соедините уровни одинакового масштаба — skip-связи, признаки конкатенируются.</li>
+            <li>Проговорите: encoder отвечает «что на картинке», decoder — «где именно», skip возвращают потерянные при сжатии детали границ.</li>
+          </ol>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ: U-Net решает конфликт между семантикой и локализацией. Encoder уменьшает spatial size и увеличивает receptive field, decoder восстанавливает resolution, skip-связи передают high-resolution features и улучшают границы, upsampling технически поднимает карту, multiscale features позволяют учитывать объекты разных размеров. Современные подходы развивают эту линию: transformers дают глобальный attention-контекст, а promptable segmentation добавляет управляемость через prompt и переходит от фиксированных классов к выделению объекта по запросу.</p>
@@ -7887,6 +7973,50 @@ with torch.no_grad():
           <p>Two-stage detector сначала сужает поиск до небольшого числа вероятных object regions, затем более внимательно классифицирует и уточняет каждый proposal. Такой подход даёт сильную локализацию и качество, особенно когда объектов немного и нужна высокая точность.</p>
 
           <p>Плата — скорость и сложность pipeline. По сравнению с one-stage detector, two-stage detector обычно тяжелее: proposals, RoI operations, second-stage heads и NMS создают больше шагов.</p>
+        </section>
+
+        <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 280" role="img" aria-label="Схема Faster R-CNN">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="30" y="110" width="80" height="42" rx="7"/>
+                <rect x="160" y="110" width="110" height="42" rx="7"/>
+                <rect x="330" y="110" width="110" height="42" rx="7"/>
+                <rect x="330" y="30" width="110" height="46" rx="7" stroke="var(--tr-blue)"/>
+                <rect x="500" y="110" width="100" height="42" rx="7"/>
+                <rect x="655" y="70" width="100" height="40" rx="7"/>
+                <rect x="655" y="152" width="100" height="40" rx="7"/>
+                <line x1="110" y1="131" x2="160" y2="131" marker-end="url(#bar)"/>
+                <line x1="270" y1="131" x2="330" y2="131" marker-end="url(#bar)"/>
+                <line x1="385" y1="110" x2="385" y2="76" marker-end="url(#bar)"/>
+                <line x1="440" y1="53" x2="530" y2="110" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+                <line x1="440" y1="131" x2="500" y2="131" marker-end="url(#bar)"/>
+                <line x1="600" y1="122" x2="655" y2="95" marker-end="url(#bar)"/>
+                <line x1="600" y1="140" x2="655" y2="167" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="13.5">
+                <text x="70" y="135" text-anchor="middle">image</text>
+                <text x="215" y="128" text-anchor="middle">CNN backbone</text>
+                <text x="215" y="144" text-anchor="middle">(1 раз)</text>
+                <text x="385" y="135" text-anchor="middle">feature map</text>
+                <text x="385" y="49" text-anchor="middle">RPN: anchors →</text>
+                <text x="385" y="66" text-anchor="middle">proposals</text>
+                <text x="550" y="128" text-anchor="middle">RoI Align</text>
+                <text x="550" y="144" text-anchor="middle">fixed grid</text>
+                <text x="705" y="94" text-anchor="middle">класс</text>
+                <text x="705" y="176" text-anchor="middle">box offsets</text>
+                <text x="490" y="80" text-anchor="middle" font-size="12" opacity="0.75">вырезать каждый proposal</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Backbone считается один раз на всё изображение — стрелка в общую feature map.</li>
+            <li>Вверх — ветка RPN: на каждой позиции anchors, предсказываются objectness и смещения $(t_x,t_y,t_w,t_h)$ → proposals.</li>
+            <li>Каждый proposal вырезается из той же feature map через RoI Align в фиксированную сетку.</li>
+            <li>Head даёт класс и уточнение box; проговорите эволюцию: R-CNN → Fast (общая карта) → Faster (обучаемые proposals).</li>
+          </ol>
         </section>
 
         <section>
@@ -9631,6 +9761,50 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 270" role="img" aria-label="Схема LSTM-ячейки">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <line x1="40" y1="70" x2="740" y2="70" stroke-width="2.4" marker-end="url(#bar)"/>
+                <circle cx="230" cy="70" r="15"/>
+                <circle cx="430" cy="70" r="15"/>
+                <rect x="150" y="150" width="76" height="38" rx="7" stroke="var(--tr-orange)"/>
+                <rect x="300" y="150" width="76" height="38" rx="7" stroke="var(--tr-green)"/>
+                <rect x="392" y="150" width="76" height="38" rx="7"/>
+                <rect x="540" y="150" width="76" height="38" rx="7" stroke="var(--tr-blue)"/>
+                <line x1="188" y1="150" x2="222" y2="85" marker-end="url(#bar)"/>
+                <line x1="352" y1="150" x2="424" y2="85" marker-end="url(#bar)"/>
+                <line x1="430" y1="150" x2="430" y2="85" marker-end="url(#bar)"/>
+                <line x1="578" y1="150" x2="578" y2="110" marker-end="url(#bar)"/>
+                <line x1="500" y1="70" x2="500" y2="110" stroke-dasharray="4 4"/>
+                <line x1="500" y1="110" x2="578" y2="110" stroke-dasharray="4 4"/>
+                <line x1="616" y1="169" x2="740" y2="169" marker-end="url(#bar)"/>
+                <line x1="60" y1="225" x2="700 " y2="225" stroke-dasharray="6 4"/>
+              </g>
+              <g fill="currentColor" font-size="14">
+                <text x="40" y="55">C<tspan baseline-shift="sub" font-size="10">t−1</tspan></text>
+                <text x="726" y="55" text-anchor="end">C<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="230" y="75" text-anchor="middle">×</text>
+                <text x="430" y="75" text-anchor="middle">+</text>
+                <text x="188" y="174" text-anchor="middle">f<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="338" y="174" text-anchor="middle">i<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="430" y="174" text-anchor="middle">C̃<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="578" y="174" text-anchor="middle">o<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="730" y="163" text-anchor="end">h<tspan baseline-shift="sub" font-size="10">t</tspan> = o<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ tanh(C<tspan baseline-shift="sub" font-size="10">t</tspan>)</text>
+                <text x="380" y="243" text-anchor="middle" font-size="12" opacity="0.75">все гейты — σ(W[h<tspan baseline-shift="sub" font-size="10">t−1</tspan>; x<tspan baseline-shift="sub" font-size="10">t</tspan>] + b), кандидат — tanh</text>
+                <text x="330" y="40" text-anchor="middle" font-size="12" opacity="0.75">C<tspan baseline-shift="sub" font-size="10">t</tspan> = f<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ C<tspan baseline-shift="sub" font-size="10">t−1</tspan> + i<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ C̃<tspan baseline-shift="sub" font-size="10">t</tspan> — почти линейная дорожка памяти</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Главное — горизонтальная «конвейерная лента» cell state: $C_{t-1}\to C_t$ через × (forget) и + (input).</li>
+            <li>Снизу подведите гейты: $f_t$ решает что стереть, $i_t$ с кандидатом $\tilde C_t$ — что записать, $o_t$ — что показать как $h_t$.</li>
+            <li>Проговорите constant error carousel: $\partial C_t/\partial C_{t-1}=f_t$, при $f_t\approx1$ градиент идёт назад без затухания — в этом решение vanishing gradient.</li>
+          </ol>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ: проблема простой RNN не в самой идее hidden state, а в длинной цепочке умножений при BPTT. Градиент к ранним шагам содержит произведение якобианов, поэтому может исчезать или взрываться. Gradient clipping помогает при exploding gradients, но vanishing gradients требуют архитектур с управляемым путём памяти. LSTM вводит cell state $C_t$ и gates forget/input/output, что создаёт более стабильный путь для сохранения информации. GRU упрощает LSTM: объединяет память и hidden state, используя update/reset gates. Teacher forcing ускоряет обучение decoder-ов, но создаёт train-inference mismatch; scheduled sampling постепенно приучает модель к собственным предсказаниям.</p>
@@ -9844,6 +10018,45 @@ with torch.no_grad():
           <p>До transformer attention был добавкой к RNN encoder-decoder: RNN всё ещё последовательно строила hidden states, а attention позволял decoder обращаться к ним. Transformer радикально усилил эту идею: attention стал основным механизмом обработки последовательности, а рекуррентность убрали.</p>
 
           <p>На экзамене хорошая фраза: “attention начался как способ снять bottleneck одного context vector в seq2seq, а затем стал базовым строительным блоком transformer-архитектур”.</p>
+        </section>
+
+        <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 270" role="img" aria-label="Схема seq2seq с attention">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="60" y="170" width="64" height="40" rx="7"/>
+                <rect x="160" y="170" width="64" height="40" rx="7"/>
+                <rect x="260" y="170" width="64" height="40" rx="7"/>
+                <line x1="124" y1="190" x2="160" y2="190" marker-end="url(#bar)"/>
+                <line x1="224" y1="190" x2="260" y2="190" marker-end="url(#bar)"/>
+                <rect x="520" y="170" width="70" height="40" rx="7" stroke="var(--tr-blue)"/>
+                <rect x="500" y="40" width="110" height="40" rx="7"/>
+                <line x1="92" y1="170" x2="530" y2="86" stroke="var(--tr-orange)" stroke-dasharray="5 4" marker-end="url(#bar)"/>
+                <line x1="192" y1="170" x2="540 " y2="83" stroke="var(--tr-orange)" stroke-dasharray="5 4" stroke-width="2.6" marker-end="url(#bar)"/>
+                <line x1="292" y1="170" x2="552" y2="86" stroke="var(--tr-orange)" stroke-dasharray="5 4" marker-end="url(#bar)"/>
+                <line x1="555" y1="170" x2="555" y2="80" marker-end="url(#bar)"/>
+                <line x1="610" y1="60" x2="700" y2="60" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="14">
+                <text x="92" y="194" text-anchor="middle">h<tspan baseline-shift="sub" font-size="10">1</tspan></text>
+                <text x="192" y="194" text-anchor="middle">h<tspan baseline-shift="sub" font-size="10">2</tspan></text>
+                <text x="292" y="194" text-anchor="middle">h<tspan baseline-shift="sub" font-size="10">3</tspan></text>
+                <text x="192" y="235" text-anchor="middle" font-size="12" opacity="0.75">encoder states (все, не один вектор!)</text>
+                <text x="555" y="194" text-anchor="middle">s<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="555" y="64" text-anchor="middle">c<tspan baseline-shift="sub" font-size="10">t</tspan> = Σ a<tspan baseline-shift="sub" font-size="10">i</tspan>h<tspan baseline-shift="sub" font-size="10">i</tspan></text>
+                <text x="698" y="50" text-anchor="end">ŷ<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="360" y="105" text-anchor="middle" font-size="12" opacity="0.75">a<tspan baseline-shift="sub" font-size="10">i</tspan> = softmax(score(s<tspan baseline-shift="sub" font-size="10">t</tspan>, h<tspan baseline-shift="sub" font-size="10">i</tspan>)) — толщина = вес</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Слева encoder states $h_1..h_T$ — подчеркните: они все сохраняются, а не сжимаются в один вектор.</li>
+            <li>Декодер на шаге $t$ имеет state $s_t$; оранжевые стрелки — сравнение $s_t$ с каждым $h_i$ через score, softmax даёт веса $a_i$.</li>
+            <li>Контекст $c_t=\sum a_i h_i$ — взвешенная сумма; вместе с $s_t$ он даёт следующий токен $\hat y_t$.</li>
+            <li>Проговорите: attention снимает bottleneck фиксированного вектора и даёт мягкое выравнивание перевода.</li>
+          </ol>
         </section>
 
         <section>
@@ -10615,6 +10828,50 @@ with torch.no_grad():
               <div class="arch-node"><strong>Head</strong><span>logits<br>softmax</span></div>
             </div>
           </div>
+        </section>
+
+        <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 300" role="img" aria-label="Схема Transformer-блока">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="40" y="130" width="90" height="40" rx="7"/>
+                <rect x="205" y="118" width="130" height="64" rx="7" stroke="var(--tr-blue)"/>
+                <circle cx="392" cy="150" r="14"/>
+                <rect x="445" y="126" width="64" height="48" rx="7"/>
+                <rect x="548" y="118" width="90" height="64" rx="7" stroke="var(--tr-blue)"/>
+                <circle cx="678" cy="150" r="14"/>
+                <line x1="130" y1="150" x2="205" y2="150" marker-end="url(#bar)"/>
+                <line x1="335" y1="150" x2="378" y2="150" marker-end="url(#bar)"/>
+                <line x1="406" y1="150" x2="445" y2="150" marker-end="url(#bar)"/>
+                <line x1="509" y1="150" x2="548" y2="150" marker-end="url(#bar)"/>
+                <line x1="638" y1="150" x2="664" y2="150" marker-end="url(#bar)"/>
+                <line x1="692" y1="150" x2="740" y2="150" marker-end="url(#bar)"/>
+                <path d="M167 150 C167 60 392 60 392 136" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+                <path d="M527 150 C527 240 678 240 678 164" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="14">
+                <text x="85" y="154" text-anchor="middle">вход x</text>
+                <text x="270" y="145" text-anchor="middle">Multi-Head</text>
+                <text x="270" y="163" text-anchor="middle">Attention</text>
+                <text x="392" y="155" text-anchor="middle">+</text>
+                <text x="477" y="154" text-anchor="middle">LN</text>
+                <text x="593" y="154" text-anchor="middle">FFN</text>
+                <text x="678" y="155" text-anchor="middle">+</text>
+                <text x="737" y="140" text-anchor="end">LN → выход</text>
+                <text x="270" y="105" text-anchor="middle" font-size="12" opacity="0.75">Q, K, V — проекции x</text>
+                <text x="275" y="55" text-anchor="middle" font-size="12" opacity="0.75">residual</text>
+                <text x="600" y="252" text-anchor="middle" font-size="12" opacity="0.75">residual</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Нарисуйте вход $x$ и стрелку в блок Multi-Head Attention; подпишите, что $Q,K,V$ — три линейные проекции $x$.</li>
+            <li>Пунктиром обведите residual: $x$ в обход attention до узла «+», после сложения — LayerNorm.</li>
+            <li>Дальше та же пара для FFN: position-wise двухслойный MLP, residual, LayerNorm.</li>
+            <li>Проговорите: attention смешивает информацию между токенами, FFN перерабатывает каждый токен отдельно; в decoder перед этим стоит causal mask, в encoder-decoder добавляется cross-attention.</li>
+          </ol>
         </section>
 
         <section>
@@ -16365,6 +16622,49 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 260" role="img" aria-label="Схема VAE">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="30" y="105" width="70" height="42" rx="7"/>
+                <rect x="150" y="95" width="110" height="62" rx="7" stroke="var(--tr-blue)"/>
+                <rect x="310" y="72" width="74" height="34" rx="7"/>
+                <rect x="310" y="146" width="74" height="34" rx="7"/>
+                <rect x="437" y="105" width="98" height="42" rx="7"/>
+                <rect x="590" y="95" width="105" height="62" rx="7" stroke="var(--tr-blue)"/>
+                <line x1="100" y1="126" x2="150" y2="126" marker-end="url(#bar)"/>
+                <line x1="260" y1="110" x2="310" y2="92" marker-end="url(#bar)"/>
+                <line x1="260" y1="142" x2="310" y2="160" marker-end="url(#bar)"/>
+                <line x1="384" y1="89" x2="437" y2="118" marker-end="url(#bar)"/>
+                <line x1="384" y1="163" x2="437" y2="134" marker-end="url(#bar)"/>
+                <line x1="535" y1="126" x2="590" y2="126" marker-end="url(#bar)"/>
+                <line x1="695" y1="126" x2="745" y2="126" marker-end="url(#bar)"/>
+                <line x1="486" y1="40" x2="486" y2="105" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+                <path d="M347 200 C420 235 560 235 640 165" stroke-dasharray="6 4" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="14">
+                <text x="65" y="130" text-anchor="middle">x</text>
+                <text x="205" y="130" text-anchor="middle">Encoder</text>
+                <text x="347" y="93" text-anchor="middle">μ(x)</text>
+                <text x="347" y="167" text-anchor="middle">σ(x)</text>
+                <text x="486" y="130" text-anchor="middle">z = μ + σ·ε</text>
+                <text x="642" y="130" text-anchor="middle">Decoder</text>
+                <text x="744" y="115" text-anchor="end">x̂</text>
+                <text x="486" y="30" text-anchor="middle" font-size="12" opacity="0.75">ε ~ N(0, I) — reparameterization</text>
+                <text x="500" y="250" text-anchor="middle" font-size="12" opacity="0.75">loss: реконструкция + KL( q(z|x) ‖ N(0, I) )</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Encoder из $x$ выдаёт не точку, а распределение: два выхода $\mu$ и $\sigma$.</li>
+            <li>Сэмпл через reparameterization: $z=\mu+\sigma\odot\varepsilon$ — случайность вынесена в $\varepsilon$, градиент течёт в encoder.</li>
+            <li>Decoder восстанавливает $\hat{x}$; подпишите двухчастный loss: реконструкция + KL к prior.</li>
+            <li>Проговорите: KL прижимает posterior к $\mathcal{N}(0,I)$, поэтому из prior можно сэмплировать новые объекты.</li>
+          </ol>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note excellent">
             <p>Сильный ответ: обычный autoencoder обучает encoder $z=f_\phi(x)$ и decoder $\hat{x}=g_\theta(z)$ через reconstruction loss, а bottleneck заставляет хранить compact representation в latent space. Но он не контролирует distribution latent codes, поэтому random sampling из latent space часто попадает в пустоты. VAE задаёт probabilistic generative model: $z\sim p(z)=\mathcal{N}(0,I)$, $x\sim p_\theta(x|z)$, а encoder аппроксимирует posterior $q_\phi(z|x)$. Direct likelihood $\log p_\theta(x)=\log\int p_\theta(x|z)p(z)dz$ intractable, поэтому максимизируют ELBO: $\mathbb{E}_{q_\phi}\log p_\theta(x|z)-KL(q_\phi(z|x)\|p(z))$. Reconstruction term учит восстанавливать, KL regularizer делает latent space гладким и sampleable. Reparameterization $z=\mu+\sigma\odot\varepsilon$ выносит randomness наружу и позволяет backprop через sampling.</p>
@@ -17516,6 +17816,52 @@ with torch.no_grad():
         </section>
 
         <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 250" role="img" aria-label="Схема диффузии">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="40" y="40" width="66" height="44" rx="7"/>
+                <rect x="220" y="40" width="66" height="44" rx="7"/>
+                <rect x="400" y="40" width="66" height="44" rx="7"/>
+                <rect x="580" y="40" width="66" height="44" rx="7"/>
+                <line x1="106" y1="62" x2="220" y2="62" marker-end="url(#bar)"/>
+                <line x1="286" y1="62" x2="400" y2="62" marker-end="url(#bar)"/>
+                <line x1="466" y1="62" x2="580" y2="62" marker-end="url(#bar)"/>
+                <line x1="580" y1="170" x2="466" y2="170" stroke="var(--tr-blue)" marker-end="url(#bar)"/>
+                <line x1="400" y1="170" x2="286" y2="170" stroke="var(--tr-blue)" marker-end="url(#bar)"/>
+                <line x1="220" y1="170" x2="106" y2="170" stroke="var(--tr-blue)" marker-end="url(#bar)"/>
+                <rect x="580" y="148" width="66" height="44" rx="7"/>
+                <rect x="400" y="148" width="66" height="44" rx="7"/>
+                <rect x="220" y="148" width="66" height="44" rx="7"/>
+                <rect x="40" y="148" width="66" height="44" rx="7"/>
+                <rect x="310" y="205" width="160" height="34" rx="7" stroke="var(--tr-blue)"/>
+                <line x1="390" y1="205" x2="340" y2="192" stroke-dasharray="4 4" marker-end="url(#bar)"/>
+              </g>
+              <g fill="currentColor" font-size="14">
+                <text x="73" y="66" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">0</tspan></text>
+                <text x="253" y="66" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">1</tspan></text>
+                <text x="433" y="66" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="613" y="66" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">T</tspan></text>
+                <text x="163" y="52" text-anchor="middle" font-size="12" opacity="0.75">+ шум q</text>
+                <text x="613" y="172" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">T</tspan></text>
+                <text x="433" y="172" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">t</tspan></text>
+                <text x="253" y="172" text-anchor="middle">x<tspan baseline-shift="sub" font-size="10">1</tspan></text>
+                <text x="73" y="172" text-anchor="middle">x̂<tspan baseline-shift="sub" font-size="10">0</tspan></text>
+                <text x="343" y="147" text-anchor="middle" font-size="12" opacity="0.75">p<tspan baseline-shift="sub" font-size="10">θ</tspan>(x<tspan baseline-shift="sub" font-size="10">t−1</tspan> | x<tspan baseline-shift="sub" font-size="10">t</tspan>) — denoise</text>
+                <text x="390" y="227" text-anchor="middle">U-Net: ε<tspan baseline-shift="sub" font-size="10">θ</tspan>(x<tspan baseline-shift="sub" font-size="10">t</tspan>, t)</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Верхняя строка — forward: фиксированный процесс постепенно превращает $x_0$ в шум ($x_t$ доступен сразу: $x_t=\sqrt{\bar\alpha_t}x_0+\sqrt{1-\bar\alpha_t}\varepsilon$).</li>
+            <li>Нижняя строка — reverse: обученная модель шаг за шагом убирает шум от $x_T$ к изображению.</li>
+            <li>Под стрелкой подпишите U-Net, предсказывающий шум $\varepsilon_\theta(x_t,t)$; loss — MSE между $\varepsilon$ и $\varepsilon_\theta$.</li>
+            <li>Проговорите: обучение — одношаговое и стабильное, дорог только sampling (много проходов).</li>
+          </ol>
+        </section>
+
+        <section>
           <h3>Что сказать на отлично</h3>
           <div class="note good">
             <p>Сильный ответ: diffusion model задаёт известную forward Markov chain $q(x_t|x_{t-1})$, которая постепенно превращает data $x_0$ в Gaussian noise. Благодаря гауссовой форме можно напрямую сэмплировать $x_t=\sqrt{\bar{\alpha}_t}x_0+\sqrt{1-\bar{\alpha}_t}\varepsilon$, поэтому training сводится к supervised denoising: сеть $\varepsilon_\theta(x_t,t)$ предсказывает добавленный noise. Reverse generative chain стартует с $x_T\sim\mathcal{N}(0,I)$ и много раз применяет network для вычисления $p_\theta(x_{t-1}|x_t)$. Score matching view говорит, что модель учит $\nabla_x\log p_t(x)$, то есть направление к области большей плотности data. Для images обычно используют U-Net с timestep embeddings и skip connections. Главный trade-off: очень высокое качество и стабильность обучения против медленного sampling.</p>
@@ -18066,6 +18412,53 @@ with torch.no_grad():
         <section>
           <h3>Где CLIP используют</h3>
           <p>CLIP-подобные encoders используют как image encoders в vision-language models, как retrieval backbones, как zero-shot classifiers, как alignment метрики для сгенерированных изображений и как conditioning/evaluation компоненты в text-to-image системах. CLIP также даёт удобный мост от визуального контента к language models.</p>
+        </section>
+
+        <section>
+          <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
+          <div class="board-scheme">
+            <svg viewBox="0 0 780 270" role="img" aria-label="Схема CLIP">
+              <defs><marker id="bar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <g fill="none" stroke="currentColor" stroke-width="1.6">
+                <rect x="40" y="55" width="80" height="40" rx="7"/>
+                <rect x="40" y="165" width="80" height="40" rx="7"/>
+                <rect x="180" y="50" width="130" height="50" rx="7" stroke="var(--tr-blue)"/>
+                <rect x="180" y="160" width="130" height="50" rx="7" stroke="var(--tr-blue)"/>
+                <line x1="120" y1="75" x2="180" y2="75" marker-end="url(#bar)"/>
+                <line x1="120" y1="185" x2="180" y2="185" marker-end="url(#bar)"/>
+                <line x1="310" y1="75" x2="400" y2="105" marker-end="url(#bar)"/>
+                <line x1="310" y1="185" x2="400" y2="155" marker-end="url(#bar)"/>
+                <g stroke-width="1.2">
+                  <rect x="430" y="65" width="130" height="130" rx="6"/>
+                  <line x1="430" y1="108" x2="560" y2="108"/>
+                  <line x1="430" y1="151" x2="560" y2="151"/>
+                  <line x1="473" y1="65" x2="473" y2="195"/>
+                  <line x1="516" y1="65" x2="516" y2="195"/>
+                </g>
+                <rect x="432" y="67" width="40" height="40" rx="4" fill="var(--tr-green)" fill-opacity="0.35" stroke="var(--tr-green)"/>
+                <rect x="475" y="110" width="40" height="40" rx="4" fill="var(--tr-green)" fill-opacity="0.35" stroke="var(--tr-green)"/>
+                <rect x="518" y="153" width="40" height="40" rx="4" fill="var(--tr-green)" fill-opacity="0.35" stroke="var(--tr-green)"/>
+              </g>
+              <g fill="currentColor" font-size="13.5">
+                <text x="80" y="79" text-anchor="middle">images</text>
+                <text x="80" y="189" text-anchor="middle">captions</text>
+                <text x="245" y="80" text-anchor="middle">Image Encoder</text>
+                <text x="245" y="190" text-anchor="middle">Text Encoder</text>
+                <text x="374" y="95" text-anchor="middle">v<tspan baseline-shift="sub" font-size="10">i</tspan></text>
+                <text x="374" y="172" text-anchor="middle">t<tspan baseline-shift="sub" font-size="10">j</tspan></text>
+                <text x="495" y="222" text-anchor="middle" font-size="12" opacity="0.75">S<tspan baseline-shift="sub" font-size="10">ij</tspan> = v<tspan baseline-shift="sub" font-size="10">i</tspan>ᵀt<tspan baseline-shift="sub" font-size="10">j</tspan>/τ: диагональ — positives</text>
+                <text x="672" y="105" text-anchor="middle" font-size="12.5">InfoNCE в обе стороны:</text>
+                <text x="672" y="124" text-anchor="middle" font-size="12.5">строка ищет свой caption,</text>
+                <text x="672" y="143" text-anchor="middle" font-size="12.5">столбец — своё изображение</text>
+              </g>
+            </svg>
+          </div>
+          <ol class="board-steps">
+            <li>Две башни: image encoder и text encoder переводят входы в одно нормированное пространство.</li>
+            <li>Нарисуйте матрицу $N\times N$ косинусных близостей batch-а; закрасьте диагональ — настоящие пары.</li>
+            <li>Проговорите: симметричный InfoNCE тянет диагональ вверх, остальное вниз; negatives — из того же batch, поэтому нужен большой batch.</li>
+            <li>Zero-shot: имена классов оборачиваются в промпты «a photo of a …», картинка относится к ближайшему тексту.</li>
+          </ol>
         </section>
 
         <section>
