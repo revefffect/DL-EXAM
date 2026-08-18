@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Формульный лист — Deep Learning</title>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('dl-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    }());
+  </script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="assets/vendor/mathjax/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --paper: #ffffff;
+      --ink: #172033;
+      --muted: #5f6b7a;
+      --line: #dbe1ea;
+      --accent: #0b6bcb;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+    }
+
+    html[data-theme="dark"] body {
+      --bg: #0e1420;
+      --paper: #161e2d;
+      --ink: #e7ecf5;
+      --muted: #97a3b6;
+      --line: #2a3448;
+      --accent: #7ab3ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.02em;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+    }
+
+    .top-links a { color: var(--accent); text-decoration: none; }
+    .top-links a:hover { text-decoration: underline; }
+
+    .subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .print-btn {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 7px 12px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 620;
+      cursor: pointer;
+    }
+
+    .print-btn:hover { border-color: var(--accent); }
+
+    h2 {
+      margin: 26px 0 10px;
+      font-size: 17px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 10px;
+    }
+
+    .f {
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      break-inside: avoid;
+    }
+
+    .f b {
+      display: block;
+      font-size: 12.5px;
+      margin-bottom: 2px;
+    }
+
+    .f .m {
+      overflow-x: auto;
+      font-size: 15px;
+    }
+
+    .f small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    @media print {
+      body { background: #fff; color: #000; font-size: 10px; }
+      .page { max-width: none; padding: 0; }
+      .top-links, .print-btn { display: none; }
+      h1 { font-size: 16px; }
+      .subtitle { font-size: 9px; margin-bottom: 8px; }
+      h2 { font-size: 11px; margin: 10px 0 5px; color: #000; page-break-after: avoid; }
+      .grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+      .f { padding: 5px 7px; border-color: #bbb; border-radius: 4px; background: #fff; }
+      .f b { font-size: 9px; }
+      .f .m { font-size: 10.5px; overflow: visible; }
+      .f small { font-size: 8px; color: #444; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <h1>Формульный лист: теорминимум DL</h1>
+      <div class="top-links">
+        <button class="print-btn" onclick="window.print()">🖨 Печать</button>
+        <a href="Подготовка.html">← К билетам</a>
+        <a href="Справка.html">Справка</a>
+      </div>
+    </div>
+    <p class="subtitle">~50 формул, которые чаще всего просят на устном. К каждой — что в ней какая величина. Печать: альбомная ориентация, масштаб 100%.</p>
+
+    <h2>Обучение и оптимизация</h2>
+    <div class="grid">
+      <div class="f"><b>Эмпирический риск (ERM)</b><div class="m">$\theta^{*}=\arg\min_\theta \frac{1}{N}\sum_i \ell(f(x_i;\theta),y_i)$</div><small>Среднее loss по train вместо неизвестного матожидания по $P_{data}$.</small></div>
+      <div class="f"><b>Softmax</b><div class="m">$p_j=\dfrac{e^{z_j}}{\sum_k e^{z_k}}$</div><small>$z$ — логиты; сумма $p_j$ равна 1; порядок логитов сохраняется.</small></div>
+      <div class="f"><b>Cross-entropy = NLL</b><div class="m">$\mathcal{L}_{CE}=-\log p_y$</div><small>Минус log-правдоподобие категориального распределения; MLE по выборке.</small></div>
+      <div class="f"><b>Градиент softmax+CE</b><div class="m">$\partial\mathcal{L}/\partial z = p-y$</div><small>«Предсказание минус истина»; главный вывод на доске.</small></div>
+      <div class="f"><b>Backward линейного слоя</b><div class="m">$\dfrac{\partial\mathcal{L}}{\partial W}=X^\top\Delta,\;\; \dfrac{\partial\mathcal{L}}{\partial X}=\Delta W^\top,\;\; \dfrac{\partial\mathcal{L}}{\partial b}=\sum_i \Delta_{i,:}$</div><small>$Y=XW+b$, $\Delta=\partial\mathcal{L}/\partial Y$; проверяется сходимостью размерностей.</small></div>
+      <div class="f"><b>MSE как гауссов MLE</b><div class="m">$-\log\mathcal{N}(y\,|\,f(x),\sigma^2)\propto \frac{1}{2\sigma^2}(y-f(x))^2$</div><small>Выбор loss = выбор модели шума; MAE ↔ Лаплас; L2-рег. ↔ гауссов prior (MAP).</small></div>
+      <div class="f"><b>SGD с momentum (heavy-ball)</b><div class="m">$v_t=\beta v_{t-1}+g_t,\quad \theta_{t+1}=\theta_t-\eta v_t$</div><small>EMA-форма имеет множитель $(1-\beta)$; в PyTorch — эта.</small></div>
+      <div class="f"><b>Adam</b><div class="m">$\hat m=\frac{m_t}{1-\beta_1^t},\; \hat v=\frac{v_t}{1-\beta_2^t},\; \theta\!\leftarrow\!\theta-\eta\frac{\hat m}{\sqrt{\hat v}+\varepsilon}$</div><small>$m,v$ — EMA градиента и его квадрата; поправки убирают смещение к нулю на старте.</small></div>
+      <div class="f"><b>AdamW</b><div class="m">$\theta \leftarrow (1-\eta\lambda)\theta - \eta\,\hat m/(\sqrt{\hat v}+\varepsilon)$</div><small>Weight decay отдельно от адаптивной нормировки — в отличие от Adam+L2.</small></div>
+      <div class="f"><b>Инициализация Xavier / He</b><div class="m">$\operatorname{Var}(w)=\dfrac{2}{n_{in}+n_{out}}\;\;/\;\;\dfrac{2}{n_{in}}$</div><small>Из $\operatorname{Var}(z)=n_{in}\operatorname{Var}(w)\mathbb{E}[x^2]$; фактор 2 у He — ReLU гасит половину энергии.</small></div>
+      <div class="f"><b>BatchNorm</b><div class="m">$\hat x=\dfrac{x-\mu_B}{\sqrt{\sigma_B^2+\varepsilon}},\quad y=\gamma\hat x+\beta$</div><small>В CNN — по осям $(N,H,W)$ на канал; на inference — running статистики.</small></div>
+      <div class="f"><b>Gradient clipping по норме</b><div class="m">$g \leftarrow g\cdot\min(1,\, c/\lVert g\rVert)$</div><small>Направление сохраняется; стандарт для RNN и LLM ($c\approx1$).</small></div>
+    </div>
+
+    <h2>CNN и Computer Vision</h2>
+    <div class="grid">
+      <div class="f"><b>Размер выхода свёртки</b><div class="m">$O=\left\lfloor\dfrac{I+2P-K}{S}\right\rfloor+1$</div><small>$I$ — вход, $K$ — kernel, $P$ — padding, $S$ — stride.</small></div>
+      <div class="f"><b>Параметры conv-слоя</b><div class="m">$K_hK_wC_{in}C_{out}+C_{out}$</div><small>Не зависит от $H,W$ — в отличие от FC ($HWC\cdot M$).</small></div>
+      <div class="f"><b>Receptive field</b><div class="m">$r_l=r_{l-1}+(k_l-1)\prod_{i&lt;l}s_i$</div><small>Для стека $3\times3$, stride 1: $R=1+2L$; эффективный RF меньше и «гауссов».</small></div>
+      <div class="f"><b>Depthwise separable</b><div class="m">$K^2C_{in}+C_{in}C_{out} \ll K^2C_{in}C_{out}$</div><small>Пространственная и канальная свёртки раздельно; экономия $\sim K^2$.</small></div>
+      <div class="f"><b>IoU и Dice</b><div class="m">$IoU=\dfrac{|A\cap B|}{|A\cup B|},\quad Dice=\dfrac{2IoU}{1+IoU}$</div><small>Dice = F1 по пикселям; обе метрики штрафуют и лишнее, и пропуски.</small></div>
+      <div class="f"><b>Focal loss</b><div class="m">$FL=-\alpha_t(1-p_t)^\gamma\log p_t$</div><small>$(1-p_t)^\gamma$ гасит вклад лёгких примеров; лечит дисбаланс one-stage детекции.</small></div>
+      <div class="f"><b>Параметризация box-регрессии</b><div class="m">$t_x=\dfrac{x-x_a}{w_a},\; t_w=\log\dfrac{w}{w_a}$</div><small>Смещения относительно anchor — инвариантны к масштабу.</small></div>
+      <div class="f"><b>Panoptic Quality</b><div class="m">$PQ=\dfrac{\sum_{TP}IoU}{|TP|+\frac12|FP|+\frac12|FN|}=SQ\times RQ$</div><small>Матчинг при $IoU&gt;0.5$; SQ — качество масок, RQ — качество распознавания.</small></div>
+      <div class="f"><b>OKS (позы)</b><div class="m">$OKS=\dfrac{\sum_i e^{-d_i^2/2s^2k_i^2}\,\mathbb{1}[v_i&gt;0]}{\sum_i \mathbb{1}[v_i&gt;0]}$</div><small>Аналог IoU для keypoints; $s$ — масштаб объекта, $k_i$ — константа точки.</small></div>
+      <div class="f"><b>Distillation loss</b><div class="m">$\mathcal{L}=\alpha\,CE(y,p_s)+(1-\alpha)T^2\,KL(p_t^T\Vert p_s^T)$</div><small>$T^2$ компенсирует масштаб $1/T^2$ градиентов soft-таргетов.</small></div>
+    </div>
+
+    <h2>NLP, Transformer, LLM</h2>
+    <div class="grid">
+      <div class="f"><b>Scaled dot-product attention</b><div class="m">$\operatorname{Attn}(Q,K,V)=\operatorname{softmax}\!\Big(\dfrac{QK^\top}{\sqrt{d_k}}\Big)V$</div><small>$\sqrt{d_k}$: дисперсия $q^\top k\approx d_k$ — без деления softmax насыщается.</small></div>
+      <div class="f"><b>Multi-head attention</b><div class="m">$\operatorname{Concat}(head_1..head_H)W_O,\;\; d_k=d_{model}/H$</div><small>Разные подпространства связей; стоимость как у одной большой головы.</small></div>
+      <div class="f"><b>LayerNorm</b><div class="m">$y=\gamma\,\dfrac{x-\mu}{\sqrt{\sigma^2+\varepsilon}}+\beta$</div><small>Статистики по признакам одного токена — не зависит от batch; стандарт в Transformer.</small></div>
+      <div class="f"><b>LSTM: ядро памяти</b><div class="m">$C_t=f_t\odot C_{t-1}+i_t\odot\tilde C_t$</div><small>$\partial C_t/\partial C_{t-1}=f_t$: при $f\!\approx\!1$ градиент течёт без затухания (CEC).</small></div>
+      <div class="f"><b>Perplexity</b><div class="m">$PPL=\exp\big(-\tfrac{1}{T}\sum_t\log p(x_t|x_{&lt;t})\big)$</div><small>Экспонента средней NLL; «эффективное число вариантов» следующего токена.</small></div>
+      <div class="f"><b>Negative sampling (SGNS)</b><div class="m">$\log\sigma(v^\top u^+)+\sum_{k}\mathbb{E}\log\sigma(-v^\top u_k^-)$</div><small>В оптимуме $w^\top c = PMI - \log k$ (Levy–Goldberg).</small></div>
+      <div class="f"><b>Compute pretraining</b><div class="m">$C\approx 6ND$</div><small>2 FLOPs forward + 4 backward на параметр на токен; Chinchilla: $D\approx20N$.</small></div>
+      <div class="f"><b>LoRA</b><div class="m">$W=W_0+\tfrac{\alpha}{r}BA,\;\; B=0,\; A\sim\mathcal{N}$</div><small>$r(d+k)$ параметров; на старте $\Delta W=0$ — модель совпадает с базовой.</small></div>
+      <div class="f"><b>RLHF objective</b><div class="m">$\max_\theta\,\mathbb{E}_{y\sim\pi_\theta}\big[r(x,y)-\beta\log\tfrac{\pi_\theta(y|x)}{\pi_{ref}(y|x)}\big]$</div><small>Матожидание log-ratio по $\pi_\theta$ — это KL; оптимизируют PPO.</small></div>
+      <div class="f"><b>DPO</b><div class="m">$-\log\sigma\big(\beta\log\tfrac{\pi_\theta(y^+|x)}{\pi_{ref}(y^+|x)}-\beta\log\tfrac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}\big)$</div><small>Policy как implicit reward model; вывод из $\pi^*\propto\pi_{ref}e^{r/\beta}$.</small></div>
+      <div class="f"><b>Память KV-cache</b><div class="m">$2\cdot L\cdot H_{kv}\cdot T\cdot d_{head}\cdot b$ байт</div><small>Множитель 2 — K и V; на batch. GQA уменьшает $H_{kv}$.</small></div>
+      <div class="f"><b>Reward model (Bradley–Terry)</b><div class="m">$-\log\sigma\big(r(x,y^+)-r(x,y^-)\big)$</div><small>Пары chosen/rejected; scalar reward из сравнений.</small></div>
+    </div>
+
+    <h2>Audio и ASR</h2>
+    <div class="grid">
+      <div class="f"><b>Теорема Найквиста</b><div class="m">$f_s &gt; 2f_{\max}$</div><small>Строго: компонента ровно на $f_s/2$ не восстанавливается; иначе aliasing.</small></div>
+      <div class="f"><b>Mel-шкала</b><div class="m">$m=2595\log_{10}\!\big(1+\tfrac{f}{700}\big)$</div><small>Перцептивная шкала частот; основа log-mel фичей и MFCC.</small></div>
+      <div class="f"><b>SNR квантования</b><div class="m">$SNR\approx 6.02\,b+1.76$ дБ</div><small>Для синуса полной шкалы; каждый бит $\approx$ 6 дБ.</small></div>
+      <div class="f"><b>WER</b><div class="m">$WER=\dfrac{S+D+I}{N}$</div><small>Замены+удаления+вставки к длине эталона; может быть &gt; 1.</small></div>
+      <div class="f"><b>CTC loss</b><div class="m">$-\log\!\!\sum_{\pi\in\mathcal{B}^{-1}(l)}\prod_t y^t_{\pi_t}$</div><small>Сумма по всем путям, которые collapse даёт target; считается DP.</small></div>
+      <div class="f"><b>CTC forward-рекурсия</b><div class="m">$\alpha_t(s)=\big(\alpha_{t-1}(s)+\alpha_{t-1}(s{-}1)+\alpha_{t-1}(s{-}2)\big)y^t_{l'_s}$</div><small>По $l'$ длины $2U{+}1$ с blank; перескок запрещён через одинаковые символы.</small></div>
+    </div>
+
+    <h2>Генеративные модели и GNN</h2>
+    <div class="grid">
+      <div class="f"><b>GAN min-max</b><div class="m">$\min_G\max_D\,\mathbb{E}_{p_{data}}\log D+\mathbb{E}_{p_z}\log(1-D(G(z)))$</div><small>При $D^*$ равен $-\log4+2\,JSD(p_{data}\Vert p_g)$.</small></div>
+      <div class="f"><b>Оптимальный дискриминатор</b><div class="m">$D^*(x)=\dfrac{p_{data}(x)}{p_{data}(x)+p_g(x)}$</div><small>Поточечный максимум $a\log D+b\log(1-D)$ при $D=a/(a+b)$.</small></div>
+      <div class="f"><b>Wasserstein / KR-двойственность</b><div class="m">$W_1=\inf_{\gamma\in\Pi}\mathbb{E}\lVert x-y\rVert=\sup_{\lVert f\rVert_L\le1}\mathbb{E}_{p}f-\mathbb{E}_{q}f$</div><small>Без 1-Lipschitz supremum бесконечен; отсюда gradient penalty.</small></div>
+      <div class="f"><b>ELBO</b><div class="m">$\log p(x)\ge \mathbb{E}_{q}\log p(x|z)-KL(q(z|x)\Vert p(z))$</div><small>Реконструкция минус регуляризатор; зазор — $KL(q\Vert p(z|x))$.</small></div>
+      <div class="f"><b>KL двух гауссиан (VAE)</b><div class="m">$-\tfrac12\sum_j\big(1+\log\sigma_j^2-\mu_j^2-\sigma_j^2\big)$</div><small>Замкнутая форма — интеграл аналитический; поэтому и берут гауссианы.</small></div>
+      <div class="f"><b>Reparameterization</b><div class="m">$z=\mu_\phi(x)+\sigma_\phi(x)\odot\varepsilon,\;\varepsilon\sim\mathcal{N}(0,I)$</div><small>Случайность вынесена в $\varepsilon$ — градиент проходит в encoder.</small></div>
+      <div class="f"><b>Change of variables (flows)</b><div class="m">$\log p_X(x)=\log p_Z(f(x))+\log\big|\det J_f(x)\big|$</div><small>Точный likelihood; вся инженерия — дешёвый $\det$ (треугольные якобианы).</small></div>
+      <div class="f"><b>Диффузия: forward в замкнутой форме</b><div class="m">$x_t=\sqrt{\bar\alpha_t}\,x_0+\sqrt{1-\bar\alpha_t}\,\varepsilon$</div><small>$\bar\alpha_t=\prod\alpha_s$; SNR монотонно падает по расписанию.</small></div>
+      <div class="f"><b>DDPM objective</b><div class="m">$\mathcal{L}_{simple}=\mathbb{E}\big\lVert\varepsilon-\varepsilon_\theta(x_t,t)\big\rVert^2$</div><small>Упрощённый ELBO: сумма KL гауссиан = взвешенный MSE по шуму.</small></div>
+      <div class="f"><b>Classifier-free guidance</b><div class="m">$\hat\varepsilon=\varepsilon_\varnothing+w\,(\varepsilon_y-\varepsilon_\varnothing)$</div><small>$w=1$ — просто conditional; $w&gt;1$ усиливает условие ценой diversity.</small></div>
+      <div class="f"><b>InfoNCE (CLIP)</b><div class="m">$-\log\dfrac{e^{v_i^\top t_i/\tau}}{\sum_j e^{v_i^\top t_j/\tau}}$</div><small>Симметрично в обе стороны; negatives из batch; нижняя оценка MI $\le\log N$.</small></div>
+      <div class="f"><b>GCN-слой</b><div class="m">$H^{(k+1)}=\sigma\big(\tilde D^{-1/2}\tilde A\tilde D^{-1/2}H^{(k)}W\big)$</div><small>$\tilde A=A+I$; нормировка $1/\sqrt{d_ud_v}$ уравновешивает степени вершин.</small></div>
+    </div>
+  </div>
+</body>
+</html>

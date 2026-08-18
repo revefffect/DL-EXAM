@@ -1589,6 +1589,46 @@
       user-select: none;
       cursor: pointer;
     }
+
+    /* ---------- Печать ---------- */
+    @media print {
+      .toc, .mobile-nav-toggle, .mobile-nav-backdrop, .mobile-nav-panel,
+      .theme-toggle, .exam-backdrop, .exam-modal, .qa-controls,
+      .ticket-status, .ticket-note, .dash, .toc-actions {
+        display: none !important;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      article.ticket {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: auto;
+      }
+
+      .ticket-header {
+        page-break-after: avoid;
+      }
+
+      details.qa-item {
+        page-break-inside: avoid;
+      }
+
+      figure.paper-figure, .visual-panel, table {
+        page-break-inside: avoid;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1629,6 +1669,7 @@
         <details class="nav-group" open>
           <summary>Справочник</summary>
           <a href="Справка.html">Математическая справка</a>
+          <a href="Формулы.html">Формульный лист (печать)</a>
         </details>
 
         <details class="nav-group" open>
@@ -20528,6 +20569,22 @@ with torch.no_grad():
       input.addEventListener('input', function () {
         clearTimeout(timer);
         timer = setTimeout(apply, 160);
+      });
+    }());
+
+    /* ---------- Печать: раскрыть спойлеры ---------- */
+    (function () {
+      var touched = [];
+      window.addEventListener('beforeprint', function () {
+        touched = [];
+        Array.prototype.forEach.call(document.querySelectorAll('details.qa-item:not([open])'), function (d) {
+          d.open = true;
+          touched.push(d);
+        });
+      });
+      window.addEventListener('afterprint', function () {
+        touched.forEach(function (d) { d.open = false; });
+        touched = [];
       });
     }());
 </script>
