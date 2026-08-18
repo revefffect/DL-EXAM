@@ -1060,6 +1060,535 @@
     html[data-theme="dark"] .diagram-card {
       background: #f7f9fd;
     }
+
+    /* ================= Tracker-style components ================= */
+    :root {
+      --tr-blue: #405fe8;
+      --tr-blue-soft: #f1f3ff;
+      --tr-green: #2c9b71;
+      --tr-orange: #d99032;
+      --tr-red: #c95b4b;
+      --tr-line: #e6e5e1;
+    }
+
+    html[data-theme="dark"] body {
+      --tr-blue: #7b91ff;
+      --tr-blue-soft: #23283b;
+      --tr-green: #55b98e;
+      --tr-orange: #e3a158;
+      --tr-red: #ef7969;
+      --tr-line: #30302f;
+    }
+
+    /* ---------- Дашборд прогресса ---------- */
+    .dash {
+      max-width: 100%;
+      margin: 0 0 26px;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 0 8px 26px rgba(15, 23, 42, 0.055);
+    }
+
+    .dash-topline {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dash-topline strong {
+      color: var(--ink);
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .dash-track {
+      height: 6px;
+      margin: 12px 0 16px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(127, 137, 155, 0.18);
+      display: flex;
+    }
+
+    .dash-track .seg-learned {
+      height: 100%;
+      background: var(--tr-green);
+      transition: width 220ms ease;
+    }
+
+    .dash-track .seg-shaky {
+      height: 100%;
+      background: var(--tr-orange);
+      transition: width 220ms ease;
+    }
+
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-bottom: 16px;
+    }
+
+    .dash-stats div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border-right: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .dash-stats div:last-child {
+      border: 0;
+    }
+
+    .dash-stats strong {
+      font-size: 18px;
+    }
+
+    .dash-stats span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .dash-stats .n-learned strong { color: var(--tr-green); }
+    .dash-stats .n-shaky strong { color: var(--tr-orange); }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(22px, 1fr));
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+
+    .dash-cell {
+      aspect-ratio: 1;
+      border-radius: 5px;
+      border: 1px solid rgba(127, 137, 155, 0.25);
+      background: rgba(127, 137, 155, 0.10);
+      display: grid;
+      place-items: center;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      text-decoration: none;
+    }
+
+    .dash-cell:hover {
+      transform: scale(1.12);
+      border-color: var(--tr-blue);
+    }
+
+    .dash-cell.learned {
+      background: var(--tr-green);
+      border-color: var(--tr-green);
+      color: #fff;
+    }
+
+    .dash-cell.shaky {
+      background: var(--tr-orange);
+      border-color: var(--tr-orange);
+      color: #fff;
+    }
+
+    .dash-blocks {
+      display: grid;
+      gap: 7px;
+    }
+
+    .dash-block {
+      display: grid;
+      grid-template-columns: minmax(120px, 190px) 1fr 64px;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .dash-block .b-name {
+      color: var(--ink);
+      font-weight: 650;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dash-block .b-track {
+      height: 5px;
+      border-radius: 99px;
+      overflow: hidden;
+      background: rgba(127, 137, 155, 0.18);
+      display: flex;
+    }
+
+    .dash-block .b-track i { height: 100%; }
+    .dash-block .b-track .bl { background: var(--tr-green); }
+    .dash-block .b-track .bs { background: var(--tr-orange); }
+
+    .dash-block .b-count {
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ---------- Трёхстатусный контрол билета ---------- */
+    .ticket-status {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: var(--paper);
+    }
+
+    .ticket-status button {
+      border: 0;
+      border-radius: 6px;
+      padding: 5px 10px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 620;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .ticket-status button:hover {
+      color: var(--ink);
+      background: rgba(127, 137, 155, 0.12);
+    }
+
+    .ticket-status button.active[data-st="shaky"] {
+      color: #fff;
+      background: var(--tr-orange);
+    }
+
+    .ticket-status button.active[data-st="learned"] {
+      color: #fff;
+      background: var(--tr-green);
+    }
+
+    .note-btn {
+      border: 0;
+      border-radius: 6px;
+      padding: 5px 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .note-btn:hover {
+      background: rgba(127, 137, 155, 0.12);
+    }
+
+    .note-btn.has-note::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: 3px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--tr-blue);
+    }
+
+    @media (max-width: 860px) {
+      .ticket-status {
+        position: static;
+        margin-top: 10px;
+        width: fit-content;
+      }
+    }
+
+    /* ---------- Заметки на полях ---------- */
+    .ticket-note {
+      margin: 0;
+      padding: 14px 18px;
+      border-bottom: 1px solid #efe3b0;
+      background: #fffbeb;
+    }
+
+    .ticket-note[hidden] { display: none; }
+
+    .ticket-note textarea {
+      width: 100%;
+      min-height: 84px;
+      padding: 10px 12px;
+      border: 1px dashed #d9c76a;
+      border-radius: 8px;
+      background: #fffdf4;
+      color: #4a4632;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.55;
+      resize: vertical;
+    }
+
+    .ticket-note textarea:focus {
+      outline: 2px solid rgba(217, 144, 50, 0.35);
+    }
+
+    .ticket-note .note-hint {
+      margin: 6px 0 0;
+      color: #a08f4f;
+      font-size: 11.5px;
+    }
+
+    html[data-theme="dark"] .ticket-note {
+      background: #262113;
+      border-bottom-color: #4a3f1c;
+    }
+
+    html[data-theme="dark"] .ticket-note textarea {
+      background: #2d2718;
+      border-color: #5c4f22;
+      color: #e6dcb8;
+    }
+
+    html[data-theme="dark"] .ticket-note .note-hint {
+      color: #9c8b52;
+    }
+
+    /* ---------- Кнопки в сайдбаре ---------- */
+    .toc-actions {
+      display: grid;
+      gap: 7px;
+      margin: 0 0 18px;
+    }
+
+    .toc-actions button {
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #eef3fb;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 620;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .toc-actions button:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .toc-actions .exam-launch {
+      border-color: rgba(123, 145, 255, 0.55);
+      background: rgba(64, 95, 232, 0.28);
+    }
+
+    .toc-actions .exam-launch:hover {
+      background: rgba(64, 95, 232, 0.42);
+    }
+
+    /* ---------- Режим экзамена ---------- */
+    .exam-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .exam-modal {
+      position: fixed;
+      z-index: 95;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(720px, calc(100vw - 28px));
+      max-height: min(86vh, 780px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    }
+
+    .exam-backdrop[hidden],
+    .exam-modal[hidden] { display: none; }
+
+    .exam-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .exam-tabs {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: rgba(127, 137, 155, 0.08);
+    }
+
+    .exam-tabs button {
+      min-height: 30px;
+      padding: 5px 12px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .exam-tabs button.active {
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 1px 5px rgba(23, 32, 51, 0.12);
+    }
+
+    .exam-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .exam-timer::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--tr-green);
+    }
+
+    .exam-timer.warn { color: var(--tr-orange); }
+    .exam-timer.warn::before { background: var(--tr-orange); }
+    .exam-timer.over { color: var(--tr-red); }
+    .exam-timer.over::before { background: var(--tr-red); }
+
+    .exam-close {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .exam-close:hover { background: rgba(127, 137, 155, 0.12); color: var(--ink); }
+
+    .exam-body {
+      padding: 18px;
+      overflow: auto;
+    }
+
+    .exam-body .exam-eyebrow {
+      margin: 0 0 4px;
+      color: var(--tr-blue);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .exam-body h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .exam-question {
+      color: var(--ink);
+      font-size: 15.5px;
+    }
+
+    .exam-answer {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(127, 137, 155, 0.06);
+    }
+
+    .exam-answer[hidden] { display: none; }
+
+    .exam-foot {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .exam-foot .spacer { flex: 1; }
+
+    .exam-foot button {
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 620;
+      cursor: pointer;
+    }
+
+    .exam-foot button:hover { border-color: var(--tr-blue); }
+
+    .exam-foot .primary {
+      border-color: var(--tr-blue);
+      background: var(--tr-blue);
+      color: #fff;
+    }
+
+    .exam-foot .mark-learned { border-color: var(--tr-green); color: var(--tr-green); }
+    .exam-foot .mark-learned:hover { background: var(--tr-green); color: #fff; }
+    .exam-foot .mark-shaky { border-color: var(--tr-orange); color: var(--tr-orange); }
+    .exam-foot .mark-shaky:hover { background: var(--tr-orange); color: #fff; }
+
+    html[data-theme="dark"] .exam-modal {
+      background: #1b2434;
+      border-color: #3b4a6b;
+    }
+
+    html[data-theme="dark"] .exam-tabs button.active {
+      background: #2a3650;
+    }
+
+    .exam-opts {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12.5px;
+      user-select: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -1067,6 +1596,19 @@
   <div class="mobile-nav-backdrop" hidden></div>
   <div class="mobile-nav-panel" id="mobile-nav-panel" hidden>
     <h2>Темы и билеты</h2>
+  </div>
+  <div class="exam-backdrop" hidden></div>
+  <div class="exam-modal" role="dialog" aria-modal="true" aria-label="Режим экзамена" hidden>
+    <div class="exam-head">
+      <div class="exam-tabs">
+        <button type="button" data-mode="ticket" class="active">Билет</button>
+        <button type="button" data-mode="qa">Допвопрос</button>
+      </div>
+      <span class="exam-timer" hidden>3:00</span>
+      <button type="button" class="exam-close" aria-label="Закрыть">×</button>
+    </div>
+    <div class="exam-body"></div>
+    <div class="exam-foot"></div>
   </div>
   <button class="theme-toggle" type="button" aria-label="Переключить тему"></button>
   <div class="layout">
@@ -1078,6 +1620,10 @@
       <div class="toc-progress">
         <p class="toc-progress-label">Выучено: <span class="toc-progress-text">0 из 62</span></p>
         <div class="toc-progress-bar"><div class="toc-progress-fill"></div></div>
+      </div>
+      <div class="toc-actions">
+        <button type="button" class="exam-launch">🎲 Режим экзамена</button>
+        <button type="button" class="notes-export">📝 Скачать мои заметки</button>
       </div>
       <nav aria-label="Оглавление">
         <details class="nav-group" open>
@@ -1189,6 +1735,21 @@
         <h2>Карта ответов по Deep Learning</h2>
         <p>Структура каждого билета: короткий ответ, математическое ядро, интуиция, материал на отличный ответ, дополнительные вопросы и опасные ошибки.</p>
       </header>
+
+      <section class="dash" id="progress-dash" aria-label="Прогресс подготовки">
+        <div class="dash-topline">
+          <span>Прогресс подготовки</span>
+          <strong class="dash-percent">0%</strong>
+        </div>
+        <div class="dash-track"><i class="seg-learned" style="width:0"></i><i class="seg-shaky" style="width:0"></i></div>
+        <div class="dash-stats">
+          <div class="n-learned"><strong>0</strong><span>выучено</span></div>
+          <div class="n-shaky"><strong>0</strong><span>плаваю</span></div>
+          <div class="n-left"><strong>62</strong><span>не начато</span></div>
+        </div>
+        <div class="dash-grid" aria-label="Статусы билетов"></div>
+        <div class="dash-blocks"></div>
+      </section>
 
       <article class="ticket" id="ticket-1">
         <header class="ticket-header">
@@ -19402,65 +19963,439 @@ with torch.no_grad():
       });
     }());
 
-    /* ---------- Прогресс «выучен» ---------- */
+    /* ---------- Статусы, дашборд, заметки ---------- */
     (function () {
-      var KEY = 'dl-progress';
-      var tickets = Array.prototype.slice.call(document.querySelectorAll('article.ticket[id^="ticket-"]'));
+      var KEY = 'dl-progress-v2';
+      var NOTES_KEY = 'dl-notes';
+      var BLOCKS = [
+        ['База DL', 1, 8],
+        ['Computer Vision', 9, 25],
+        ['NLP и Transformer', 26, 36],
+        ['LLM', 37, 45],
+        ['Audio', 46, 50],
+        ['Generative / GNN / VLM', 51, 62]
+      ];
+      var tickets = Array.prototype.slice.call(document.querySelectorAll('article.ticket[id^="ticket-"]'))
+        .filter(function (t) { return /^ticket-\d+$/.test(t.id); });
       if (!tickets.length) return;
 
-      function load() {
-        try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
+      function loadStatuses() {
+        try {
+          var v2 = JSON.parse(localStorage.getItem(KEY) || 'null');
+          if (v2) return v2;
+        } catch (e) {}
+        // миграция со старого формата (массив выученных id)
+        try {
+          var v1 = JSON.parse(localStorage.getItem('dl-progress') || '[]');
+          var m = {};
+          v1.forEach(function (id) { m[id] = 'learned'; });
+          return m;
+        } catch (e) { return {}; }
       }
-      function save(ids) {
-        try { localStorage.setItem(KEY, JSON.stringify(ids)); } catch (e) {}
+      function saveStatuses() {
+        try { localStorage.setItem(KEY, JSON.stringify(statuses)); } catch (e) {}
+      }
+      function loadNotes() {
+        try { return JSON.parse(localStorage.getItem(NOTES_KEY) || '{}'); } catch (e) { return {}; }
+      }
+      function saveNotes() {
+        try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch (e) {}
       }
 
-      var learned = load();
+      var statuses = loadStatuses();
+      var notes = loadNotes();
 
-      function navLinks(id) {
-        return document.querySelectorAll('nav a[href="#' + id + '"]');
+      function num(id) { return parseInt(id.replace('ticket-', ''), 10); }
+      function title(t) {
+        var h = t.querySelector('.ticket-header h2');
+        return h ? h.textContent.trim() : t.id;
       }
+
+      /* --- дашборд --- */
+      var dash = document.getElementById('progress-dash');
+      var grid = dash.querySelector('.dash-grid');
+      var blocksEl = dash.querySelector('.dash-blocks');
+
+      tickets.forEach(function (t) {
+        var a = document.createElement('a');
+        a.className = 'dash-cell';
+        a.href = '#' + t.id;
+        a.textContent = num(t.id);
+        a.title = 'Билет ' + num(t.id) + ': ' + title(t);
+        a.dataset.ticket = t.id;
+        grid.appendChild(a);
+      });
+
+      BLOCKS.forEach(function (b) {
+        var row = document.createElement('div');
+        row.className = 'dash-block';
+        row.dataset.from = b[1];
+        row.dataset.to = b[2];
+        row.innerHTML = '<span class="b-name">' + b[0] + '</span>' +
+          '<span class="b-track"><i class="bl" style="width:0"></i><i class="bs" style="width:0"></i></span>' +
+          '<span class="b-count">0/' + (b[2] - b[1] + 1) + '</span>';
+        blocksEl.appendChild(row);
+      });
 
       function refresh() {
         var total = tickets.length;
+        var learned = 0, shaky = 0;
+        tickets.forEach(function (t) {
+          var st = statuses[t.id];
+          if (st === 'learned') learned++;
+          else if (st === 'shaky') shaky++;
+          Array.prototype.forEach.call(grid.querySelectorAll('[data-ticket="' + t.id + '"]'), function (c) {
+            c.classList.toggle('learned', st === 'learned');
+            c.classList.toggle('shaky', st === 'shaky');
+          });
+          Array.prototype.forEach.call(document.querySelectorAll('nav a[href="#' + t.id + '"]'), function (a) {
+            a.classList.toggle('ticket-learned', st === 'learned');
+          });
+          var ctl = t.querySelector('.ticket-status');
+          if (ctl) {
+            Array.prototype.forEach.call(ctl.querySelectorAll('button[data-st]'), function (b) {
+              b.classList.toggle('active', (statuses[t.id] || 'none') === b.dataset.st);
+            });
+          }
+        });
+        dash.querySelector('.dash-percent').textContent = Math.round(100 * learned / total) + '%';
+        dash.querySelector('.seg-learned').style.width = (100 * learned / total) + '%';
+        dash.querySelector('.seg-shaky').style.width = (100 * shaky / total) + '%';
+        dash.querySelector('.n-learned strong').textContent = learned;
+        dash.querySelector('.n-shaky strong').textContent = shaky;
+        dash.querySelector('.n-left strong').textContent = total - learned - shaky;
+        Array.prototype.forEach.call(blocksEl.querySelectorAll('.dash-block'), function (row) {
+          var from = +row.dataset.from, to = +row.dataset.to, bl = 0, bs = 0, n = to - from + 1;
+          for (var k = from; k <= to; k++) {
+            var st = statuses['ticket-' + k];
+            if (st === 'learned') bl++;
+            else if (st === 'shaky') bs++;
+          }
+          row.querySelector('.bl').style.width = (100 * bl / n) + '%';
+          row.querySelector('.bs').style.width = (100 * bs / n) + '%';
+          row.querySelector('.b-count').textContent = bl + '/' + n;
+        });
         var text = document.querySelector('.toc-progress-text');
         var fill = document.querySelector('.toc-progress-fill');
-        if (text) text.textContent = learned.length + ' из ' + total;
-        if (fill) fill.style.width = (100 * learned.length / total) + '%';
+        if (text) text.textContent = learned + ' из ' + total;
+        if (fill) fill.style.width = (100 * learned / total) + '%';
       }
 
+      window.dlSetStatus = function (id, st) {
+        if (st === 'none') delete statuses[id];
+        else statuses[id] = st;
+        saveStatuses();
+        refresh();
+      };
+      window.dlGetStatuses = function () { return statuses; };
+      window.dlTickets = tickets;
+
+      /* --- контрол статуса + заметка в шапке билета --- */
       tickets.forEach(function (t) {
         var header = t.querySelector('.ticket-header');
         if (!header) return;
-        var label = document.createElement('label');
-        label.className = 'ticket-done';
-        var cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.checked = learned.indexOf(t.id) !== -1;
-        if (cb.checked) label.classList.add('checked');
-        label.appendChild(cb);
-        label.appendChild(document.createTextNode('выучен'));
-        header.appendChild(label);
 
-        function mark(on) {
-          label.classList.toggle('checked', on);
-          Array.prototype.forEach.call(navLinks(t.id), function (a) {
-            a.classList.toggle('ticket-learned', on);
+        var ctl = document.createElement('div');
+        ctl.className = 'ticket-status';
+        [['none', '—'], ['shaky', 'плаваю'], ['learned', 'выучен']].forEach(function (pair) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.dataset.st = pair[0];
+          b.textContent = pair[1];
+          b.addEventListener('click', function () {
+            window.dlSetStatus(t.id, pair[0]);
           });
-        }
-        mark(cb.checked);
+          ctl.appendChild(b);
+        });
 
-        cb.addEventListener('change', function () {
-          var i = learned.indexOf(t.id);
-          if (cb.checked && i === -1) learned.push(t.id);
-          if (!cb.checked && i !== -1) learned.splice(i, 1);
-          save(learned);
-          mark(cb.checked);
-          refresh();
+        var nb = document.createElement('button');
+        nb.type = 'button';
+        nb.className = 'note-btn';
+        nb.title = 'Заметка к билету';
+        nb.textContent = '📝';
+        nb.classList.toggle('has-note', !!(notes[t.id] || '').trim());
+        ctl.appendChild(nb);
+        header.appendChild(ctl);
+
+        var panel = document.createElement('div');
+        panel.className = 'ticket-note';
+        panel.hidden = true;
+        var ta = document.createElement('textarea');
+        ta.placeholder = 'Ваша заметка к этому билету: формулировки, мнемоники, слабые места…';
+        ta.value = notes[t.id] || '';
+        var hint = document.createElement('p');
+        hint.className = 'note-hint';
+        hint.textContent = 'Сохраняется автоматически в этом браузере. Экспорт всех заметок — кнопка в меню слева.';
+        panel.appendChild(ta);
+        panel.appendChild(hint);
+        header.insertAdjacentElement('afterend', panel);
+
+        nb.addEventListener('click', function () {
+          panel.hidden = !panel.hidden;
+          if (!panel.hidden) ta.focus();
+        });
+
+        var t2 = null;
+        ta.addEventListener('input', function () {
+          clearTimeout(t2);
+          t2 = setTimeout(function () {
+            var v = ta.value;
+            if (v.trim()) notes[t.id] = v;
+            else delete notes[t.id];
+            saveNotes();
+            nb.classList.toggle('has-note', !!v.trim());
+          }, 250);
         });
       });
 
+      /* --- экспорт заметок --- */
+      var exp = document.querySelector('.notes-export');
+      if (exp) {
+        exp.addEventListener('click', function () {
+          var parts = ['# Мои заметки к билетам по Deep Learning', ''];
+          tickets.forEach(function (t) {
+            var v = (notes[t.id] || '').trim();
+            if (!v) return;
+            parts.push('## Билет ' + num(t.id) + '. ' + title(t), '', v, '');
+          });
+          if (parts.length <= 2) {
+            exp.textContent = '📝 Заметок пока нет';
+            setTimeout(function () { exp.textContent = '📝 Скачать мои заметки'; }, 1600);
+            return;
+          }
+          var blob = new Blob([parts.join('\n')], { type: 'text/markdown;charset=utf-8' });
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'dl-exam-notes.md';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        });
+      }
+
       refresh();
+    }());
+
+    /* ---------- Режим экзамена ---------- */
+    (function () {
+      var backdrop = document.querySelector('.exam-backdrop');
+      var modal = document.querySelector('.exam-modal');
+      var body = modal && modal.querySelector('.exam-body');
+      var foot = modal && modal.querySelector('.exam-foot');
+      var timerEl = modal && modal.querySelector('.exam-timer');
+      var launch = document.querySelector('.exam-launch');
+      if (!modal || !launch) return;
+
+      var mode = 'ticket';
+      var onlyUnlearned = true;
+      var timerId = null;
+      var timeLeft = 0;
+      var current = null;
+      var qaPool = null;
+
+      function tickets() { return window.dlTickets || []; }
+      function statuses() { return (window.dlGetStatuses && window.dlGetStatuses()) || {}; }
+
+      function stopTimer() {
+        clearInterval(timerId);
+        timerId = null;
+        timerEl.hidden = true;
+      }
+
+      function startTimer(seconds) {
+        clearInterval(timerId);
+        timeLeft = seconds;
+        timerEl.hidden = false;
+        render();
+        timerId = setInterval(function () {
+          timeLeft--;
+          render();
+          if (timeLeft <= -600) stopTimer();
+        }, 1000);
+        function render() {
+          var t = Math.abs(timeLeft);
+          var mm = Math.floor(t / 60), ss = ('0' + (t % 60)).slice(-2);
+          timerEl.textContent = (timeLeft < 0 ? '−' : '') + mm + ':' + ss;
+          timerEl.classList.toggle('warn', timeLeft <= 60 && timeLeft > 0);
+          timerEl.classList.toggle('over', timeLeft <= 0);
+        }
+      }
+
+      function pickTicket() {
+        var pool = tickets();
+        if (onlyUnlearned) {
+          var st = statuses();
+          var filtered = pool.filter(function (t) { return st[t.id] !== 'learned'; });
+          if (filtered.length) pool = filtered;
+        }
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function buildQaPool() {
+        qaPool = [];
+        tickets().forEach(function (t) {
+          var h = t.querySelector('.ticket-header h2');
+          var tt = h ? h.textContent.trim() : t.id;
+          Array.prototype.forEach.call(t.querySelectorAll('details.qa-item'), function (d) {
+            var sum = d.querySelector('summary');
+            if (!sum) return;
+            qaPool.push({ ticketId: t.id, ticketTitle: tt, el: d, q: sum.textContent.replace(/^\s*\d+\.\s*/, '').trim() });
+          });
+        });
+      }
+
+      function el(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text) e.textContent = text;
+        return e;
+      }
+
+      function footButton(text, cls, fn) {
+        var b = el('button', cls, text);
+        b.type = 'button';
+        b.addEventListener('click', fn);
+        foot.appendChild(b);
+        return b;
+      }
+
+      function showTicket() {
+        mode = 'ticket';
+        var t = pickTicket();
+        current = t;
+        body.innerHTML = '';
+        foot.innerHTML = '';
+        var numText = t.id.replace('ticket-', '');
+        body.appendChild(el('p', 'exam-eyebrow', 'Билет ' + numText));
+        var h = t.querySelector('.ticket-header h2');
+        body.appendChild(el('h3', null, h ? h.textContent.trim() : ''));
+
+        var form = null;
+        Array.prototype.some.call(t.querySelectorAll('section'), function (sec) {
+          var sh = sec.querySelector('h3');
+          if (sh && sh.textContent.trim() === 'Формулировка') { form = sec; return true; }
+          return false;
+        });
+        var q = el('div', 'exam-question');
+        if (form) {
+          Array.prototype.forEach.call(form.querySelectorAll('p'), function (p) {
+            q.appendChild(p.cloneNode(true));
+          });
+        }
+        body.appendChild(q);
+        body.appendChild(el('p', 'note-hint exam-hint', 'Расскажите ответ вслух: 2–3 минуты на основной ответ, как на экзамене.'));
+
+        var ans = el('div', 'exam-answer');
+        ans.hidden = true;
+        body.appendChild(ans);
+
+        startTimer(180);
+
+        footButton('Показать ответ', 'primary', function () {
+          if (ans.hidden) {
+            ans.innerHTML = '';
+            Array.prototype.some.call(t.querySelectorAll('section'), function (sec) {
+              var sh = sec.querySelector('h3');
+              if (sh && sh.textContent.trim() === 'Короткий ответ') {
+                Array.prototype.forEach.call(sec.children, function (c) {
+                  if (c.tagName !== 'H3') ans.appendChild(c.cloneNode(true));
+                });
+                return true;
+              }
+              return false;
+            });
+            ans.hidden = false;
+            this.textContent = 'Скрыть ответ';
+          } else {
+            ans.hidden = true;
+            this.textContent = 'Показать ответ';
+          }
+        });
+        footButton('Выучен', 'mark-learned', function () {
+          window.dlSetStatus(t.id, 'learned');
+          showTicket();
+        });
+        footButton('Плаваю', 'mark-shaky', function () {
+          window.dlSetStatus(t.id, 'shaky');
+          showTicket();
+        });
+        var sp = el('span', 'spacer'); foot.appendChild(sp);
+        var opts = el('label', 'exam-opts');
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = onlyUnlearned;
+        cb.addEventListener('change', function () { onlyUnlearned = cb.checked; });
+        opts.appendChild(cb);
+        opts.appendChild(document.createTextNode(' кроме выученных'));
+        foot.appendChild(opts);
+        footButton('Открыть билет', null, function () {
+          close();
+          location.hash = t.id;
+        });
+        footButton('Следующий', null, showTicket);
+      }
+
+      function showQa() {
+        mode = 'qa';
+        stopTimer();
+        if (!qaPool) buildQaPool();
+        var item = qaPool[Math.floor(Math.random() * qaPool.length)];
+        current = item;
+        body.innerHTML = '';
+        foot.innerHTML = '';
+        body.appendChild(el('p', 'exam-eyebrow', item.ticketTitle));
+        body.appendChild(el('h3', null, item.q));
+        var ans = el('div', 'exam-answer');
+        ans.hidden = true;
+        body.appendChild(ans);
+
+        footButton('Показать ответ', 'primary', function () {
+          if (ans.hidden) {
+            ans.innerHTML = '';
+            Array.prototype.forEach.call(item.el.children, function (c) {
+              if (c.tagName !== 'SUMMARY') ans.appendChild(c.cloneNode(true));
+            });
+            ans.hidden = false;
+            this.textContent = 'Скрыть ответ';
+          } else {
+            ans.hidden = true;
+            this.textContent = 'Показать ответ';
+          }
+        });
+        var sp = el('span', 'spacer'); foot.appendChild(sp);
+        footButton('Перейти к билету', null, function () {
+          close();
+          location.hash = item.ticketId;
+        });
+        footButton('Следующий', null, showQa);
+      }
+
+      function open() {
+        backdrop.hidden = false;
+        modal.hidden = false;
+        if (mode === 'ticket') showTicket(); else showQa();
+      }
+
+      function close() {
+        backdrop.hidden = true;
+        modal.hidden = true;
+        stopTimer();
+      }
+
+      launch.addEventListener('click', open);
+      backdrop.addEventListener('click', close);
+      modal.querySelector('.exam-close').addEventListener('click', close);
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) close();
+      });
+      Array.prototype.forEach.call(modal.querySelectorAll('.exam-tabs button'), function (b) {
+        b.addEventListener('click', function () {
+          Array.prototype.forEach.call(modal.querySelectorAll('.exam-tabs button'), function (x) {
+            x.classList.toggle('active', x === b);
+          });
+          if (b.dataset.mode === 'ticket') showTicket(); else showQa();
+        });
+      });
     }());
 
     /* ---------- Поиск по билетам ---------- */
