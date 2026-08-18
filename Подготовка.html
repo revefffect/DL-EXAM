@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Подготовка к экзамену по Deep Learning</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
   <script>
     (function () {
       try {
@@ -1673,6 +1674,48 @@
       vertical-align: middle;
       letter-spacing: 0.02em;
     }
+
+    /* ---------- Scrollspy и кнопка наверх ---------- */
+    nav a.current {
+      color: #ffffff;
+      background: rgba(64, 95, 232, 0.35);
+      border-left: 3px solid var(--tr-blue);
+    }
+
+    .to-top {
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      z-index: 80;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 17px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .to-top.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 860px) {
+      .to-top { display: none; }
+    }
+
+    @media print {
+      .to-top { display: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -1695,6 +1738,7 @@
     <div class="exam-foot"></div>
   </div>
   <button class="theme-toggle" type="button" aria-label="Переключить тему"></button>
+  <button class="to-top" type="button" aria-label="Наверх" title="Наверх">↑</button>
   <div class="layout">
     <aside class="toc">
       <h1>Deep Learning</h1>
@@ -20978,6 +21022,62 @@ with torch.no_grad():
       window.addEventListener('afterprint', function () {
         touched.forEach(function (d) { d.open = false; });
         touched = [];
+      });
+    }());
+
+    /* ---------- Scrollspy ---------- */
+    (function () {
+      var tickets = document.querySelectorAll('article.ticket[id]');
+      if (!tickets.length || !('IntersectionObserver' in window)) return;
+      var visible = {};
+      var currentId = null;
+
+      function update() {
+        var best = null, bestTop = Infinity;
+        Object.keys(visible).forEach(function (id) {
+          if (visible[id] < bestTop) { best = id; bestTop = visible[id]; }
+        });
+        if (!best || best === currentId) return;
+        currentId = best;
+        Array.prototype.forEach.call(document.querySelectorAll('nav a.current'), function (a) {
+          a.classList.remove('current');
+        });
+        Array.prototype.forEach.call(document.querySelectorAll('nav a[href="#' + best + '"]'), function (a) {
+          a.classList.add('current');
+          var group = a.closest('details.nav-group');
+          if (group && !group.open) group.open = true;
+        });
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) visible[e.target.id] = e.boundingClientRect.top;
+          else delete visible[e.target.id];
+        });
+        update();
+      }, { rootMargin: '-10% 0px -60% 0px' });
+
+      Array.prototype.forEach.call(tickets, function (t) { io.observe(t); });
+    }());
+
+    /* ---------- Кнопка наверх и хоткей поиска ---------- */
+    (function () {
+      var btn = document.querySelector('.to-top');
+      if (btn) {
+        var onScroll = function () {
+          btn.classList.toggle('show', window.scrollY > 900);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        document.addEventListener('scroll', onScroll, { passive: true, capture: true });
+        btn.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+          var inp = document.querySelector('.toc-search');
+          if (inp) { e.preventDefault(); inp.focus(); }
+        }
       });
     }());
 </script>
