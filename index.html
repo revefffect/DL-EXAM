@@ -9380,6 +9380,12 @@ with torch.no_grad():
               <div class="arch-node"><strong>Downstream</strong><span>fine-tuning<br>prompting</span></div>
             </div>
           </div>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-pretraining-llm-loop.png" alt="LLM pretraining loop with heterogeneous data, compute clusters, next-token prediction and pretrained foundation model">
+            <p class="figure-caption"><strong>Figure.</strong> Pretraining LLM: большой разнородный corpus проходит через distributed training, модель решает next-token prediction, loss сравнивает predicted token с target token, а gradient descent постепенно формирует pretrained foundation model.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 5, слайд 2.</p>
+          </figure>
         </section>
 
         <section>
@@ -10548,6 +10554,18 @@ with torch.no_grad():
               </tr>
             </tbody>
           </table>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-prompt-tuning.png" alt="Prompt tuning compared with model tuning and prompt design">
+            <p class="figure-caption"><strong>Figure.</strong> Prompt-tuning держит pretrained model frozen и обучает только continuous soft prompt embeddings. Поэтому один base model можно обслуживать с несколькими маленькими task-specific prompt-параметрами.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 7, слайд 25.</p>
+          </figure>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-p-tuning.png" alt="P-tuning with prompt encoder and pseudo prompts">
+            <p class="figure-caption"><strong>Figure.</strong> P-tuning заменяет ручной discrete prompt обучаемыми continuous prompt embeddings, которые могут генерироваться специальным prompt encoder. На экзамене удобно связать это с PEFT: base weights frozen, адаптация живёт в малом наборе параметров.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 7, слайд 27.</p>
+          </figure>
         </section>
 
         <section>
@@ -10769,6 +10787,12 @@ with torch.no_grad():
           $$
 
           <p>Интуиция: reward model не знает “идеальный текст” напрямую. Она учится ставить higher score ответам, которые люди предпочли в pairwise comparisons.</p>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-rlhf-reward-model.png" alt="RLHF reward model training from ranked model outputs">
+            <p class="figure-caption"><strong>Figure.</strong> Reward model обучают на comparison data: для одного prompt генерируют несколько ответов, разметчик ранжирует их, а RM учится выдавать scalar reward так, чтобы preferred answer получал больший score.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 6, слайд 31.</p>
+          </figure>
         </section>
 
         <section>
@@ -10805,6 +10829,12 @@ with torch.no_grad():
               <div class="arch-node"><strong>Aligned policy</strong><span>лучше ответы<br>без collapse</span></div>
             </div>
           </div>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-ppo-loop.png" alt="PPO loop for RLHF with policy model, reward model, reference model, value model and GAE">
+            <p class="figure-caption"><strong>Figure.</strong> PPO в RLHF обновляет policy model по reward от RM, но штрафует уход от reference model через KL. Value model оценивает baseline, GAE строит advantage, а clipped objective не даёт policy сделать слишком резкий шаг.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 6, слайд 33.</p>
+          </figure>
         </section>
 
         <section>
@@ -11029,6 +11059,12 @@ with torch.no_grad():
           \operatorname{mode}
           \{y^{(1)}, y^{(2)}, \dots, y^{(K)}\}.
           $$
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-medprompt.png" alt="MedPrompt improvements from zero-shot to few-shot chain-of-thought and ensemble with choice shuffle">
+            <p class="figure-caption"><strong>Figure.</strong> MedPrompt-style pipeline показывает, как качество может расти без изменения weights: zero-shot дополняют few-shot examples, Chain-of-Thought, retrieval/kNN и ensemble over choice shuffles.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 6, слайд 7.</p>
+          </figure>
 
           <p>Prompting полезен, когда знание уже есть в model/context and задача сводится к правильному извлечению или форматированию. Если нужны свежие facts, точные вычисления, поиск по документам or actions во внешней среде, лучше подключать retrieval/tools/agents. Хороший экзаменационный ответ должен сказать: prompt улучшает conditioning, но не превращает модель в источник проверенной истины.</p>
 
@@ -11428,6 +11464,12 @@ with torch.no_grad():
 
           <p>Хотя causal mask запрещает позиции $t$ видеть будущие tokens, все positions можно обработать одним parallel forward pass. GPU загружен хорошо, потому что много tokens считаются одновременно.</p>
 
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-training-process.png" alt="Training process with forward pass, backward pass, gradients, optimization and updated model">
+            <p class="figure-caption"><strong>Figure.</strong> На training есть полный forward pass, затем backward pass с gradients и optimizer update. На inference backward и optimizer отсутствуют: модель только последовательно выбирает next token.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 7, слайд 13.</p>
+          </figure>
+
           <p>На inference output tokens неизвестны заранее. Сначала модель считает распределение для следующего token:</p>
 
           $$
@@ -11521,6 +11563,12 @@ with torch.no_grad():
               <div class="arch-node"><strong>$O(n)$ decode</strong><span>но память растёт</span></div>
             </div>
           </div>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-paged-attention.png" alt="PagedAttention with scheduler, KV cache manager, workers and block tables">
+            <p class="figure-caption"><strong>Figure.</strong> PagedAttention хранит KV-cache не как один большой непрерывный tensor, а блоками, похожими на memory pages. Scheduler и KV-cache manager переиспользуют blocks между запросами, что уменьшает fragmentation и повышает throughput serving.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 8, слайд 28.</p>
+          </figure>
         </section>
 
         <section>
@@ -11654,6 +11702,12 @@ with torch.no_grad():
 
           <p>где $q$ — integer code, $s$ — <a href="Справка.html#ref-quantization-scale">quantization scale</a>, $z$ — zero-point. Для symmetric схем часто пишут $w\approx s q$.</p>
 
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-quantization-range.png" alt="Numeric ranges and precision of FP32, BF16, FP16 and INT8">
+            <p class="figure-caption"><strong>Figure.</strong> FP32, BF16, FP16 и INT8 отличаются dynamic range и precision. Квантизация экономит память, но увеличивает расстояние между соседними представимыми значениями, поэтому появляется rounding error.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 8, слайд 3.</p>
+          </figure>
+
           <table>
             <thead>
               <tr>
@@ -11682,6 +11736,18 @@ with torch.no_grad():
           </table>
 
           <p>Почему INT4 вообще может работать: распределение весов не равномерное, многие значения малы и терпят грубое округление, а редкие outliers нужно обрабатывать аккуратнее. Поэтому современные схемы используют group-wise scales, outlier handling, calibration data и иногда mixed precision.</p>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-quantization-int4.png" alt="Quantization from FP32 distribution to INT4 bins">
+            <p class="figure-caption"><strong>Figure.</strong> INT4 заменяет множество continuous значений небольшим числом bins. Сжатие сильное, но outliers и слишком грубые bins могут заметно исказить веса или activations.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 8, слайд 4.</p>
+          </figure>
+
+          <figure class="paper-figure">
+            <img class="source-image" src="assets/diagrams/external/teachin-absmax-quantization.png" alt="Absmax quantization scale, quantization and dequantization formulas">
+            <p class="figure-caption"><strong>Figure.</strong> Absmax quantization выбирает scale по максимальному абсолютному значению: $s=127/\max |X_{ij}|$, затем считает $X_q=\operatorname{round}(sX)$ и восстанавливает $X_{dq}=X_q/s$.</p>
+            <p class="diagram-source">Источник: Teach-in / МГУ, курс “Основы обучения LLM”, М. М. Тихомиров, лекция 8, слайд 5.</p>
+          </figure>
         </section>
 
         <section>
