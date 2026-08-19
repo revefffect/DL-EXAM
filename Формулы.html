@@ -174,7 +174,7 @@
         <a href="Справка.html">Справка</a>
       </div>
     </div>
-    <p class="subtitle">~50 формул, которые чаще всего просят на устном. К каждой — что в ней какая величина. Печать: альбомная ориентация, масштаб 100%.</p>
+    <p class="subtitle">~50 формул и 16 числовых якорей, которые чаще всего просят на устном. К каждой — что в ней какая величина. Печать: альбомная ориентация, масштаб 100%.</p>
 
     <h2>Обучение и оптимизация</h2>
     <div class="grid">
@@ -220,6 +220,28 @@
       <div class="f"><b>DPO</b><div class="m">$-\log\sigma\big(\beta\log\tfrac{\pi_\theta(y^+|x)}{\pi_{ref}(y^+|x)}-\beta\log\tfrac{\pi_\theta(y^-|x)}{\pi_{ref}(y^-|x)}\big)$</div><small>Policy как implicit reward model; вывод из $\pi^*\propto\pi_{ref}e^{r/\beta}$.</small></div>
       <div class="f"><b>Память KV-cache</b><div class="m">$2\cdot L\cdot H_{kv}\cdot T\cdot d_{head}\cdot b$ байт</div><small>Множитель 2 — K и V; на batch. GQA уменьшает $H_{kv}$.</small></div>
       <div class="f"><b>Reward model (Bradley–Terry)</b><div class="m">$-\log\sigma\big(r(x,y^+)-r(x,y^-)\big)$</div><small>Пары chosen/rejected; scalar reward из сравнений.</small></div>
+    </div>
+
+
+    <h2>Числа, которые стоит знать</h2>
+    <p class="subtitle" style="margin:-4px 0 12px">Конкретные величины отличают человека, который работал с моделями, от пересказчика. Порядок важнее точной цифры — говорите «примерно».</p>
+    <div class="grid">
+      <div class="f"><b>Классические CNN</b><div class="m">AlexNet ≈ 60M · VGG-16 ≈ 138M · GoogLeNet ≈ 5–7M · ResNet-50 ≈ 25M · ResNet-152 ≈ 60M</div><small>У VGG почти все параметры в полносвязных слоях; Inception при этом сравним по качеству — отсюда мода на $1{\times}1$ и global average pooling.</small></div>
+      <div class="f"><b>Лёгкие и современные backbone</b><div class="m">MobileNet ≈ 4M · EfficientNet-B0 ≈ 5M · U-Net ≈ 31M · ViT-B/16 ≈ 86M</div><small>ViT-B/16 на входе $224{\times}224$ даёт $14{\times}14=196$ патч-токенов плюс [CLS].</small></div>
+      <div class="f"><b>ResNet-50: вычисления</b><div class="m">≈ 4 GFLOPs на изображение $224{\times}224$</div><small>Полезный якорь: «одна картинка через ResNet-50 — единицы гигафлопс», а не мега- и не тера-.</small></div>
+      <div class="f"><b>BERT-base / BERT-large</b><div class="m">110M: 12 слоёв, $d=768$, 12 голов · 340M: 24 слоя, $d=1024$, 16 голов</div><small>Контекст 512 токенов, словарь WordPiece ≈ 30k. Правило: $d_{head}=d/H=64$ в обеих моделях.</small></div>
+      <div class="f"><b>GPT-3</b><div class="m">175B параметров: 96 слоёв, $d=12288$, 96 голов, контекст 2048, ≈ 300B токенов</div><small>По Chinchilla он недообучен по данным: при таком $N$ оптимально было бы порядка 3.5T токенов.</small></div>
+      <div class="f"><b>Chinchilla-правило</b><div class="m">70B параметров на 1.4T токенов ≈ 20 токенов на параметр</div><small>Compute-optimal точка при фиксированном бюджете; на практике часто обучают дольше ради дешёвого инференса.</small></div>
+      <div class="f"><b>LLaMA-подобная 7B</b><div class="m">32 слоя, $d=4096$, 32 головы, контекст 4k+</div><small>Удобный «эталон масштаба»: помещается в одну GPU в fp16 при инференсе.</small></div>
+      <div class="f"><b>Compute обучения</b><div class="m">$C\approx 6ND$ FLOPs; GPT-3 ≈ $3\cdot10^{23}$ FLOPs</div><small>2 FLOPs forward + примерно 4 backward на параметр на токен.</small></div>
+      <div class="f"><b>Память при обучении (Adam, mixed precision)</b><div class="m">≈ 16 байт на параметр</div><small>fp16 веса и градиенты по 2 + fp32 мастер-копия 4 + моменты $m$ и $v$ по 4. Для 7B — около 112 ГБ только на состояния, без активаций: отсюда LoRA и ZeRO.</small></div>
+      <div class="f"><b>Память при инференсе</b><div class="m">fp16 — 2 байта/параметр · int8 — 1 · int4 — 0.5</div><small>7B: ≈ 14 ГБ в fp16, ≈ 3.5 ГБ в int4. Плюс KV-cache, который на длинном контексте может обогнать веса.</small></div>
+      <div class="f"><b>Датасеты CV</b><div class="m">MNIST 60k · CIFAR-10 50k ($32{\times}32$) · ImageNet-1k 1.28M / 1000 классов · COCO 118k / 80 классов</div><small>ImageNet — точка отсчёта для pretrained backbone; COCO — для детекции и сегментации.</small></div>
+      <div class="f"><b>Датасеты для мультимодальности</b><div class="m">CLIP ≈ 400M пар изображение–текст · LAION ≈ 5B пар</div><small>Масштаб «слабой» веб-разметки на два-три порядка больше ImageNet — это и есть источник zero-shot способностей.</small></div>
+      <div class="f"><b>Аудио: стандартные параметры</b><div class="m">16 kHz для речи (44.1 kHz — CD) · окно STFT 25 мс, шаг 10 мс · 80 mel-фильтров</div><small>При 16 kHz и шаге 10 мс получается 100 кадров в секунду — удобный якорь для оценки длины входа ASR.</small></div>
+      <div class="f"><b>Типичные гиперпараметры</b><div class="m">Adam для трансформеров $\eta\sim 10^{-4}$ · SGD для CNN $\eta\sim 0.1$ · warmup 1–10% шагов</div><small>$\beta_1=0.9$, $\beta_2=0.999$ (для LLM часто 0.95), weight decay 0.01–0.1 в AdamW, dropout 0.1 в трансформерах.</small></div>
+      <div class="f"><b>LoRA на практике</b><div class="m">$r = 8\dots 64$, $\alpha = 16\dots 32$, обучается менее 1% параметров</div><small>Адаптеры ставят в проекции $Q,K,V,O$, иногда добавляют FFN.</small></div>
+      <div class="f"><b>Диффузия</b><div class="m">DDPM ≈ 1000 шагов · DDIM 20–50 шагов · guidance scale $w\approx 5\dots 8$</div><small>Дистилляция и consistency-модели доводят генерацию до 1–4 шагов.</small></div>
     </div>
 
     <h2>Audio и ASR</h2>
