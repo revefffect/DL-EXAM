@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%A0%3C/text%3E%3C/svg%3E">
+  <title>Математические пререквизиты — Deep Learning</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('dl-theme');
+        if (t && t !== 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    }());
+  </script>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="assets/vendor/mathjax/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --paper: #ffffff;
+      --ink: #1a1f2e;
+      --muted: #5a6172;
+      --line: #e6e8ee;
+      --accent: #5560e8;
+      --accent-soft: #eef0ff;
+      --green: #18a05e;
+      --orange: #d78b1f;
+      --shadow: 0 1px 3px rgba(26, 31, 46, 0.05), 0 8px 24px rgba(26, 31, 46, 0.05);
+    }
+
+    html[data-theme="dark"] { color-scheme: dark; }
+
+    html[data-theme="dark"] body {
+      --bg: #0d0e12;
+      --paper: #15161c;
+      --ink: #e8eaf0;
+      --muted: #969aa8;
+      --line: #23252e;
+      --accent: #6c79ff;
+      --accent-soft: #1d2030;
+      --green: #3dd68c;
+      --orange: #e5a53a;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page { max-width: 1080px; margin: 0 auto; padding: 30px 20px 70px; }
+
+    .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    h1 { margin: 0; font-size: 27px; letter-spacing: -0.03em; }
+
+    .top-links { display: flex; gap: 14px; align-items: center; font-size: 13.5px; }
+    .top-links a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .top-links a:hover { text-decoration: underline; }
+
+    .subtitle { margin: 0 0 8px; color: var(--muted); font-size: 14px; max-width: 760px; }
+
+    .why-box {
+      margin: 14px 0 26px;
+      padding: 14px 17px;
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      background: var(--accent-soft);
+      font-size: 14px;
+      max-width: 860px;
+    }
+
+    h2 {
+      margin: 30px 0 4px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .sect-note { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
+
+    .c {
+      padding: 15px 17px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      break-inside: avoid;
+    }
+
+    .c h3 { margin: 0 0 7px; font-size: 15px; font-weight: 700; letter-spacing: -0.015em; }
+    .c p { margin: 0 0 7px; font-size: 13.5px; }
+    .c .m { margin: 8px 0; overflow-x: auto; font-size: 14.5px; }
+
+    .c .use {
+      margin: 9px 0 0;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .c .use b { color: var(--green); font-weight: 700; }
+    .c .ask { margin: 5px 0 0; color: var(--muted); font-size: 12.5px; }
+    .c .ask b { color: var(--orange); font-weight: 700; }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+      .page { padding: 22px 14px 60px; }
+      h1 { font-size: 22px; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; font-size: 10px; }
+      .page { max-width: none; padding: 0; }
+      .top-links, .why-box { display: none; }
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .c { padding: 6px 8px; border-color: #bbb; box-shadow: none; }
+      h2 { color: #000; margin: 10px 0 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top">
+      <div>
+        <h1>Математические пререквизиты</h1>
+        <p class="subtitle">Фундамент, на который ссылается почти каждый билет. Формулировки — компактные, но такие, чтобы их можно было проговорить у доски.</p>
+      </div>
+      <div class="top-links">
+        <a href="Подготовка.html">← К билетам</a>
+        <a href="Формулы.html">Формулы</a>
+        <a href="Справка.html">Справка</a>
+      </div>
+    </div>
+
+    <div class="why-box">
+      В критериях экзамена прямо сказано: дополнительные вопросы задаются «в рамках материала курса, заявленных пререквизитов и математических идей, которые используются в курсе: матстатистика, теория вероятности, линейная алгебра, математический анализ, методы оптимизации и машинное обучение». Значит, вопрос «а почему KL-дивергенция неотрицательна?» — законный, даже если формально это не билет.
+      <br><br>
+      В каждой карточке: <b style="color:var(--green)">→</b> где это встречается в курсе и <b style="color:var(--orange)">?</b> как вопрос может прозвучать.
+    </div>
+
+    <h2>Вероятность и статистика</h2>
+    <p class="sect-note">Ядро блока: любой loss в курсе — это либо правдоподобие, либо расхождение между распределениями.</p>
+    <div class="grid">
+
+      <div class="c">
+        <h3>Матожидание и дисперсия</h3>
+        <p>$\mathbb{E}[X]$ линейно всегда: $\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]$, даже для зависимых $X,Y$. Дисперсия — нет:</p>
+        <div class="m">$$\operatorname{Var}(X)=\mathbb{E}[X^2]-(\mathbb{E}[X])^2,\qquad \operatorname{Var}(aX)=a^2\operatorname{Var}(X).$$</div>
+        <p>Для независимых слагаемых дисперсии складываются.</p>
+        <p class="use"><b>→</b> Несмещённость mini-batch градиента; $\operatorname{Var}\propto 1/B$; вывод He/Xavier через дисперсию активаций.</p>
+        <p class="ask"><b>?</b> Почему при увеличении батча в 4 раза шум градиента падает вдвое, а не вчетверо?</p>
+      </div>
+
+      <div class="c">
+        <h3>Неравенство Йенсена</h3>
+        <p>Для выпуклой $\varphi$: $\varphi(\mathbb{E}[X])\le \mathbb{E}[\varphi(X)]$. Для вогнутой (например, $\log$) знак меняется:</p>
+        <div class="m">$$\log \mathbb{E}[X]\ \ge\ \mathbb{E}[\log X].$$</div>
+        <p>Это рабочая лошадка всего вероятностного блока курса.</p>
+        <p class="use"><b>→</b> Из него выводятся и ELBO, и неотрицательность KL — две соседние карточки.</p>
+        <p class="ask"><b>?</b> Сформулируйте Йенсена и покажите, откуда в VAE берётся неравенство.</p>
+      </div>
+
+      <div class="c">
+        <h3>Энтропия и кросс-энтропия</h3>
+        <p>Энтропия $H(p)=-\sum_i p_i\log p_i$ — средняя «неожиданность» распределения. Кросс-энтропия — цена кодирования $p$ кодом, оптимальным для $q$:</p>
+        <div class="m">$$H(p,q)=-\sum_i p_i\log q_i = H(p)+D_{KL}(p\,\|\,q).$$</div>
+        <p>При one-hot $p$ энтропия равна нулю, поэтому CE и KL отличаются на константу и дают один и тот же градиент.</p>
+        <p class="use"><b>→</b> Билет 3 (loss), билет 24 (дистилляция: там $p$ не one-hot, и разница важна).</p>
+        <p class="ask"><b>?</b> Мы минимизируем кросс-энтропию или KL? В чём разница?</p>
+      </div>
+
+      <div class="c">
+        <h3>KL-дивергенция и почему она $\ge 0$</h3>
+        <div class="m">$$D_{KL}(p\,\|\,q)=\mathbb{E}_{p}\!\left[\log\frac{p(x)}{q(x)}\right]\ \ge\ 0.$$</div>
+        <p>Доказательство в две строки через Йенсена:</p>
+        <div class="m">$$-D_{KL}=\mathbb{E}_p\!\left[\log\frac{q}{p}\right]\le \log \mathbb{E}_p\!\left[\frac{q}{p}\right]=\log\!\int q = \log 1 = 0.$$</div>
+        <p>Равенство только при $p=q$ почти всюду (неравенство Гиббса).</p>
+        <p class="use"><b>→</b> VAE, RLHF (KL-штраф), дистилляция, диффузия, EWC.</p>
+        <p class="ask"><b>?</b> Докажите неотрицательность KL. Это метрика?</p>
+      </div>
+
+      <div class="c">
+        <h3>Несимметричность KL: mode-seeking vs mode-covering</h3>
+        <p>$D_{KL}(p\|q)\ne D_{KL}(q\|p)$, и это не мелочь. Forward KL $D_{KL}(p_{data}\|q_\theta)$ штрафует за нулевую массу там, где данные есть — модель «размазывается» по всем модам. Reverse KL $D_{KL}(q_\theta\|p)$ штрафует за массу там, где данных нет — модель садится на одну моду.</p>
+        <p>Треугольного неравенства нет, поэтому KL — не метрика, а дивергенция.</p>
+        <p class="use"><b>→</b> Почему VAE даёт размытые картинки (forward-подобное поведение), почему в вариационном выводе используется reverse KL, mode collapse у GAN.</p>
+        <p class="ask"><b>?</b> В какую сторону берётся KL в ELBO и что это даёт?</p>
+      </div>
+
+      <div class="c">
+        <h3>ELBO: откуда берётся нижняя оценка</h3>
+        <div class="m">$$\log p(x)=\log \mathbb{E}_{q(z|x)}\!\left[\frac{p(x,z)}{q(z|x)}\right]\ \ge\ \mathbb{E}_{q}\!\left[\log\frac{p(x,z)}{q(z|x)}\right].$$</div>
+        <p>Точный зазор между $\log p(x)$ и ELBO равен $D_{KL}(q(z|x)\,\|\,p(z|x))$ — то есть максимизируя ELBO, мы одновременно приближаем и данные, и истинный posterior.</p>
+        <p class="use"><b>→</b> Билет 54 (VAE), билет 58 (диффузия как иерархический VAE).</p>
+        <p class="ask"><b>?</b> Почему это именно нижняя оценка и когда она точна?</p>
+      </div>
+
+      <div class="c">
+        <h3>Взаимная информация</h3>
+        <div class="m">$$I(X;Y)=D_{KL}\big(p(x,y)\,\|\,p(x)p(y)\big)=H(X)-H(X\mid Y).$$</div>
+        <p>Ноль тогда и только тогда, когда переменные независимы.</p>
+        <p class="use"><b>→</b> InfoNCE — нижняя оценка MI, ограниченная $\log N$ (отсюда требование большого батча в CLIP).</p>
+        <p class="ask"><b>?</b> Почему contrastive-обучение выигрывает от большого батча?</p>
+      </div>
+
+      <div class="c">
+        <h3>Максимальное правдоподобие</h3>
+        <div class="m">$$\hat\theta_{MLE}=\arg\max_\theta \sum_i \log p(x_i\mid\theta).$$</div>
+        <p>Свойства при регулярных условиях: состоятельность ($\hat\theta\to\theta_0$), асимптотическая нормальность $\sqrt{n}(\hat\theta-\theta_0)\to\mathcal{N}(0, I(\theta_0)^{-1})$, инвариантность относительно замены параметризации. Асимптотически достигает границы Крамера–Рао.</p>
+        <p class="use"><b>→</b> Билет 3: CE = NLL категориального, MSE = NLL гауссова, MAE = NLL лапласова.</p>
+        <p class="ask"><b>?</b> Какие свойства у MLE и почему минимизация CE — это MLE?</p>
+      </div>
+
+      <div class="c">
+        <h3>Информация Фишера</h3>
+        <div class="m">$$I(\theta)=\mathbb{E}\!\left[\left(\frac{\partial \log p(x\mid\theta)}{\partial\theta}\right)^{2}\right]=-\,\mathbb{E}\!\left[\frac{\partial^2 \log p}{\partial\theta^2}\right].$$</div>
+        <p>Кривизна log-правдоподобия: чем она больше, тем точнее определён параметр.</p>
+        <p class="use"><b>→</b> Билет 41: EWC штрафует изменение параметров с большим $F_i$; это лапласовская аппроксимация posterior старой задачи.</p>
+        <p class="ask"><b>?</b> Почему в EWC важность параметра меряется именно Фишером?</p>
+      </div>
+
+      <div class="c">
+        <h3>MAP и prior как регуляризатор</h3>
+        <div class="m">$$\hat\theta_{MAP}=\arg\max_\theta\Big[\log p(D\mid\theta)+\log p(\theta)\Big].$$</div>
+        <p>Гауссов prior $\mathcal{N}(0,\tau^2 I)$ даёт $-\log p(\theta)\propto\|\theta\|_2^2$ — это в точности L2-регуляризация. Лапласов prior даёт L1.</p>
+        <p class="use"><b>→</b> Билет 6 (weight decay), интерпретация регуляризации как байесовского знания.</p>
+        <p class="ask"><b>?</b> Weight decay — это байесовски что?</p>
+      </div>
+
+      <div class="c">
+        <h3>Bias-variance разложение</h3>
+        <p>Для квадратичной ошибки в точке $x$, при $y=f(x)+\varepsilon$, $\operatorname{Var}(\varepsilon)=\sigma^2$:</p>
+        <div class="m">$$\mathbb{E}\big[(y-\hat f(x))^2\big]=\underbrace{\big(\mathbb{E}[\hat f]-f\big)^2}_{\text{bias}^2}+\underbrace{\operatorname{Var}(\hat f)}_{\text{variance}}+\underbrace{\sigma^2}_{\text{неустранимый шум}}.$$</div>
+        <p>Матожидание берётся по случайности обучающей выборки.</p>
+        <p class="use"><b>→</b> Билет 8: классическая U-кривая и её ограничение — double descent показывает, что для сверхпараметризованных сетей картина сложнее.</p>
+        <p class="ask"><b>?</b> Выпишите разложение. Почему у глубоких сетей оно не описывает всё?</p>
+      </div>
+
+      <div class="c">
+        <h3>Гауссово распределение</h3>
+        <div class="m">$$p(x)=\frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}}\exp\!\Big(-\tfrac12 (x-\mu)^\top\Sigma^{-1}(x-\mu)\Big).$$</div>
+        <p>Логарифм — квадратичная форма, поэтому матожидания от него берутся аналитически. Отсюда замкнутая форма KL двух гауссиан и MSE как NLL.</p>
+        <p class="use"><b>→</b> VAE (KL в явном виде), диффузия (posterior одного шага гауссов), reparameterization.</p>
+        <p class="ask"><b>?</b> Почему в VAE берут именно гауссовы prior и posterior?</p>
+      </div>
+
+      <div class="c">
+        <h3>Закон больших чисел и оценка Монте-Карло</h3>
+        <p>Среднее по выборке сходится к матожиданию, а ошибка оценки убывает как $O(1/\sqrt{n})$ независимо от размерности.</p>
+        <p class="use"><b>→</b> Эмпирический риск вместо истинного; один сэмпл $z$ в VAE — это несмещённая (хоть и шумная) оценка ожидания в ELBO.</p>
+        <p class="ask"><b>?</b> Почему в VAE достаточно одного сэмпла на объект?</p>
+      </div>
+
+      <div class="c">
+        <h3>Правило Байеса</h3>
+        <div class="m">$$p(z\mid x)=\frac{p(x\mid z)\,p(z)}{p(x)},\qquad p(x)=\int p(x\mid z)p(z)\,dz.$$</div>
+        <p>Знаменатель (evidence) обычно неберущийся — именно поэтому нужен вариационный вывод.</p>
+        <p class="use"><b>→</b> VAE (приближаем $p(z|x)$ через $q$), диффузия (posterior $q(x_{t-1}|x_t,x_0)$ берётся аналитически — редкий подарок).</p>
+        <p class="ask"><b>?</b> Почему нельзя посчитать истинный posterior в VAE напрямую?</p>
+      </div>
+
+    </div>
+
+    <h2>Линейная алгебра</h2>
+    <p class="sect-note">Всё, что связано с устойчивостью обучения и «геометрией» сетей, живёт здесь.</p>
+    <div class="grid">
+
+      <div class="c">
+        <h3>Собственные числа и степени матрицы</h3>
+        <p>Для симметричной $A$: $A=Q\Lambda Q^\top$ с ортогональной $Q$ и вещественными $\lambda_i$. Тогда $A^k=Q\Lambda^k Q^\top$ — поведение при $k\to\infty$ определяется спектральным радиусом $\rho(A)=\max|\lambda_i|$.</p>
+        <p>$\rho<1$ — всё затухает, $\rho>1$ — всё взрывается.</p>
+        <p class="use"><b>→</b> Vanishing/exploding gradients в RNN (произведение якобианов); oversmoothing в GNN (степени нормализованной матрицы смежности стягивают признаки к доминирующему собственному вектору).</p>
+        <p class="ask"><b>?</b> Объясните затухание градиента в RNN на языке спектра.</p>
+      </div>
+
+      <div class="c">
+        <h3>Положительная полуопределённость</h3>
+        <p>$M\succeq 0$, если $a^\top M a\ge 0$ для любого $a$. Ковариационная матрица всегда PSD, доказательство в одну строку:</p>
+        <div class="m">$$a^\top \Sigma a=\operatorname{Var}(a^\top X)\ \ge\ 0.$$</div>
+        <p>Гессиан в точке локального минимума тоже PSD.</p>
+        <p class="use"><b>→</b> Корректность гауссовых плотностей; условия второго порядка в оптимизации; матрица Фишера PSD.</p>
+        <p class="ask"><b>?</b> Почему ковариационная матрица положительно полуопределена?</p>
+      </div>
+
+      <div class="c">
+        <h3>SVD и малый ранг</h3>
+        <div class="m">$$A=U\Sigma V^\top,\qquad A\approx \sum_{i=1}^{r}\sigma_i u_i v_i^\top.$$</div>
+        <p>По теореме Эккарта–Янга усечение по $r$ наибольшим сингулярным числам — наилучшее приближение ранга $r$ (в спектральной и фробениусовой норме).</p>
+        <p class="use"><b>→</b> LoRA: гипотеза, что дообучение имеет малый «внутренний ранг», поэтому $\Delta W=BA$ с $r\ll d$ достаточно.</p>
+        <p class="ask"><b>?</b> Почему низкоранговая добавка вообще способна что-то выучить?</p>
+      </div>
+
+      <div class="c">
+        <h3>Нормы и константа Липшица</h3>
+        <p>Спектральная норма $\|A\|_2=\sigma_{\max}(A)$ — это и есть константа Липшица линейного отображения:</p>
+        <div class="m">$$\|Ax-Ay\|_2\le \|A\|_2\,\|x-y\|_2.$$</div>
+        <p>Композиция липшицевых отображений липшицева с произведением констант.</p>
+        <p class="use"><b>→</b> WGAN (1-липшицев критик, spectral normalization); gradient clipping по норме; оценка устойчивости сети.</p>
+        <p class="ask"><b>?</b> Как на практике заставить сеть быть 1-липшицевой?</p>
+      </div>
+
+      <div class="c">
+        <h3>Скалярное произведение, косинус, ортогональность</h3>
+        <div class="m">$$\cos(x,y)=\frac{x^\top y}{\|x\|\,\|y\|},\qquad \|x\|^2=x^\top x.$$</div>
+        <p>Вращение сохраняет длины и углы: $\|Rx\|=\|x\|$, $\langle Rx,Ry\rangle=\langle x,y\rangle$.</p>
+        <p class="use"><b>→</b> Attention-скор — скалярное произведение; косинусная близость в эмбеддингах и CLIP; RoPE использует именно инвариантность скалярного произведения к общему вращению.</p>
+        <p class="ask"><b>?</b> Почему в RoPE относительная позиция «выживает» в скалярном произведении?</p>
+      </div>
+
+      <div class="c">
+        <h3>Размерности и матричные производные</h3>
+        <p>Для $Y=XW$ с $X\in\mathbb{R}^{B\times n}$, $W\in\mathbb{R}^{n\times m}$ и upstream $\Delta=\partial\mathcal{L}/\partial Y$:</p>
+        <div class="m">$$\frac{\partial\mathcal{L}}{\partial W}=X^\top\Delta,\qquad \frac{\partial\mathcal{L}}{\partial X}=\Delta W^\top.$$</div>
+        <p>Проверка размерностей — самый надёжный способ восстановить формулу у доски.</p>
+        <p class="use"><b>→</b> Билет 4: матричный backward линейного слоя.</p>
+        <p class="ask"><b>?</b> Выведите градиенты линейного слоя и объясните, почему по $b$ идёт сумма по батчу.</p>
+      </div>
+
+    </div>
+
+    <h2>Анализ и методы оптимизации</h2>
+    <p class="sect-note">Здесь живут ответы на вопросы «почему это вообще сходится» и «почему нет гарантий».</p>
+    <div class="grid">
+
+      <div class="c">
+        <h3>Градиент как направление наискорейшего роста</h3>
+        <p>Из линейного приближения $\mathcal{L}(\theta+\delta)\approx\mathcal{L}(\theta)+\langle\nabla\mathcal{L},\delta\rangle$ и неравенства Коши–Буняковского: при фиксированной $\|\delta\|$ прирост максимален, когда $\delta\parallel\nabla\mathcal{L}$.</p>
+        <p class="use"><b>→</b> Билет 5: почему шаг делается по антиградиенту.</p>
+        <p class="ask"><b>?</b> Докажите, что антиградиент — направление наискорейшего убывания.</p>
+      </div>
+
+      <div class="c">
+        <h3>Якобиан, гессиан, chain rule</h3>
+        <p>Для композиции $f=f_L\circ\dots\circ f_1$ якобиан — произведение якобианов слоёв. Reverse-mode считает $v^\top J$ (VJP), forward-mode — $Jv$ (JVP).</p>
+        <p>Гессиан $H=\nabla^2\mathcal{L}$ имеет размер $n\times n$: для $n=10^9$ параметров хранить его невозможно.</p>
+        <p class="use"><b>→</b> Билет 4 (autodiff), и ответ на вопрос «почему не методы второго порядка».</p>
+        <p class="ask"><b>?</b> Почему в DL не используют метод Ньютона?</p>
+      </div>
+
+      <div class="c">
+        <h3>Выпуклость и почему её нет</h3>
+        <p>Функция выпукла, если $\varphi(\lambda x+(1-\lambda)y)\le\lambda\varphi(x)+(1-\lambda)\varphi(y)$; эквивалентно $H\succeq 0$. У выпуклой задачи любой локальный минимум глобален, и градиентный спуск имеет гарантии сходимости.</p>
+        <p>Нейросеть невыпукла по параметрам уже из-за перестановочной симметрии нейронов: минимумов экспоненциально много.</p>
+        <p class="use"><b>→</b> Почему говорят «нашли хорошее решение», а не «нашли глобальный оптимум»; почему инициализация и schedule вообще важны.</p>
+        <p class="ask"><b>?</b> Есть ли гарантии сходимости SGD в DL? Почему это не мешает на практике?</p>
+      </div>
+
+      <div class="c">
+        <h3>L-гладкость и выбор шага</h3>
+        <p>Если градиент липшицев с константой $L$ ($\|\nabla\mathcal{L}(x)-\nabla\mathcal{L}(y)\|\le L\|x-y\|$), то градиентный спуск монотонно убывает при $\eta\le 1/L$.</p>
+        <p>Слишком большой $\eta$ — осцилляции и расходимость; отсюда же смысл warmup: в начале обучения кривизна велика.</p>
+        <p class="use"><b>→</b> Билет 5: learning rate и schedules; связь с gradient clipping.</p>
+        <p class="ask"><b>?</b> От чего зависит максимально допустимый learning rate?</p>
+      </div>
+
+      <div class="c">
+        <h3>Стохастическая оптимизация</h3>
+        <p>Mini-batch градиент несмещён: $\mathbb{E}[g_B]=\nabla\hat R$, а его дисперсия убывает как $1/|B|$. Классические условия сходимости стохастической аппроксимации (Роббинс–Монро):</p>
+        <div class="m">$$\sum_t \eta_t=\infty,\qquad \sum_t \eta_t^2<\infty.$$</div>
+        <p>Именно поэтому шаг должен убывать — отсюда все schedules.</p>
+        <p class="use"><b>→</b> Билеты 3 и 5; linear scaling rule при увеличении батча.</p>
+        <p class="ask"><b>?</b> Зачем уменьшать learning rate к концу обучения?</p>
+      </div>
+
+      <div class="c">
+        <h3>Условная оптимизация и штрафы</h3>
+        <p>Задача «максимизировать $f$ при $g\le c$» через множители Лагранжа превращается в $f-\beta g$. Ограничение и штраф эквивалентны при подходящем $\beta$.</p>
+        <p class="use"><b>→</b> RLHF: «максимизировать reward, не уходя далеко от reference» становится $r-\beta\,\mathrm{KL}$; WGAN-GP: липшицево ограничение становится gradient penalty; $\beta$-VAE.</p>
+        <p class="ask"><b>?</b> Почему KL в RLHF стоит именно как штраф, а не как жёсткое ограничение?</p>
+      </div>
+
+    </div>
+
+    <h2>Основы машинного обучения</h2>
+    <p class="sect-note">То, что считается известным «по умолчанию», но легко проваливается на уточняющем вопросе.</p>
+    <div class="grid">
+
+      <div class="c">
+        <h3>Обобщение и три выборки</h3>
+        <p>Минимизируем эмпирический риск, а интересует истинный. Разрыв между ними — обобщающая способность. Validation нужен для выбора гиперпараметров, test — трогается один раз.</p>
+        <p>Многократный выбор по test — форма утечки: оценка становится оптимистично смещённой.</p>
+        <p class="use"><b>→</b> Билеты 3 и 8; leakage.</p>
+        <p class="ask"><b>?</b> Почему нельзя подбирать гиперпараметры по test?</p>
+      </div>
+
+      <div class="c">
+        <h3>Геометрия L1 и L2</h3>
+        <p>L2 сжимает все координаты пропорционально и не зануляет их; L1 имеет «углы» на осях, поэтому решение часто попадает в них — отсюда разреженность.</p>
+        <p class="use"><b>→</b> Weight decay (L2) и его отличие от L1; связь с MAP и prior.</p>
+        <p class="ask"><b>?</b> Почему L1 даёт разреженность, а L2 — нет?</p>
+      </div>
+
+      <div class="c">
+        <h3>Метрики классификации</h3>
+        <div class="m">$$P=\frac{TP}{TP+FP},\quad R=\frac{TP}{TP+FN},\quad F_1=\frac{2PR}{P+R}.$$</div>
+        <p>ROC-AUC при сильном дисбалансе выглядит оптимистично, потому что FPR нормируется на огромное число негативов; PR-AUC честнее.</p>
+        <p class="use"><b>→</b> Метрики детекции и сегментации (AP, mAP, Dice=F1), выбор порога.</p>
+        <p class="ask"><b>?</b> Когда ROC-AUC вводит в заблуждение?</p>
+      </div>
+
+      <div class="c">
+        <h3>Дисбаланс классов</h3>
+        <p>Accuracy при 99% негативов бессмысленна: константный предсказатель даёт 99%. Инструменты: взвешивание классов в loss, ресемплинг, focal loss, правильная метрика.</p>
+        <p class="use"><b>→</b> Билет 19 (pixel accuracy — ловушка), билет 23 (focal loss как переход от взвешенной CE к взвешиванию по трудности).</p>
+        <p class="ask"><b>?</b> Чем focal loss лучше простого взвешивания классов?</p>
+      </div>
+
+      <div class="c">
+        <h3>Проклятие размерности</h3>
+        <p>В высокой размерности объём концентрируется у границы, расстояния между точками выравниваются, а число примеров, нужное для покрытия пространства, растёт экспоненциально.</p>
+        <p class="use"><b>→</b> Почему ручные признаки плохо масштабируются на изображения; зачем нужны inductive bias и обучаемые представления.</p>
+        <p class="ask"><b>?</b> Почему MLP плохо подходит для изображений с точки зрения статистики?</p>
+      </div>
+
+      <div class="c">
+        <h3>Оценка Монте-Карло градиента</h3>
+        <p>Градиент матожидания по параметрам распределения нельзя занести под интеграл напрямую. Два пути: score-function (REINFORCE) — универсально, но высокая дисперсия; reparameterization — низкая дисперсия, но требует дифференцируемого сэмплирования.</p>
+        <p class="use"><b>→</b> VAE (reparameterization), RLHF/PPO (policy gradient со score-function и baseline для снижения дисперсии), straight-through в VQ-VAE.</p>
+        <p class="ask"><b>?</b> Почему в VAE reparameterization, а в RL — policy gradient?</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
