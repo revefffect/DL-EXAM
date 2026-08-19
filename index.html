@@ -1296,10 +1296,20 @@
     }
 
     /* ---------- Трёхстатусный контрол билета ---------- */
+    .ticket-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 18px;
+      align-items: start;
+    }
+
+    .ticket-header .ticket-number { grid-column: 1; grid-row: 1; }
+    .ticket-header h2 { grid-column: 1; grid-row: 2; }
+
     .ticket-status {
-      position: absolute;
-      top: 16px;
-      right: 16px;
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: start;
       display: inline-flex;
       align-items: center;
       gap: 3px;
@@ -1364,9 +1374,14 @@
     }
 
     @media (max-width: 860px) {
+      .ticket-header {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
       .ticket-status {
-        position: static;
-        margin-top: 10px;
+        grid-column: 1;
+        grid-row: 3;
+        margin-top: 12px;
         width: fit-content;
       }
     }
@@ -5507,13 +5522,13 @@ loss = criterion(out, y)</code></pre>
                 <rect x="364" y="80" width="86" height="48" rx="7" stroke="var(--tr-blue)"/>
                 <rect x="488" y="86" width="62" height="36" rx="7"/>
                 <rect x="588" y="80" width="72" height="48" rx="7"/>
-                <rect x="694" y="86" width="60" height="36" rx="7" stroke="var(--tr-green)"/>
+                <rect x="676" y="86" width="96" height="36" rx="7" stroke="var(--tr-green)"/>
                 <line x1="102" y1="104" x2="140" y2="104" marker-end="url(#bar3)"/>
                 <line x1="226" y1="104" x2="264" y2="104" marker-end="url(#bar3)"/>
                 <line x1="326" y1="104" x2="364" y2="104" marker-end="url(#bar3)"/>
                 <line x1="450" y1="104" x2="488" y2="104" marker-end="url(#bar3)"/>
                 <line x1="550" y1="104" x2="588" y2="104" marker-end="url(#bar3)"/>
-                <line x1="660" y1="104" x2="694" y2="104" marker-end="url(#bar3)"/>
+                <line x1="660" y1="104" x2="672" y2="104" marker-end="url(#bar3)"/>
               </g>
               <g fill="currentColor" font-size="13">
                 <text x="66" y="100" text-anchor="middle">вход</text>
@@ -8859,7 +8874,7 @@ loss = criterion(out, y)</code></pre>
                 <text x="550" y="144" text-anchor="middle">fixed grid</text>
                 <text x="705" y="94" text-anchor="middle">класс</text>
                 <text x="705" y="176" text-anchor="middle">box offsets</text>
-                <text x="490" y="80" text-anchor="middle" font-size="12" opacity="0.75">вырезать каждый proposal</text>
+                <text x="527" y="44" text-anchor="middle" font-size="12" opacity="0.75">вырезать proposal</text>
               </g>
             </svg>
           </div>
@@ -10732,7 +10747,7 @@ loss = criterion(out, y)</code></pre>
                 <text x="338" y="174" text-anchor="middle">i<tspan baseline-shift="sub" font-size="10">t</tspan></text>
                 <text x="430" y="174" text-anchor="middle">C̃<tspan baseline-shift="sub" font-size="10">t</tspan></text>
                 <text x="578" y="174" text-anchor="middle">o<tspan baseline-shift="sub" font-size="10">t</tspan></text>
-                <text x="730" y="163" text-anchor="end">h<tspan baseline-shift="sub" font-size="10">t</tspan> = o<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ tanh(C<tspan baseline-shift="sub" font-size="10">t</tspan>)</text>
+                <text x="730" y="192" text-anchor="end">h<tspan baseline-shift="sub" font-size="10">t</tspan> = o<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ tanh(C<tspan baseline-shift="sub" font-size="10">t</tspan>)</text>
                 <text x="380" y="243" text-anchor="middle" font-size="12" opacity="0.75">все гейты — σ(W[h<tspan baseline-shift="sub" font-size="10">t−1</tspan>; x<tspan baseline-shift="sub" font-size="10">t</tspan>] + b), кандидат — tanh</text>
                 <text x="330" y="40" text-anchor="middle" font-size="12" opacity="0.75">C<tspan baseline-shift="sub" font-size="10">t</tspan> = f<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ C<tspan baseline-shift="sub" font-size="10">t−1</tspan> + i<tspan baseline-shift="sub" font-size="10">t</tspan> ⊙ C̃<tspan baseline-shift="sub" font-size="10">t</tspan> — почти линейная дорожка памяти</text>
               </g>
@@ -10988,7 +11003,7 @@ loss = criterion(out, y)</code></pre>
                 <text x="555" y="194" text-anchor="middle">s<tspan baseline-shift="sub" font-size="10">t</tspan></text>
                 <text x="555" y="64" text-anchor="middle">c<tspan baseline-shift="sub" font-size="10">t</tspan> = Σ a<tspan baseline-shift="sub" font-size="10">i</tspan>h<tspan baseline-shift="sub" font-size="10">i</tspan></text>
                 <text x="698" y="50" text-anchor="end">ŷ<tspan baseline-shift="sub" font-size="10">t</tspan></text>
-                <text x="360" y="105" text-anchor="middle" font-size="12" opacity="0.75">a<tspan baseline-shift="sub" font-size="10">i</tspan> = softmax(score(s<tspan baseline-shift="sub" font-size="10">t</tspan>, h<tspan baseline-shift="sub" font-size="10">i</tspan>)) — толщина = вес</text>
+                <text x="628" y="246" text-anchor="middle" font-size="12" opacity="0.75">a<tspan baseline-shift="sub" font-size="10">i</tspan> = softmax(score(s<tspan baseline-shift="sub" font-size="10">t</tspan>, h<tspan baseline-shift="sub" font-size="10">i</tspan>)) — толщина = вес</text>
               </g>
             </svg>
           </div>
@@ -15258,32 +15273,32 @@ loss = criterion(out, y)</code></pre>
           <h3>Схема на доску<span class="board-badge">30 секунд</span></h3>
           <div class="board-scheme">
             <svg viewBox="0 0 780 250" role="img" aria-label="RAG pipeline">
-              <defs><marker id="bar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+              <defs><marker id="bar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
               <g fill="none" stroke="currentColor" stroke-width="1.6">
-                <rect x="30" y="95" width="90" height="44" rx="7"/>
-                <rect x="175" y="95" width="120" height="44" rx="7" stroke="var(--tr-blue)"/>
-                <rect x="175" y="20" width="120" height="44" rx="7"/>
-                <rect x="350" y="95" width="120" height="44" rx="7"/>
-                <rect x="525" y="95" width="110" height="44" rx="7" stroke="var(--tr-blue)"/>
-                <line x1="120" y1="117" x2="175" y2="117" marker-end="url(#bar2)"/>
-                <line x1="235" y1="95" x2="235" y2="64" marker-end="url(#bar2)"/>
-                <line x1="295" y1="42" x2="390" y2="95" stroke-dasharray="5 4" marker-end="url(#bar2)"/>
-                <line x1="295" y1="117" x2="350" y2="117" marker-end="url(#bar2)"/>
-                <line x1="470" y1="117" x2="525" y2="117" marker-end="url(#bar2)"/>
-                <line x1="635" y1="117" x2="720" y2="117" marker-end="url(#bar2)"/>
+                <rect x="20" y="100" width="92" height="46" rx="7"/>
+                <rect x="150" y="100" width="152" height="46" rx="7" stroke="var(--tr-blue)"/>
+                <rect x="140" y="16" width="176" height="50" rx="7"/>
+                <rect x="352" y="100" width="140" height="46" rx="7"/>
+                <rect x="532" y="100" width="146" height="46" rx="7" stroke="var(--tr-blue)"/>
+                <line x1="112" y1="123" x2="146" y2="123" marker-end="url(#bar3)"/>
+                <line x1="302" y1="123" x2="348" y2="123" marker-end="url(#bar3)"/>
+                <line x1="492" y1="123" x2="528" y2="123" marker-end="url(#bar3)"/>
+                <line x1="678" y1="123" x2="742" y2="123" marker-end="url(#bar3)"/>
+                <line x1="226" y1="100" x2="226" y2="70" marker-end="url(#bar3)"/>
+                <line x1="322" y1="52" x2="404" y2="96" stroke-dasharray="5 4" marker-end="url(#bar3)"/>
               </g>
               <g fill="currentColor" font-size="13.5">
-                <text x="75" y="121" text-anchor="middle">запрос</text>
-                <text x="235" y="112" text-anchor="middle">Retriever</text>
-                <text x="235" y="128" text-anchor="middle">embedding поиск</text>
-                <text x="235" y="37" text-anchor="middle">Индекс документов</text>
-                <text x="235" y="54" text-anchor="middle">chunks + embeddings</text>
-                <text x="410" y="112" text-anchor="middle">top-k chunks</text>
-                <text x="410" y="128" text-anchor="middle">(+ reranker)</text>
-                <text x="580" y="112" text-anchor="middle">LLM</text>
-                <text x="580" y="128" text-anchor="middle">prompt + контекст</text>
-                <text x="718" y="107" text-anchor="end">ответ</text>
-                <text x="390" y="230" text-anchor="middle" font-size="12" opacity="0.75">знание добавляется в context, веса не меняются; ошибка чаще в retrieval, чем в генерации</text>
+                <text x="66" y="128" text-anchor="middle">запрос</text>
+                <text x="226" y="118" text-anchor="middle">Retriever</text>
+                <text x="226" y="136" text-anchor="middle">embedding-поиск</text>
+                <text x="228" y="38" text-anchor="middle">Индекс документов</text>
+                <text x="228" y="56" text-anchor="middle">chunks + embeddings</text>
+                <text x="422" y="118" text-anchor="middle">top-k chunks</text>
+                <text x="422" y="136" text-anchor="middle">(+ reranker)</text>
+                <text x="605" y="118" text-anchor="middle">LLM</text>
+                <text x="605" y="136" text-anchor="middle">prompt + контекст</text>
+                <text x="744" y="112" text-anchor="end">ответ</text>
+                <text x="390" y="212" text-anchor="middle" font-size="12" opacity="0.75">знание добавляется в context, веса не меняются; ошибка чаще в retrieval, чем в генерации</text>
               </g>
             </svg>
           </div>
@@ -16507,7 +16522,7 @@ loss = criterion(out, y)</code></pre>
                   <rect x="40" y="60" width="58" height="38" rx="6"/><rect x="102" y="60" width="58" height="38" rx="6"/><rect x="164" y="60" width="58" height="38" rx="6"/><rect x="226" y="60" width="58" height="38" rx="6"/><rect x="288" y="60" width="58" height="38" rx="6"/><rect x="350" y="60" width="58" height="38" rx="6"/><rect x="412" y="60" width="58" height="38" rx="6"/>
                 </g>
                 <line x1="255" y1="98" x2="255" y2="140" marker-end="url(#bar2)"/>
-                <rect x="520" y="55" width="220" height="48" rx="8" stroke="var(--tr-blue)"/>
+                <rect x="512" y="55" width="248" height="48" rx="8" stroke="var(--tr-blue)"/>
                 <rect x="180" y="145" width="150" height="42" rx="8" stroke="var(--tr-green)"/>
               </g>
               <g fill="currentColor" font-size="15">
@@ -16519,8 +16534,8 @@ loss = criterion(out, y)</code></pre>
                 <text x="379" y="84" text-anchor="middle">∅</text>
                 <text x="441" y="84" text-anchor="middle">t</text>
                 <text x="255" y="172" text-anchor="middle">«cat»</text>
-                <text x="630" y="75" text-anchor="middle" font-size="12.5">1) схлопнуть повторы</text>
-                <text x="630" y="93" text-anchor="middle" font-size="12.5">2) удалить blank ∅ (в этом порядке!)</text>
+                <text x="636" y="75" text-anchor="middle" font-size="12.5">1) схлопнуть повторы</text>
+                <text x="636" y="93" text-anchor="middle" font-size="12.5">2) удалить blank ∅ (в этом порядке!)</text>
                 <text x="240" y="45" text-anchor="middle" font-size="12" opacity="0.75">frame-level path (T кадров)</text>
                 <text x="390" y="225" text-anchor="middle" font-size="12" opacity="0.75">CTC loss = −log суммы вероятностей ВСЕХ путей, дающих «cat»</text>
               </g>
@@ -19688,8 +19703,8 @@ loss = criterion(out, y)</code></pre>
                 <text x="80" y="189" text-anchor="middle">captions</text>
                 <text x="245" y="80" text-anchor="middle">Image Encoder</text>
                 <text x="245" y="190" text-anchor="middle">Text Encoder</text>
-                <text x="374" y="95" text-anchor="middle">v<tspan baseline-shift="sub" font-size="10">i</tspan></text>
-                <text x="374" y="172" text-anchor="middle">t<tspan baseline-shift="sub" font-size="10">j</tspan></text>
+                <text x="348" y="70" text-anchor="middle">v<tspan baseline-shift="sub" font-size="10">i</tspan></text>
+                <text x="348" y="198" text-anchor="middle">t<tspan baseline-shift="sub" font-size="10">j</tspan></text>
                 <text x="495" y="222" text-anchor="middle" font-size="12" opacity="0.75">S<tspan baseline-shift="sub" font-size="10">ij</tspan> = v<tspan baseline-shift="sub" font-size="10">i</tspan>ᵀt<tspan baseline-shift="sub" font-size="10">j</tspan>/τ: диагональ — positives</text>
                 <text x="672" y="105" text-anchor="middle" font-size="12.5">InfoNCE в обе стороны:</text>
                 <text x="672" y="124" text-anchor="middle" font-size="12.5">строка ищет свой caption,</text>
@@ -19987,15 +20002,15 @@ loss = criterion(out, y)</code></pre>
             <svg viewBox="0 0 780 240" role="img" aria-label="VLM pipeline">
               <defs><marker id="bar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
               <g fill="none" stroke="currentColor" stroke-width="1.6">
-                <rect x="30" y="40" width="80" height="44" rx="7"/>
+                <rect x="20" y="40" width="100" height="44" rx="7"/>
                 <rect x="160" y="40" width="120" height="44" rx="7" stroke="var(--tr-blue)"/>
                 <rect x="330" y="40" width="110" height="44" rx="7" stroke="var(--tr-orange)"/>
                 <rect x="30" y="150" width="80" height="44" rx="7"/>
                 <rect x="500" y="90" width="130" height="60" rx="8" stroke="var(--tr-green)"/>
-                <line x1="110" y1="62" x2="160" y2="62" marker-end="url(#bar3)"/>
+                <line x1="120" y1="62" x2="160" y2="62" marker-end="url(#bar3)"/>
                 <line x1="280" y1="62" x2="330" y2="62" marker-end="url(#bar3)"/>
                 <line x1="440" y1="62" x2="496" y2="102" marker-end="url(#bar3)"/>
-                <line x1="110" y1="172" x2="496" y2="140" marker-end="url(#bar3)"/>
+                <line x1="120" y1="172" x2="496" y2="140" marker-end="url(#bar3)"/>
                 <line x1="630" y1="120" x2="710" y2="120" marker-end="url(#bar3)"/>
               </g>
               <g fill="currentColor" font-size="13">
@@ -20009,7 +20024,7 @@ loss = criterion(out, y)</code></pre>
                 <text x="565" y="133" text-anchor="middle">visual + text токены</text>
                 <text x="708" y="112" text-anchor="end">ответ</text>
                 <text x="390" y="212" text-anchor="middle" font-size="12" opacity="0.75">обычно обучают только projector: энкодер и LLM заморожены</text>
-                <text x="385" y="110" text-anchor="middle" font-size="11.5" opacity="0.75">перевод в пространство эмбеддингов LLM</text>
+                <text x="330" y="128" text-anchor="middle" font-size="11.5" opacity="0.75">перевод в пространство эмбеддингов LLM</text>
               </g>
             </svg>
           </div>
