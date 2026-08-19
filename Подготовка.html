@@ -1184,8 +1184,13 @@
 
     .dash-stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       margin-bottom: 16px;
+    }
+
+    @media (max-width: 560px) {
+      .dash-stats { grid-template-columns: repeat(2, 1fr); row-gap: 12px; }
+      .dash-stats div:nth-child(2) { border-right: 0; }
     }
 
     .dash-stats div {
@@ -2119,6 +2124,90 @@
     html[data-theme="dark"] .toc-actions .exam-launch {
       box-shadow: 0 2px 10px rgba(108, 121, 255, 0.3);
     }
+
+    /* ---------- Активность и повторение ---------- */
+    .dash-activity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+      font-size: 11.5px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .act-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .act-strip { display: flex; gap: 3px; }
+
+    .act-strip i {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      background: rgba(127, 137, 155, 0.16);
+    }
+
+    .act-strip i.a1 { background: color-mix(in srgb, var(--tr-green) 35%, transparent); }
+    .act-strip i.a2 { background: color-mix(in srgb, var(--tr-green) 65%, transparent); }
+    .act-strip i.a3 { background: var(--tr-green); }
+    .act-strip i.today { outline: 1.5px solid var(--tr-blue); outline-offset: 1px; }
+
+    .act-streak { font-weight: 650; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+    .dash-stats .n-due strong { color: var(--tr-blue); }
+
+    .dash-cell.due::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--tr-blue);
+    }
+
+    .dash-cell { position: relative; }
+
+    .ticket-status .due-badge {
+      display: none;
+      margin-left: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--tr-blue-soft);
+      color: var(--tr-blue);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ticket-status.is-due .due-badge { display: inline-block; }
+
+    mark.dl-hit {
+      background: color-mix(in srgb, var(--tr-orange) 40%, transparent);
+      color: inherit;
+      border-radius: 3px;
+      padding: 0 1px;
+    }
+
+    .quiz-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12.5px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .quiz-filter input { accent-color: var(--tr-blue); }
   </style>
 </head>
 <body>
@@ -2172,7 +2261,10 @@
       </div>
       <div class="toc-actions">
         <button type="button" class="exam-launch"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.5" fill="currentColor" stroke="none"/></svg><span class="lbl">Режим экзамена</span></button>
-        <button type="button" class="notes-export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="lbl">Скачать мои заметки</span></button>
+        <button type="button" class="data-backup"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="lbl">Сохранить прогресс и заметки</span></button>
+        <button type="button" class="data-restore"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg><span class="lbl">Загрузить из файла</span></button>
+        <button type="button" class="notes-export"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="lbl">Заметки в Markdown</span></button>
+        <input type="file" class="data-file" accept="application/json,.json" hidden>
       </div>
       <nav aria-label="Оглавление">
         <details class="nav-group" open>
@@ -2296,10 +2388,16 @@
         <div class="dash-stats">
           <div class="n-learned"><strong>0</strong><span>выучено</span></div>
           <div class="n-shaky"><strong>0</strong><span>плаваю</span></div>
+          <div class="n-due"><strong>0</strong><span>к повторению</span></div>
           <div class="n-left"><strong>62</strong><span>не начато</span></div>
         </div>
         <div class="dash-grid" aria-label="Статусы билетов"></div>
         <div class="dash-blocks"></div>
+        <div class="dash-activity" aria-label="Активность за 14 дней">
+          <span class="act-label">Активность за 14 дней</span>
+          <div class="act-strip"></div>
+          <span class="act-streak"></span>
+        </div>
       </section>
 
       <article class="ticket" id="ticket-1">
@@ -21401,6 +21499,10 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
     (function () {
       var KEY = 'dl-progress-v2';
       var NOTES_KEY = 'dl-notes';
+      var AT_KEY = 'dl-status-at';
+      var ACT_KEY = 'dl-activity';
+      var DUE_DAYS = { learned: 5, shaky: 2 };
+      var DAY = 86400000;
       var BLOCKS = [
         ['База DL', 1, 8],
         ['Computer Vision', 9, 25],
@@ -21436,8 +21538,39 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
         try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch (e) {}
       }
 
+      function loadJSON(k) {
+        try { return JSON.parse(localStorage.getItem(k) || '{}'); } catch (e) { return {}; }
+      }
+      function saveJSON(k, v) {
+        try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+      }
+
       var statuses = loadStatuses();
       var notes = loadNotes();
+      var stampedAt = loadJSON(AT_KEY);
+      var activity = loadJSON(ACT_KEY);
+
+      function today() { return new Date().toISOString().slice(0, 10); }
+
+      window.dlBumpActivity = function () {
+        var d = today();
+        activity[d] = (activity[d] || 0) + 1;
+        saveJSON(ACT_KEY, activity);
+      };
+
+      function isDue(id) {
+        var st = statuses[id];
+        if (!st || !DUE_DAYS[st]) return false;
+        var at = stampedAt[id];
+        if (!at) return false;
+        return (Date.now() - at) > DUE_DAYS[st] * DAY;
+      }
+
+      function daysSince(id) {
+        var at = stampedAt[id];
+        if (!at) return null;
+        return Math.floor((Date.now() - at) / DAY);
+      }
 
       function num(id) { return parseInt(id.replace('ticket-', ''), 10); }
       function title(t) {
@@ -21473,14 +21606,19 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
 
       function refresh() {
         var total = tickets.length;
-        var learned = 0, shaky = 0;
+        var learned = 0, shaky = 0, due = 0;
         tickets.forEach(function (t) {
           var st = statuses[t.id];
+          var dueNow = isDue(t.id);
           if (st === 'learned') learned++;
           else if (st === 'shaky') shaky++;
+          if (dueNow) due++;
           Array.prototype.forEach.call(grid.querySelectorAll('[data-ticket="' + t.id + '"]'), function (c) {
             c.classList.toggle('learned', st === 'learned');
             c.classList.toggle('shaky', st === 'shaky');
+            c.classList.toggle('due', dueNow);
+            var d = daysSince(t.id);
+            c.title = 'Билет ' + num(t.id) + ': ' + title(t) + (d !== null && st ? ' · отмечен ' + d + ' дн. назад' : '');
           });
           Array.prototype.forEach.call(document.querySelectorAll('nav a[href="#' + t.id + '"]'), function (a) {
             a.classList.toggle('ticket-learned', st === 'learned');
@@ -21490,6 +21628,9 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
             Array.prototype.forEach.call(ctl.querySelectorAll('button[data-st]'), function (b) {
               b.classList.toggle('active', (statuses[t.id] || 'none') === b.dataset.st);
             });
+            ctl.classList.toggle('is-due', dueNow);
+            var badge = ctl.querySelector('.due-badge');
+            if (badge) badge.textContent = 'пора повторить · ' + daysSince(t.id) + ' дн.';
           }
         });
         dash.querySelector('.dash-percent').textContent = Math.round(100 * learned / total) + '%';
@@ -21497,7 +21638,9 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
         dash.querySelector('.seg-shaky').style.width = (100 * shaky / total) + '%';
         dash.querySelector('.n-learned strong').textContent = learned;
         dash.querySelector('.n-shaky strong').textContent = shaky;
+        dash.querySelector('.n-due strong').textContent = due;
         dash.querySelector('.n-left strong').textContent = total - learned - shaky;
+        renderActivity();
         Array.prototype.forEach.call(blocksEl.querySelectorAll('.dash-block'), function (row) {
           var from = +row.dataset.from, to = +row.dataset.to, bl = 0, bs = 0, n = to - from + 1;
           for (var k = from; k <= to; k++) {
@@ -21516,11 +21659,39 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
       }
 
       window.dlSetStatus = function (id, st) {
-        if (st === 'none') delete statuses[id];
-        else statuses[id] = st;
+        if (st === 'none') { delete statuses[id]; delete stampedAt[id]; }
+        else { statuses[id] = st; stampedAt[id] = Date.now(); }
         saveStatuses();
+        saveJSON(AT_KEY, stampedAt);
+        window.dlBumpActivity();
         refresh();
       };
+
+      function renderActivity() {
+        var strip = dash.querySelector('.act-strip');
+        var streakEl = dash.querySelector('.act-streak');
+        if (!strip) return;
+        strip.innerHTML = '';
+        var days = [];
+        for (var i = 13; i >= 0; i--) {
+          days.push(new Date(Date.now() - i * DAY).toISOString().slice(0, 10));
+        }
+        days.forEach(function (d, k) {
+          var n = activity[d] || 0;
+          var i = document.createElement('i');
+          if (n >= 12) i.className = 'a3';
+          else if (n >= 5) i.className = 'a2';
+          else if (n > 0) i.className = 'a1';
+          if (k === days.length - 1) i.classList.add('today');
+          i.title = d + ': ' + n + ' действий';
+          strip.appendChild(i);
+        });
+        var streak = 0;
+        for (var j = days.length - 1; j >= 0; j--) {
+          if (activity[days[j]]) streak++; else break;
+        }
+        if (streakEl) streakEl.textContent = streak > 1 ? streak + ' дн. подряд' : '';
+      }
       window.dlGetStatuses = function () { return statuses; };
       window.dlTickets = tickets;
 
@@ -21541,6 +21712,10 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
           });
           ctl.appendChild(b);
         });
+
+        var due = document.createElement('span');
+        due.className = 'due-badge';
+        ctl.appendChild(due);
 
         var nb = document.createElement('button');
         nb.type = 'button';
@@ -21582,7 +21757,76 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
         });
       });
 
-      /* --- экспорт заметок --- */
+      /* --- бэкап: экспорт и импорт всего прогресса --- */
+      function flash(btn, text) {
+        var lbl = btn.querySelector('.lbl') || btn;
+        var prev = lbl.textContent;
+        lbl.textContent = text;
+        setTimeout(function () { lbl.textContent = prev; }, 1800);
+      }
+
+      function download(name, text, mime) {
+        var blob = new Blob([text], { type: mime });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+      }
+
+      var backupBtn = document.querySelector('.data-backup');
+      if (backupBtn) {
+        backupBtn.addEventListener('click', function () {
+          var dump = {
+            format: 'dl-exam-backup',
+            version: 1,
+            savedAt: new Date().toISOString(),
+            progress: statuses,
+            stampedAt: stampedAt,
+            notes: notes,
+            activity: activity,
+            quizStats: loadJSON('dl-quiz-stats'),
+            theme: (function () { try { return localStorage.getItem('dl-theme'); } catch (e) { return null; } }())
+          };
+          download('dl-exam-backup-' + today() + '.json', JSON.stringify(dump, null, 2), 'application/json;charset=utf-8');
+          flash(backupBtn, 'Файл сохранён');
+        });
+      }
+
+      var restoreBtn = document.querySelector('.data-restore');
+      var fileInput = document.querySelector('.data-file');
+      if (restoreBtn && fileInput) {
+        restoreBtn.addEventListener('click', function () { fileInput.click(); });
+        fileInput.addEventListener('change', function () {
+          var f = fileInput.files && fileInput.files[0];
+          if (!f) return;
+          var reader = new FileReader();
+          reader.onload = function () {
+            var data;
+            try { data = JSON.parse(reader.result); } catch (e) { flash(restoreBtn, 'Файл не читается'); return; }
+            if (!data || data.format !== 'dl-exam-backup') { flash(restoreBtn, 'Не тот формат'); return; }
+            var n = Object.keys(data.progress || {}).length;
+            if (!confirm('Заменить текущий прогресс данными из файла?\n\nВ файле: ' + n + ' отмеченных билетов, ' +
+                         Object.keys(data.notes || {}).length + ' заметок.\nСохранено: ' + (data.savedAt || '—'))) return;
+            statuses = data.progress || {};
+            stampedAt = data.stampedAt || {};
+            notes = data.notes || {};
+            activity = data.activity || {};
+            saveStatuses();
+            saveJSON(AT_KEY, stampedAt);
+            saveNotes();
+            saveJSON(ACT_KEY, activity);
+            if (data.quizStats) saveJSON('dl-quiz-stats', data.quizStats);
+            if (data.theme) { try { localStorage.setItem('dl-theme', data.theme); } catch (e) {} }
+            location.reload();
+          };
+          reader.readAsText(f);
+          fileInput.value = '';
+        });
+      }
+
+      /* --- экспорт заметок в markdown --- */
       var exp = document.querySelector('.notes-export');
       if (exp) {
         exp.addEventListener('click', function () {
@@ -21592,19 +21836,8 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
             if (!v) return;
             parts.push('## Билет ' + num(t.id) + '. ' + title(t), '', v, '');
           });
-          if (parts.length <= 2) {
-            var lbl = exp.querySelector('.lbl') || exp;
-            lbl.textContent = 'Заметок пока нет';
-            setTimeout(function () { lbl.textContent = 'Скачать мои заметки'; }, 1600);
-            return;
-          }
-          var blob = new Blob([parts.join('\n')], { type: 'text/markdown;charset=utf-8' });
-          var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'dl-exam-notes.md';
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+          if (parts.length <= 2) { flash(exp, 'Заметок пока нет'); return; }
+          download('dl-exam-notes.md', parts.join('\n'), 'text/markdown;charset=utf-8');
         });
       }
 
@@ -21809,6 +22042,27 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
       var quizPos = 0;
       var quizRight = 0;
       var quizWrong = 0;
+      var quizOnlyWrong = false;
+      var QSTATS = 'dl-quiz-stats';
+
+      function qstats() {
+        try { return JSON.parse(localStorage.getItem(QSTATS) || '{}'); } catch (e) { return {}; }
+      }
+      function qsave(v) {
+        try { localStorage.setItem(QSTATS, JSON.stringify(v)); } catch (e) {}
+      }
+      function qid(text) {
+        var h = 0;
+        for (var i = 0; i < text.length; i++) { h = ((h << 5) - h + text.charCodeAt(i)) | 0; }
+        return 'q' + (h >>> 0).toString(36);
+      }
+      function wrongPool() {
+        var st = qstats();
+        return (window.DL_QUIZ || []).filter(function (it) {
+          var r = st[qid(it.q)];
+          return r && r.wrong > 0 && r.wrong >= r.right;
+        });
+      }
 
       function shuffle(a) {
         for (var i = a.length - 1; i > 0; i--) {
@@ -21829,7 +22083,18 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
         stopTimer();
         if (!window.DL_QUIZ || !window.DL_QUIZ.length) return;
         if (!quizDeck || quizPos >= quizDeck.length) {
-          quizDeck = shuffle(window.DL_QUIZ.slice());
+          var pool = quizOnlyWrong ? wrongPool() : window.DL_QUIZ.slice();
+          if (!pool.length) {
+            body.innerHTML = '';
+            foot.innerHTML = '';
+            body.appendChild(el('p', 'exam-eyebrow', 'Работа над ошибками'));
+            body.appendChild(el('h3', null, 'Ошибок пока нет'));
+            body.appendChild(el('p', 'exam-question', 'Здесь появятся вопросы, на которые вы ответили неверно — они будут повторяться, пока не наберут больше правильных ответов, чем ошибок.'));
+            var back = el('span', 'spacer'); foot.appendChild(back);
+            footButton('Ко всем вопросам', 'primary', function () { quizOnlyWrong = false; quizDeck = null; showQuiz(); });
+            return;
+          }
+          quizDeck = shuffle(pool);
           quizPos = 0;
         }
         var item = quizDeck[quizPos];
@@ -21861,7 +22126,13 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
               x.disabled = true;
               if (order[k] === 0) x.classList.add('right');
             });
-            if (oi === 0) { quizRight++; } else { b.classList.add('wrong'); quizWrong++; }
+            var st = qstats();
+            var key = qid(item.q);
+            st[key] = st[key] || { right: 0, wrong: 0 };
+            if (oi === 0) { quizRight++; st[key].right++; }
+            else { b.classList.add('wrong'); quizWrong++; st[key].wrong++; st[key].lastWrong = Date.now(); }
+            qsave(st);
+            if (window.dlBumpActivity) window.dlBumpActivity();
             why.hidden = false;
             renderScore();
           });
@@ -21879,7 +22150,20 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
 
         var score = el('span', 'quiz-score');
         foot.appendChild(score);
-        renderScore();
+
+        var filter = el('label', 'quiz-filter');
+        var fcb = document.createElement('input');
+        fcb.type = 'checkbox';
+        fcb.checked = quizOnlyWrong;
+        fcb.addEventListener('change', function () {
+          quizOnlyWrong = fcb.checked;
+          quizDeck = null;
+          showQuiz();
+        });
+        filter.appendChild(fcb);
+        filter.appendChild(document.createTextNode(' только мои ошибки (' + wrongPool().length + ')'));
+        foot.appendChild(filter);
+
         var sp = el('span', 'spacer'); foot.appendChild(sp);
         footButton('Открыть билет', null, function () {
           close();
@@ -21993,9 +22277,57 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
         });
       }
 
+      function clearHighlights() {
+        var marks = document.querySelectorAll('mark.dl-hit');
+        Array.prototype.forEach.call(marks, function (m) {
+          var p = m.parentNode;
+          if (!p) return;
+          p.replaceChild(document.createTextNode(m.textContent), m);
+          p.normalize();
+        });
+      }
+
+      function highlightIn(root, q, budget) {
+        var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+          acceptNode: function (node) {
+            if (!node.nodeValue || node.nodeValue.length < q.length) return NodeFilter.FILTER_REJECT;
+            var p = node.parentNode;
+            while (p && p !== root) {
+              var tag = p.nodeName.toLowerCase();
+              if (tag === 'script' || tag === 'style' || tag === 'mark' || tag.indexOf('mjx') === 0 || tag === 'svg') {
+                return NodeFilter.FILTER_REJECT;
+              }
+              p = p.parentNode;
+            }
+            return node.nodeValue.toLowerCase().indexOf(q) === -1 ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+          }
+        });
+        var targets = [];
+        var n;
+        while ((n = walker.nextNode()) && targets.length < budget) targets.push(n);
+        targets.forEach(function (node) {
+          var text = node.nodeValue;
+          var lower = text.toLowerCase();
+          var frag = document.createDocumentFragment();
+          var pos = 0, idx;
+          while ((idx = lower.indexOf(q, pos)) !== -1) {
+            if (idx > pos) frag.appendChild(document.createTextNode(text.slice(pos, idx)));
+            var mk = document.createElement('mark');
+            mk.className = 'dl-hit';
+            mk.textContent = text.slice(idx, idx + q.length);
+            frag.appendChild(mk);
+            pos = idx + q.length;
+          }
+          if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+          if (node.parentNode) node.parentNode.replaceChild(frag, node);
+        });
+        return targets.length;
+      }
+
       function apply() {
         var q = input.value.trim().toLowerCase();
         var links = document.querySelectorAll('nav a[href^="#"]');
+        clearHighlights();
         if (q.length < 2) {
           Array.prototype.forEach.call(links, function (a) { a.classList.remove('search-hidden'); });
           if (countEl) countEl.textContent = '';
@@ -22017,7 +22349,15 @@ window.DL_WHATIF = [{"q": "Убрать все нелинейности из г�
           var any = g.querySelector('a:not(.search-hidden)');
           if (any) g.setAttribute('open', '');
         });
-        if (countEl) countEl.textContent = 'Совпадений: ' + Object.keys(matched).length + ' разделов';
+        var ids = Object.keys(matched);
+        if (q.length >= 3) {
+          var budget = 400;
+          for (var k = 0; k < ids.length && budget > 0; k++) {
+            var art = document.getElementById(ids[k]);
+            if (art) budget -= highlightIn(art, q, budget);
+          }
+        }
+        if (countEl) countEl.textContent = 'Совпадений: ' + ids.length + ' разделов';
       }
 
       var timer = null;
